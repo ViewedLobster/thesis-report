@@ -9,10 +9,10 @@
 
 \title{This is the English title}
 \alttitle{Detta är den svenska översättningen av titeln}
-\author{Osquar Student}
-\email{osquar@kth.se}
-\supervisor{Lotta Larsson}
-\examiner{Lennart Bladgren}
+\author{Ellen Arvidsson}
+\email{magarv@kth.se}
+\supervisor{Philipp Haller}
+\examiner{Mads Dam}
 \programme{Master in Computer Science}
 \school{School of Electrical Engineering and Computer Science}
 \date{\today}
@@ -52,27 +52,107 @@
 
 
 \chapter{Introduction}
+\label{cha:introduction}
 
-We use the \emph{biblatex} package to handle our references.  We therefore use the
-command \texttt{parencite} to get a reference in parenthesis, like this
-\parencite{heisenberg2015}.  It is also possible to include the author
-as part of the sentence using \texttt{textcite}, like talking about
-the work of \textcite{einstein2016}.
+%We use the \emph{biblatex} package to handle our references.  We therefore use the
+%command \texttt{parencite} to get a reference in parenthesis, like this
+%\parencite{heisenberg2015}.  It is also possible to include the author
+%as part of the sentence using \texttt{textcite}, like talking about
+%the work of \textcite{einstein2016}.
 
-\Blindtext
+\chapter{Background}
+\label{cha:background}
 
-\section{Research Question}
+\section{Language Syntax}
+\label{sec:language_syntax}
 
-\blindtext
+% Describe the foundations of syntaxes for languages: BNF, ANF
 
-\chapter{Methods}
+\section{Language Semantics}
+\label{sec:language_semantics}
 
-\blindtext
+% Describe small step operational semantics
+
+\section{Type Systems}
+\label{sec:type_systems}
+
+% Describe basic type systems and properties that should hold e.g. 
+% TODO Preservation and Progress
+
+
+\chapter{Related Work}
+\label{cha:related_work}
+
+\section{LVars}
+\label{sec:lvars}
+
+% Should describe the basic ideas of LVars and also mention that there are
+% problems with the proof and hint of bigger problems.
+
+\section{Reactive Async}
+\label{sec:reactive_async}
+
+% Should describe reactive async. There are multiple issues with this system,
+% e.g. that great care has to be taken in order to make the system
+% deterministic, e.g. make sure that only certain types of operations are
+% allowed in the callbacks.
+
+\section{LaCasa}
+\label{sec:lacasa}
+
+% Describes the basic ideas of lacasa and the idea of using OCAP constraints to % assure determinism
+
+\section{Spores}
+\label{sec:spores}
+
+% Describe the basic ideas of spores: (dis)allow certain types of captures to
+% enforce certain properties
+
+
+
+\chapter{Challenges of Deterministic Concurrency}
+\label{cha:challenges}
+
+% Describe the problem of arbitrary reading data from an object that is
+% concurrently being changed. Describe the idea of threshold reads and how it
+% can be utilized to get determinism.
+
+\chapter{Core Language}
+\label{cha:core_language}
+
+% Introduce the core language with syntax, type system and state properties like
+% WT heap, isolation, well typed state
+
+\chapter{Preservation and Progress}
+\label{cha:preservation_and_progress}
+
+% Write about the basic ideas behind the proof of preservation and progress
+
+\chapter{Proof of Determinism}
+\label{cha:proof_of_determinism}
+
+% Describe:
+% Theorem of determinism
+% Lemmas leading up to the proof of this
+
+\chapter{Discussion \& Conclusion}
+\label{cha:disc_concl}
+
+% Discuss the addition of quiescence in order to actually use the result of the
+% computation. Also discuss the efficiency of our system. In order to make it
+% usable we need to replace the threshold checks with some callback that spawns
+% the required callbacks. This of course is also required to not depend on any
+% shared mutable state.
+% Discuss threshold reads: Could introduce a get stmt. Draw some
+% conclusions of the problematic nature of deterministic concurrency and that
+% great care has to be taken when trying to prove determinism for so called
+% "deterministic-by-design" systems.
+% SHould also
 
 \printbibliography[heading=bibintoc] % Print the bibliography (and make it appear in the table of contents)
 
 \appendix
 
-\chapter{Unnecessary Appended Material}
+\chapter{Full Proofs}
 
 \end{document}
