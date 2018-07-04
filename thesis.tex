@@ -1,11 +1,25 @@
 \documentclass{kththesis}
 
-\usepackage{blindtext} % This is just to get some nonsense text in this template, can be safely removed
-
 \usepackage{csquotes} % Recommended by biblatex
 \usepackage{biblatex}
 \addbibresource{references.bib} % The file containing our references, in BibTeX format
 
+\usepackage{mathtools, graphicx, hyperref, amssymb, algorithm2e}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{bcprules}
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{mathrsfs}
+
+\usepackage{inconsolata}
+
+% Configuration of font and stuff for listings
+\input{listings_settings.tex}
+
+% Definitions of commands
+\input{definitions.tex}
 
 \title{This is the English title}
 \alttitle{Detta är den svenska översättningen av titeln}
@@ -28,7 +42,6 @@
 \begin{abstract}
   English abstract goes here.
 
-  \blindtext
 \end{abstract}
 
 
@@ -49,7 +62,6 @@
 
 % Mainmatter is where the actual contents of the thesis goes
 \mainmatter
-
 
 \chapter{Introduction}
 \label{cha:introduction}
@@ -117,11 +129,7 @@
 % concurrently being changed. Describe the idea of threshold reads and how it
 % can be utilized to get determinism.
 
-\chapter{Core Language}
-\label{cha:core_language}
-
-% Introduce the core language with syntax, type system and state properties like
-% WT heap, isolation, well typed state
+\include{./tex/chapter5}
 
 \chapter{Preservation and Progress}
 \label{cha:preservation_and_progress}

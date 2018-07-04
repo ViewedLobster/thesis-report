@@ -1,0 +1,118 @@
+\chapter{Core Language}
+\label{cha:core_language}
+
+In this chapter a basic core language is introduced. It will build a lot upon
+the core languages of LaCasa and LVish and combine the two. In the end we will
+have a object oriented language incorporating many of the features of LVish with
+a type system enforcing OCAP properties, much like the system of LaCasa.
+
+\section{Syntax}
+\label{sec:syntax}
+
+The language which we shall call Reactive Async Core Language (RACL) has a big
+similarity with CLC from LaCasa. Many expressions are the same except for a few
+removals and additions. The language grammar is defined in
+Figure~\ref{fig:racl_grammar}. It is a simple object oriented language which is
+parameterized on the lattice \LatVals{}.
+
+\begin{figure}
+  \centering
+  $\begin{array}{lll@{\hspace{4mm}}l}
+    p &::= &\overline{cd}~\overline{vd}~t  & \mbox{Program} \\
+    cd &::= &\texttt{class}~C~\texttt{extends}~D~\{\overline{fd}~\overline{md}\}
+    & \mbox{Class} \\
+    vd,fd &::= &\texttt{var}~f~:~\tau & \mbox{Variable/Field} \\
+    md &::= &\texttt{def}~m(x: \sigma):~\tau = t & \mbox{Method}\\
+    &&&\\
+    \sigma,\tau & ::= & & \mbox{Types} \\
+    & & C, D & \mbox{Class types} \\ 
+    &| & \CellType & \mbox{Cell type} \\
+    &| & \NullType & \mbox{Null type} \\
+    &| & \LatType & \mbox{Lattice value type} \\
+    &&&\\
+    t &::=& & \mbox{Terms} \\
+    & & x & \mbox{Variable} \\
+    &|& \texttt{let}~x = e~\texttt{in}~t &\mbox{Let binding} \\
+    &&&\\
+    e &::=& & \mbox{Expression} \\
+    & & l & \mbox{Lattice value} \\
+    &|& \texttt{null} & \mbox{Null reference} \\
+    &|& x &\mbox{Variable} \\
+    &|& x.f &\mbox{Field selection} \\
+    &|& x.f = y & \mbox{Field assignment} \\
+    &|& \texttt{new}~C & \mbox{Class instance creation} \\
+    &|& \texttt{new}~\texttt{Cell} & \mbox{Cell instance creation} \\
+    &|& x.m(y) & \mbox{Method invocation} \\
+    &|& x~\texttt{put}~y & \mbox{Cell value update} \\
+    &|& \texttt{when}~x~\texttt{pass}~y~\texttt{then}~(\overline{cap}, z
+    \Rightarrow t) & \mbox{Dependency creation} \\
+    &&&\\
+    cap & ::= & x = y & \mbox{Variable capture} \\
+  \end{array}$
+  \caption{Grammar of RACL}
+  \label{fig:racl_grammar}
+\end{figure}
+
+We can see a program $p$ consists of a sequence of class definitions
+$\overline{cd}$, a sequence of variable declarations $\overline{vd}$ and a term
+$t$. A class definition $cd$ as would be expected consists of a name specifier
+$C$, inheritance specifier $D$, field declarations $\overline{fd}$ and method
+definitions $\overline{md}$. Variable and field declarations both have the same
+form consisting of a name specifier $f$ and a type $\tau$. Method definitions
+are also standard, with one thing to note that all methods takes exactly one
+input. More complicated inputs can be constructed using a container class.
+
+The type specifiers $\sigma$ and $\tau$ can take on the values as specified.
+Note that we have the special \CellType{} and \LatType{} types which are meant
+to represent the cells of reactive async and values from the used lattice. Types
+will be discussed more in Section~\ref{sec:type_system}.
+
+As with LaCasa the terms of RACL are written in ANF (i.e.\ every expression is
+named). Most of the expressions should be self explanatory, but note for example
+that we have a separate instance creation expression for cells, an expression
+for updating the value of a cell aswell as an expression for creating
+dependencies between cells. The semantics of these will be explained in
+Section~\ref{sec:semantics}.
+
+% TODO note something about the language being parameterized on the lattice
+
+\section{Type System}
+\label{sec:type_system}
+
+The types and type lattice of RACL is summarized in
+Figure~\ref{fig:racl_typelat}. Except for the standard types we see that the
+\CellType{} type is grouped under \AnyRefType{} like the class types. This
+signifies that cell values are stored on the heap. We also have a separate
+lattice value type \LatType{}.
+
+\begin{figure}[]
+  \centering
+  \begin{tikzpicture} 
+    \node (top) at (1,3) {$\top$};
+    \node (anyref) at (2,2) {\AnyRefType};
+    \node (cell) at (1,1) {\CellType};
+    \node (classes) at (3,1) {$C,D$};
+    \node (null) at (2,0) {\NullType};
+    \node (lat) at (-1, 1) {\LatType};
+    \node (bot) at (1, -1) {$\bot$};
+    \draw (top) -- (lat) -- (bot) -- (null) -- (classes) -- (anyref) -- (top);
+    \draw (anyref) -- (cell) -- (null);
+  \end{tikzpicture}
+  \caption{Type lattice of RACL}
+  \label{fig:racl_typelat}
+\end{figure}
+
+
+
+\section{Semantics}
+\label{sec:semantics}
+
+
+\section{Properties}
+\label{sec:properties}
+
+
+% Introduce the core language with syntax, type system and state properties like
+% WT heap, isolation, well typed state
+
+
