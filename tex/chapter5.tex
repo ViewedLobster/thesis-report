@@ -102,6 +102,89 @@ lattice value type \LatType{}.
   \label{fig:racl_typelat}
 \end{figure}
 
+The basic building blocks of our type system are the typing of expressions and
+terms. Our type relation is written
+\begin{equation}
+  \TypeRel{\Gamma}{a}{t}{\tau} \quad \text{ or } \quad
+  \TypeRel{\Gamma}{a}{e}{\tau}. \notag
+\end{equation}
+Apart from the usual parts of typing environment $\Gamma$, term $t$ or
+expression $e$ and type $\tau$ we note that it includes a designator $a$ which
+can take on the values \nocap{} and \ocap{}. The latter indicates that the term
+or expression is typed under OCAP constraints. This is exactly like the type
+system of \LaCasa{}. All typing rules for terms and expressions can be found in
+Figure~\ref{fig:expr_typing}.
+
+\begin{figure}[t]
+  \centering
+  %\begin{multicols}{2}
+    \scrule{T-Let}
+    {\TypeRel{\Gamma}{a}{e}{\tau} \andalso \TypeRel{\Gamma,x:
+    \tau}{a}{t}{\sigma}}
+    {\TypeRel{\Gamma}{a}{ \Let{x}{e}{t} }{\sigma}}
+
+    \vspace{0.5em}
+
+    \scax{T-Null}{\TypeRel{\Gamma}{a}{\NullVal}{\NullType}}
+
+    \vspace{0.5em}
+
+    \scax{T-LVal}{\TypeRel{\Gamma}{a}{l}{\LatType}}
+    
+    \vspace{0.5em}
+
+    \scrule{T-Var}{x \in dom(\Gamma)}{\TypeRel{\Gamma}{a}{x}{\Gamma(x)}}
+
+    \vspace{0.5em}
+
+    \scrule{T-Select}
+    {\TypeRel{\Gamma}{a}{x}{C} \andalso ftype(f, C) = \tau }
+    {\TypeRel{\Gamma}{a}{\FSel{x}{f}}{\tau}}
+    
+    \vspace{0.5em}
+
+    \scrule{T-Assign}
+    {\TypeRel{\Gamma}{a}{x}{C} \andalso ftype(f, C) = \tau \\
+    \TypeRel{\Gamma}{a}{y}{\tau'} \andalso \tau' \stof \tau }
+    {\TypeRel{\Gamma}{a}{\FAss{x}{f}{y}}{\tau}}
+
+    \vspace{0.5em}
+
+    \scrule{T-New}
+    {a = \ocap \Longrightarrow ocap(C)}
+    {\TypeRel{\Gamma}{a}{\New{C}}{C}}
+
+    \vspace{0.5em}
+
+    \scax{T-NewCell}{\TypeRel{\Gamma}{a}{\NewCell}{\CellType}}
+    
+    \vspace{0.5em}
+
+    \scrule{T-Call}
+    {\TypeRel{\Gamma}{a}{x}{C} \andalso mtype(C,m) = \sigma \to \tau \\
+    \TypeRel{\Gamma}{a}{y}{\sigma'} \andalso \sigma' \stof \sigma }
+    {\TypeRel{\Gamma}{a}{\Call{x}{m}{y}}{\tau}}
+    
+    \vspace{0.5em}
+
+    \scrule{T-Put}
+    {\TypeRel{\Gamma}{a}{x}{\CellType} \andalso \TypeRel{\Gamma}{a}{y}{\LatType}}
+    {\TypeRel{\Gamma}{a}{\Put{x}{y}}{\CellType}}
+    
+    \vspace{0.5em}
+
+    \scrule{T-When}
+    {\TypeRel{\Gamma}{a}{x}{\CellType} \andalso \TypeRel{\Gamma}{a}{y}{\LatType} \\
+    \forall \Capt{u}{u'} \in \overline{cap}. \; \TypeRel{\Gamma}{a}{u'}{\CellType}\\
+    \Gamma_{cells} = [u \mapsto \CellType : \Capt{u}{u'} \in \overline{cap}]\\
+    \TypeRel{\Gamma_{cells}, z : \LatType}{\ocap}{t}{\sigma}}
+    { \TypeRel{\Gamma}{a}{\When{x}{y}{ \CB{\overline{cap}}{z}{t}}}{\CellType} }
+  %\end{multicols}
+  \caption{\RACL{} typing rules for expressions and terms.}
+  \label{fig:expr_typing}
+\end{figure}
+
+
 
 \section{Semantics}
 \label{sec:semantics}
