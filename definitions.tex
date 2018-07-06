@@ -11,6 +11,7 @@
 \newcommand{\scrule}[3]{\infrule[\textsc{#1}]{#2}{#3}}
 \newcommand{\scax}[2]{\infax[\textsc{#1}]{#2}}
 \newcommand{\stof}{<:}
+\newcommand{\lub}{\sqcup}
 
 \newcommand{\LatType}{\mbox{$\mathcal{L}$}}
 \newcommand{\AnyRefType}{\mbox{$\mathsf{AnyRef}$}}
@@ -21,9 +22,9 @@
 
 % Commands for writing language syntax
 
-\newcommand{\ClassDef}[4]{\mbox{\texttt{class}~#1~\texttt{extends}~#2~\texttt{\{}}#3~#4\texttt{\}}}
-\newcommand{\VarDecl}[2]{\mbox{\texttt{var}~#1~\texttt{:}~#2}}
-\newcommand{\MethodDef}[5]{\mbox{\texttt{def}~#1\texttt{(}#2~\texttt{:}~#3\texttt{)}~\texttt{:}~#4~\texttt{=}~#5}}
+\newcommand{\ClassDef}[4]{\mbox{\texttt{class}~$#1$~\texttt{extends}~$#2$~\texttt{\{}$#3$~$#4$\texttt{\}}}}
+\newcommand{\VarDecl}[2]{\mbox{\texttt{var}~$#1$~\texttt{:}~$#2$}}
+\newcommand{\MethodDef}[5]{\mbox{\texttt{def}~$#1$\texttt{(}$#2$~\texttt{:}~$#3$\texttt{)}~\texttt{:}~$#4$~\texttt{=}~$#5$}}
 \newcommand{\Let}[3]{\mbox{\texttt{let}~$#1$~\texttt{=}~$#2$~\texttt{in}~$#3$}}
 \newcommand{\NullVal}{\mbox{\texttt{null}}}
 \newcommand{\FSel}[2]{\mbox{$#1$\texttt{.}$#2$}}
@@ -35,12 +36,13 @@
 \newcommand{\When}[3]{\mbox{\texttt{when}~$#1$~\texttt{pass}~$#2$~\texttt{then}~$#3$}}
 \newcommand{\Capt}[2]{\mbox{$#1$~\texttt{=}~$#2$}}
 \newcommand{\CB}[3]{\mbox{($#1$, $#2$~$\Rightarrow$~$#3$)}}
+\newcommand{\This}{\mbox{\texttt{this}}}
 
 
 % Typing relation
 \newcommand{\TypeRel}[4]{\mbox{$#1;#2\vdash#3:#4$}}
 
-
+\newcommand{\RuleSpace}{\vspace{0.5em}}
 
 
 \newcommand{\nocap}{\mbox{$\epsilon$}}
@@ -48,3 +50,16 @@
 
 \newcommand{\LaCasa}{\mbox{LaCasa}}
 \newcommand{\RACL}{\mbox{RACL}}
+
+% Reduction relations
+\newcommand{\FRedTo}{\mbox{$\rightarrow$}}
+\newcommand{\FSRedTo}{\mbox{~$\twoheadrightarrow$~}}
+\newcommand{\ProcsRedTo}{\mbox{~$\Rrightarrow$~}}
+
+\newcommand{\Frame}[3]{\mbox{$\langle #1, #2 \rangle^{#3}$}}
+\newcommand{\sFrame}[2]{\Frame{#1}{#2}{s}}
+
+%\newcommand{\Obj}[2]{\mbox{$\langle #1, #2 \rangle$}}
+\newcommand{\Obj}[1]{\mbox{$\langle #1 \rangle$}}
+\newcommand{\Cell}[1]{\mbox{$\langle \CellType{}, #1 \rangle$}}
+\newcommand{\Error}{\mbox{{\bf error}}}

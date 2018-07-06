@@ -179,16 +179,211 @@ Figure~\ref{fig:expr_typing}.
     \Gamma_{cells} = [u \mapsto \CellType : \Capt{u}{u'} \in \overline{cap}]\\
     \TypeRel{\Gamma_{cells}, z : \LatType}{\ocap}{t}{\sigma}}
     { \TypeRel{\Gamma}{a}{\When{x}{y}{ \CB{\overline{cap}}{z}{t}}}{\CellType} }
+
+    
+    \RuleSpace{}
+
+    \scrule{T-SubT}
+    {\TypeRel{\Gamma}{a}{e}{\sigma'} \andalso \sigma' \stof \sigma}
+    {\TypeRel{\Gamma}{a}{e}{\sigma}}
   %\end{multicols}
   \caption{\RACL{} typing rules for expressions and terms.}
   \label{fig:expr_typing}
 \end{figure}
 
+\begin{figure}
+  \scrule{WF-Prog}
+  {p \vdash \overline{cd} \andalso p \vdash \Gamma_0 \andalso
+  \TypeRel{\Gamma_0}{\nocap}{t}{\tau}}
+  {p \vdash \overline{cd} \: \overline{vd} \: t}
+
+  \RuleSpace{}
+
+  \scrule{WF-Class}
+  {C \vdash \overline{md} \\ D = \AnyRefType{} \lor
+  p \vdash \ClassDef{D}{...}{...}{...} \\
+  \forall (\MethodDef{m}{...}{...}{...}{...}) \in \overline{md} . \: override(m,
+  C, D) \\
+  \forall (\VarDecl{f}{\tau}) \in \overline{vd} . \: f \notin fields(D) }
+  {p \vdash \ClassDef{C}{D}{\overline{vd}}{\overline{md}}}
+
+  \RuleSpace{}
+
+  \scrule{WF-Override}
+  {mtype(m, D)\text{ not def. } \lor mtype(m, C) = mtype(m, D)}
+  {override(m, C, D)}
+  
+  \RuleSpace{}
+
+  \scrule{WF-Method}
+  { \TypeRel{\Gamma_0, \This:C, x : \sigma}{\nocap}{t}{\tau'} \\
+  \tau' \stof \tau}
+  {C \vdash \MethodDef{m}{x}{\sigma}{\tau}{t}}
+  \caption{\RACL{} rules for well formedness of programs.}
+  \label{fig:wf_typing}
+\end{figure}
+
+
+\begin{figure}
+  \scax{OCAP-AnyRef}
+  {\ocap{(\AnyRefType{})}}
+
+  \RuleSpace{}
+
+  \scrule{OCAP-Class}
+  {\ocap{(D)} \andalso C \vdash_{\ocap} \overline{md} \\
+  \forall (\VarDecl{f}{\sigma}) \in \overline{vd}. \: ocap(\sigma)}
+  {\ocap{(C)}}
+
+  \RuleSpace{}
+
+  \scrule{OCAP-Method}
+  {\TypeRel{\This : C, x : \sigma}{\ocap}{t}{\tau'} \\
+  \tau' \stof \tau}
+  {C \vdash_{\ocap} \MethodDef{m}{x}{\sigma}{\tau}{t}}
+  \caption{\RACL{} OCAP rules.}
+  \label{fig:ocap_typing}
+\end{figure}
 
 
 \section{Semantics}
 \label{sec:semantics}
 
+\begin{figure}
+  \scax{E-Null}
+  {H, \sFrame{L}{\Let{x}{\NullVal}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
+  \NullVal]}{t}}
+
+  \RuleSpace{}
+
+  \scax{E-LVal}
+  {H, \sFrame{L}{\Let{x}{l}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
+  l]}{t}}
+
+  \RuleSpace{}
+
+  \scax{E-Var}
+  {H, \sFrame{L}{\Let{x}{y}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
+  L(y)]}{t}}
+
+  \RuleSpace{}
+
+  \scrule{E-Select}
+  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in dom(FM)}
+  {H, \sFrame{L}{\Let{x}{ \FSel{y}{f} }{t}} \; \FRedTo  \\ 
+  H, \sFrame{L[x \mapsto FM(f)]}{t}}
+
+  \RuleSpace{}
+
+  \scrule{E-Assign}
+  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in dom(FM) \\
+  FM' = FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, FM'}]}
+  {H, \sFrame{L}{\Let{x}{\FAss{y}{f}{z}}{t}} \; \FRedTo \\
+   H', \sFrame{L[x \mapsto L(z)]}{t}}
+
+  \RuleSpace{}
+
+  \scrule{E-New}
+  {o\text{ fresh} \\
+  FM = [f \mapsto bot(\sigma): (\VarDecl{f}{\sigma}) \in fields(C)] \\
+  H' = H[o \mapsto \Obj{C, FM}]}
+  {H, \sFrame{L}{ \Let{x}{\New{C}}{t} } \; \FRedTo \\
+  H', \sFrame{L[x \mapsto o]}{t}}
+  
+  \RuleSpace{}
+
+  \scrule{E-New}
+  {o\text{ fresh} \andalso
+  H' = H[o \mapsto \Cell{\emptyset, \bot_{\LatVals{}}}]}
+  {H, \sFrame{L}{ \Let{x}{\NewCell}{t} } \; \FRedTo \\
+  H', \sFrame{L[x \mapsto o]}{t}}
+
+  \RuleSpace{}
+  
+  \scrule{E-Put}
+  {L(y) = o \andalso H(o) = \Cell{DEP, l} \\
+  L(z) = l' \andalso c' = \Cell{DEP, l \sqcup l'} \\
+  H' = H[o \mapsto c']}
+  {H, \sFrame{L}{\Let{x}{\Put{y}{z}}{t}} \; \FRedTo \\
+  H', \sFrame{L[x \mapsto L(y)]}{t}}
+
+  \RuleSpace{}
+
+  \scrule{E-When}
+  {L(x) = o \andalso H(o) = \Cell{DEP, l} \andalso L(y) = l' \\
+  L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}] \\
+  cb = (L_{\text{env}}, z \Rightarrow t') \andalso DEP' = DEP \cup_+ (l', cb) \\
+  H' = H[o \mapsto \Cell{DEP', l}] }
+  { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, z \Rightarrow t') }}{t} } \\ \FRedTo \;
+  H', \sFrame{L[x \mapsto L(y)]}{t} }
+  \caption{\RACL{} single frame reduction rules.}
+  \label{fig:frame_red_rulesj}
+\end{figure}
+
+\begin{figure}
+  % TODO add these rules (null pointer exception rules)
+  \scrule{E-NullSelect}
+  {L(y) = \NullVal}
+  {H, \sFrame{L, \Let{x}{\FSel{y}{f}}{t} } \; \FRedTo \; \Error}
+
+  \RuleSpace{}
+
+  \scrule{E-NullAssign}
+  {L(y) = \NullVal}
+  {H, \sFrame{L, \Let{x}{\FAss{y}{f}{z}}{t} } \; \FRedTo \; \Error}
+
+  \RuleSpace{}
+
+  \scrule{E-NullCall}
+  {L(y) = \NullVal}
+  {H, \sFrame{L, \Let{x}{\Call{y}{m}{z}}{t} } \; \FRedTo \; \Error}
+
+  \RuleSpace{}
+
+  \scrule{E-NullWhen}
+  {L(y) = \NullVal}
+  {H, \sFrame{L}{\Let{x}{  \When{y}{z}{ (\overline{cap}, w \Rightarrow t')}}{t}
+  }  \\ \FRedTo \; \Error}
+  \caption{\RACL{} error spawning rules.}
+  \label{fig:error_red_rules}
+\end{figure}
+
+\begin{figure}
+  \scrule{E-Call}
+  {
+    L(y) = o \andalso H(o) = \Obj{C, FM} \\
+    methodBody(m, C) = w \to t' \\
+    L_{\text{base}} =
+    \begin{cases}
+      \emptyset & \text{if } a = \ocap \\
+      L_0 & \text{if } a = \nocap
+    \end{cases} \\
+    L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(y)] 
+  }
+  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^\alpha \; \FSRedTo \\
+  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^\alpha }
+
+  \RuleSpace{}
+
+  \scax{E-Ret}
+  {H, \Frame{L'}{x}{y} \circ \sFrame{L, t} \circ FS |_a^\alpha \; \FSRedTo \\
+  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^\alpha }
+
+  \RuleSpace{}
+
+  \scrule{E-FProp}
+  {H, F \; \FRedTo \; H', F'}
+  {H, F \circ FS |_a^\alpha \; \FSRedTo \; H', F' \circ FS |_a^\alpha }
+
+  \RuleSpace{}
+  
+  \scrule{E-ErrorFS}
+  {H, F \; \FRedTo \; \Error }
+  {H, F \circ FS |_a^\alpha \; \FSRedTo \; \Error}
+
+  \caption{\RACL{} frame stack reduction rules.}
+  \label{fig:fs_red_rules}
+\end{figure}
 
 \section{Properties}
 \label{sec:properties}
