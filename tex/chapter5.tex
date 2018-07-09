@@ -311,8 +311,9 @@ Figure~\ref{fig:expr_typing}.
 
   \scrule{E-When}
   {L(x) = o \andalso H(o) = \Cell{DEP, l} \andalso L(y) = l' \\
-  L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}] \\
-  cb = (L_{\text{env}}, z \Rightarrow t') \andalso DEP' = DEP \cup_+ (l', cb) \\
+  L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
+  \andalso cb = (L_{\text{env}}, z \Rightarrow t') \\
+  d\text{ fresh thread id } \andalso DEP' = DEP \cup (l', cb)^d \\
   H' = H[o \mapsto \Cell{DEP', l}] }
   { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, z \Rightarrow t') }}{t} } \\ \FRedTo \;
   H', \sFrame{L[x \mapsto L(y)]}{t} }
@@ -385,8 +386,248 @@ Figure~\ref{fig:expr_typing}.
   \label{fig:fs_red_rules}
 \end{figure}
 
+\begin{figure}
+  \scrule{E-Spawn}
+  {
+    o \in dom(H) \andalso H(o) = \Cell{DEP, l} \\ 
+    l' \sqsubseteq l \andalso (l', cb)^d \in DEP \andalso cb = (L_{\text{env}}, z
+    \Rightarrow t) \\
+    L = L_{\text{env}}[z \mapsto l'] \\
+    H' = H[o \mapsto \Cell{DEP - (l', cb), l}]
+  }
+  {
+    H,P \Rrightarrow H', P \cup \left\{ \Frame{L}{t}{-} \circ \varepsilon
+    |_{\ocap}^{d} \right\}
+  }
+
+  \RuleSpace{}
+
+  \scrule{E-Term}
+  {P = P' \cup_d \left\{ \sFrame{L}{x} \circ \varepsilon |_a^d \right\} }
+  {H,P \Rrightarrow H, P'}
+
+  \RuleSpace{}
+
+  \scrule{E-FSProp}
+  {H, FS \twoheadrightarrow H', FS'}
+  {H, P \cup_d \left\{ FS \right\} \Rrightarrow H', P \cup \left\{ FS' \right\} }
+
+  \RuleSpace{}
+
+  \scrule{E-ErrorP}
+  {H, FS \twoheadrightarrow \Error}
+  {H, P \cup_d \left\{ FS \right\} \Rrightarrow \Error }
+  \caption{\RACL{} thread set reduction rules.}
+  \label{fig:threads_red_rules}
+\end{figure}
+
 \section{Properties}
 \label{sec:properties}
+
+\begin{def:dyn_type}
+  The function typeOf is defined as follows:
+
+  \begin{equation}
+    \typeOf{(k, H)} =
+    \begin{cases}
+      \LatType, &\text{ if }k \in \LatVals \\
+      \NullType, &\text{ if }k = \NullVal \\
+      \CellType, &\text{ if }k \in \dom{(H)}\text{ and } H(k) = \Cell{...} \\
+      C, &\text{ if }k \in \dom{(H)}\text{ and } H(k) = \Obj{C, ...} \\
+      \ErrType, &\text{ otherwise.}
+    \end{cases}
+  \end{equation}
+\end{def:dyn_type}
+
+
+\begin{def:well_typed_heap}
+  A heap $H$ is well typed, written $\vdash{H}$, if
+  $\forall o \in \dom{(H)}$:
+
+  If $H(o) = \Obj{C, FM}$ then
+  \begin{align}
+    \label{eq:class_ok}
+    \forall f &\in \fields{(C)}. \notag\\ 
+    &f \in \dom{(FM)} \: \land \notag\\ &\typeOf{(FM(f), H)} \stof \ftype{(f, C)}
+  \end{align}
+  and if $H(o) = \Cell{DEP, l}$ then
+  \begin{align}
+    \label{eq:cell_ok}
+    \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^d \in DEP. \notag\\
+    &\forall (x \mapsto k) \in L_{\text{env}}.\: \typeOf{(k, H)} \stof
+    \CellType \: \land \notag\\
+    &\TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), z:
+    \LatType}{\ocap}{t}{\gamma} 
+  \end{align}
+\end{def:well_typed_heap}
+
+
+\begin{def:csep}
+  For any heap $H$ and heap references $o, o'$ we have class object separation,
+  $\csep{(H, o, o')}$ iff
+  \begin{align}
+    \label{eq:csep_def}
+    \forall q, q' &\in \dom{(H)}. \notag\\
+    & \reach{(H, o, q)} \: \land \: \reach{(H, o', q')} \implies \notag\\ 
+    &q \neq q' \: \lor \typeOf{(q, H)} = \CellType
+  \end{align}
+\end{def:csep}
+
+\begin{def:ocapreach}
+  For a heap $H$ and local environment $L$ we have $\ocr{(L,H)}$ iff
+  \begin{align}
+    \label{eq:ocr_def}
+    \forall (x &\mapsto k) \in L, o \in \dom(H). \notag\\
+    &\reach{(H, k)} \implies \ocap{(\typeOf{(o, H)})}
+  \end{align}
+\end{def:ocapreach}
+
+\begin{figure}
+  \scrule{WF-LocalVar}
+  {\typeOf{(L(x), H) \stof \Gamma{(x)}}}
+  { H \vdash \Gamma; L; x }
+
+  \RuleSpace{}
+
+  \scrule{WF-LocalEnv}
+  {\dom{(\Gamma)} \subseteq \dom{(L)} \\
+    \forall x \in \dom{(\Gamma)}. \: H \vdash \Gamma; L; x 
+  }
+  { H \vdash \Gamma; L }
+
+  \caption{Rules for classifying local environments $L$ as well typed.}
+  \label{fig:local_typing}
+\end{figure}
+
+\begin{figure}
+  \scax{T-FSEmpty}
+  {H; a \vdash^{x : \sigma} \varepsilon}
+
+  \RuleSpace{}
+
+  \scrule{T-FS1}
+  { F = \Frame{L}{t}{x} \andalso H \vdash \Gamma; L \\
+  \TypeRel{\Gamma}{a}{t}{\sigma} \andalso H; a \vdash^{x: \sigma} FS }
+  { H; a \vdash F \circ FS }
+  
+  \RuleSpace{}
+
+  \scrule{T-FS2}
+  { F = \Frame{L}{t}{y} \andalso H \vdash \Gamma; L \\
+  \TypeRel{\Gamma, x: \sigma}{a}{t}{\tau} \andalso H; a \vdash^{y: \tau} FS }
+  { H; a \vdash^{x: \sigma} F \circ FS }
+
+  \caption{Rules for typing frame stacks under some heap $H$ and effect $a$.}
+  \label{fig:fs_typing}
+\end{figure}
+
+\begin{figure}
+  \scax{T-Empty}
+  {H \vdash \emptyset}
+
+  \RuleSpace{}
+
+  \scrule{T-ThreadSet}
+  { H; a \vdash FS \andalso H \vdash P }
+  { H \vdash P \cup \left\{FS |_a^d \right\} }
+
+  \RuleSpace{}
+
+  \scax{T-Error}
+  {H \vdash \Error{} }
+  \caption{Rules for typing thread sets and the special value \Error{} under some heap $H$.}
+  \label{fig:ts_typing}
+\end{figure}
+
+\begin{figure}
+  \scrule{ISO-FS}
+  { 
+    \forall o, o' \in \dom{(H)} . \\
+    \accRoot{(o, FS)} \land \accRoot{(o', GS)} \implies \csep{(H, o, o')}
+  }
+  {
+    \isolated{(H, FS, GS)}
+  }
+  
+  \RuleSpace{}
+
+  \scrule{ISO-Threads}
+  {
+    \forall FS|_a^d, GS_b^e \in P \text{ where } FS|_a^d \neq GS|_b^e . \\
+    a = \ocap \: \lor \: b = \ocap \implies \isolated{(H, FS, GS)}
+  }
+  {
+    \isolation{(H, P)}
+  }
+  \caption{Definition of isolation}
+  \label{fig:def_isolation}
+\end{figure}
+
+\begin{figure}
+  \scrule{Reach1}
+  {o \in \dom{(H)}}
+  {\reach{(H, o, o)}}
+
+  \RuleSpace{}
+
+  \scrule{Reach2}
+  {
+    o \in \dom{(H)} \andalso H(o) = \Obj{C, FM} \\
+    o'' \in \image{(FM)} \andalso \reach{(H, o'', o')}
+  }
+  { \reach{(H, o, o')} }
+  \caption{Definition of reach}
+  \label{fig:def_reach}
+\end{figure}
+
+\begin{figure}
+  \scrule{AR-F}
+  { (x \mapsto o) \in L }
+  { \accRoot{(o, \sFrame{L}{t})} }
+
+  \RuleSpace{}
+
+  \scrule{AR-FS}
+  { \accRoot{(o, F)} \: \lor \: \accRoot{(o, FS)} }
+  { \accRoot{(o, F \circ FS)} }
+
+  \caption{Definition of accRoot}
+  \label{fig:def_accroot}
+\end{figure}
+
+\begin{figure}
+  \scax{OCR-Empty}
+  {H; a \vdash \varepsilon \: \ocr }
+
+  \RuleSpace{}
+
+  \scrule{OCR-FS}
+  { H; a \vdash F \: \ocr \andalso H; a \vdash FS \: \ocr }
+  { H; a \vdash F \circ FS \: \ocr }
+
+  \RuleSpace{}
+
+  \scrule{OCR-F}
+  { a = \ocap \implies \ocr(L, H) }
+  { H; a \vdash \sFrame{L}{t} \: \ocr }
+
+  \RuleSpace{}
+
+  \scax{OCR-PEmpty}
+  {H \vdash \emptyset \: \ocr}
+
+  \RuleSpace{}
+
+  \scrule{OCR-P}
+  {H \vdash P \: \ocr \andalso H; a \vdash FS \: \ocr}
+  {H \vdash P \cup \left\{ FS|_a^d \right\}}
+
+  \caption{Definition of OCAP reachability}
+  \label{fig:def_ocapreach}
+\end{figure}
+
+
+% TODO include the \Gamma_{\CellType} definition somewhere
 
 
 % Introduce the core language with syntax, type system and state properties like
