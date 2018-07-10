@@ -1,0 +1,21 @@
+\chapter{Preservation and Progress}
+\label{cha:preservation_and_progress}
+
+% Write about the basic ideas behind the proof of preservation and progress
+
+\begin{theorem}{(Preservation)}
+  \label{thm:preservation}
+  Let $S, S'$ be states such that $\vdash S \tsep \stateok$ and $S \Rrightarrow
+  S'$. Then $\vdash S' \tsep \stateok$.
+\end{theorem}
+
+\begin{theorem}{(Progress)}
+  \label{thm:progress}
+  Let $S$ be a state such that $\vdash S \tsep \stateok$. Then either 
+  \begin{enumerate}
+    \item $\exists S'$ s.t. $S \Rrightarrow S'$, 
+    \item $S = H, \emptyset$ for some heap $H$ s.t. $\noSpawn{(H)}$ or
+    \item $S = \Error$.
+  \end{enumerate}
+\end{theorem}
+

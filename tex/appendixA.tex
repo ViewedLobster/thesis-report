@@ -1,0 +1,118 @@
+\chapter{Proof of Preservation and Progress}
+\label{proof_of_pnp}
+
+\begin{definition}{(Heap Induced Graph)}
+  The induced graph of heap $H$, written $\Graph{(H)}$ is the directed graph
+  $(V, E)$ such that $V = \dom{(H)}$ and 
+  \begin{equation}
+    E = \left\{ (o, o')_f \in \dom{(H)}^2 \times \FieldNames: 
+      H(o) = \Obj{C, FM} \text{ and } FM(f) = o'
+    \right\}
+  \end{equation}
+\end{definition}
+
+\begin{definition}{(Graph Reachability)}
+  We say an object $o'$ is reachable from $o$ in graph $G = (V,
+  E)$, $\reach{(G, o, o')}$ if there is a finite sequence $o_0, \dots,
+  o_n \in V$ such that $o = o_0, o_n = o'$ and
+  \begin{equation}
+    \forall i = 1,\dots, n-1. \: \exists f \in \FieldNames \text{ s.t. } (o_i,
+    o_{i+1})_f \in E.
+  \end{equation}
+  The sequence $o_0, \dots, o_n$ is called a \emph{path}.
+\end{definition}
+
+\begin{definition}
+  Given a graph $G = (V, E)$ and a set $O \subseteq V$, we define
+  \begin{equation}
+    \reachable{(O, G)} = \left\{ q \in V: \exists o\in O.\: \reach{(G, o, q)}
+    \right\} \notag
+  \end{equation}
+\end{definition}
+
+\begin{proposition}{(Reachability equivalence)}
+  \label{prop:reacheq}
+  For a heap $H$ 
+  \begin{equation}
+    \reach{(H, o, o')} \iff \reach{(\Graph{(H)}, o, o')}
+  \end{equation}
+\end{proposition}
+
+\begin{proof}
+  Both directions of implication are simple to prove.
+  \begin{description}
+    \item[Case $\implies$:] By induction on the shape of derivation tree.
+    \item[Case $\impliedby$:] By induction on the path length in graph
+      $\Graph{(H)}$.
+  \end{description}
+\end{proof}
+
+% TODO change definition of ocrloc
+\begin{proposition} For any heap $H$ and frame stack $FS$ we have
+  \begin{flalign*}
+    &\ocrloc{(FS, H)} &\\
+    &\iff &\\
+    &\begin{aligned}
+    \forall o, q &\in \dom{(H)}. \\
+    & \accRoot{(o, FS, H)} \land \reach{(H, o, q)} \implies \\
+    & \ocap{(\typeOf{(o, H)})} 
+    \end{aligned}&\\
+    &\iff &\\
+    &\begin{aligned}
+    \forall q &\in \reachable{{(\accRoots{(FS,H)}, \Graph{(H)})}}. \notag\\
+    & \ocap{(\typeOf{(q, H)})}
+    \end{aligned}&
+  \end{flalign*}
+\end{proposition}
+
+% TODO should I elaborate?
+\begin{proof}
+  Follows from definition of $\accRoot$, $\accRoots$ and $\reachable$.
+\end{proof}
+
+\begin{proposition} For any heap $H$ and object references $o, o'$ we have
+  \begin{flalign*}
+    &\csep{(H, o, o')} \iff &\\
+    & \begin{aligned}
+        \forall q \in \: &\reachable{(\{o\}, \Graph{(H)})} \cap \reachable{(\{o'\},
+        \Graph{(H)})}. \\
+        & \typeOf{(q, H)} \stof \CellType
+    \end{aligned}&
+  \end{flalign*}
+\end{proposition}
+
+% TODO proof 
+
+\begin{proposition} For any heap $H$ and frame stacks $FS, HS$ we have
+  \begin{flalign*}
+    &\isolated{(H, FS, HS)}  \iff &\\
+    &\begin{aligned}
+        \forall q \in \:&\reachable{(\accRoots{(FS, H)}, \Graph{(H)})} \cap \\
+        & \reachable{(\accRoots{(HS, H)}, \Graph{(H)})}. \\
+        & \typeOf{(q, H)} \stof \CellType
+    \end{aligned}&
+  \end{flalign*}
+\end{proposition}
+
+% TODO proof
+
+\begin{proposition}
+  Let $H, H'$ be heaps and $P, P'$ thread sets such that
+  \begin{enumerate}
+    \item $P = Q \cup_D \left\{ FS_a^d \right\}$, $\isolation{(H, P)}$ and $P'
+      = Q \cup_D \left\{ FS'|_a^d \right\}$
+    \item $\Graph{(H)} = \Graph{(H')}$
+    \item $\forall HS|_b^e. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
+    \item $\accRoots{(FS', H')} \subseteq \accRoots{(FS, H)}$
+    \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
+  \end{enumerate}
+  Then $\isolation{(H', P')}$.
+\end{proposition}
+
+\begin{remark}
+  Note that $\Graph{(H)} = \Graph{(H')}$ implies $\dom{(H)} = \dom{(H')}$.
+  Otherwise many of the preconditions above would not make sense.
+\end{remark}
+
+
+

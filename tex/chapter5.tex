@@ -424,7 +424,7 @@ Figure~\ref{fig:expr_typing}.
 \section{Properties}
 \label{sec:properties}
 
-\begin{def:dyn_type}
+\begin{definition}
   The function typeOf is defined as follows:
 
   \begin{equation}
@@ -437,10 +437,10 @@ Figure~\ref{fig:expr_typing}.
       \ErrType, &\text{ otherwise.}
     \end{cases}
   \end{equation}
-\end{def:dyn_type}
+\end{definition}
 
 
-\begin{def:well_typed_heap}
+\begin{definition}{(Well typed heap)}
   A heap $H$ is well typed, written $\vdash{H}$, if
   $\forall o \in \dom{(H)}$:
 
@@ -459,10 +459,10 @@ Figure~\ref{fig:expr_typing}.
     &\TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), z:
     \LatType}{\ocap}{t}{\gamma} 
   \end{align}
-\end{def:well_typed_heap}
+\end{definition}
 
 
-\begin{def:csep}
+\begin{definition}{(Class Object Separation)}
   For any heap $H$ and heap references $o, o'$ we have class object separation,
   $\csep{(H, o, o')}$ iff
   \begin{align}
@@ -471,39 +471,39 @@ Figure~\ref{fig:expr_typing}.
     & \reach{(H, o, q)} \: \land \: \reach{(H, o', q')} \implies \notag\\ 
     &q \neq q' \: \lor \typeOf{(q, H)} = \CellType
   \end{align}
-\end{def:csep}
+\end{definition}
 
-\begin{def:ocapreach}
+\begin{definition}{(OCAP reachability)}
   For a heap $H$ and local environment $L$ we have $\ocrloc{(L,H)}$ iff
   \begin{align}
     \label{eq:ocr_def}
     \forall (x &\mapsto k) \in L, o \in \dom(H). \notag\\
     &\reach{(H, k, o)} \implies \ocap{(\typeOf{(o, H)})}
   \end{align}
-\end{def:ocapreach}
+\end{definition}
 
-\begin{def:accroots}
+\begin{definition}{(Accessible Roots)}
   For a heap $H$ and a frame stack $FS$ we define $\accRoots{(FS, H)}$ as
 
   \begin{equation}
     \accRoots{(FS, H)} = \left\{ o \in \dom{(H)}: \accRoot{(o, FS)} \right\}
   \end{equation}
-\end{def:accroots}
+\end{definition}
 
-\begin{def:state}
+\begin{definition}{(Well Typed States)}
   A state $S$ is a value of either $\Error$ or a pair $H, P$ where $H$ is a heap
-  and $P$ is a set of threads. For a state $S$ we have the relation
+  and $P$ is a set of threads. For a state $S$ we say that it is well typed,
+  written
   \begin{equation}
-    \vdash S \tsep \stateok.
+    \vdash S \tsep \stateok
   \end{equation}
-
-  $\vdash S \tsep \stateok$ if $S = \Error$ or $S = H, P$ and
+  if $S = \Error$ or $S = H, P$ and
   \begin{align}
     H \vdash P \andalso H \vdash P \tsep \ocr \andalso \isolation{(H, P)}
     \andalso H \vdash P \tsep \gsep
   \end{align}
   
-\end{def:state}
+\end{definition}
 
 \begin{figure}
   \scrule{WF-LocalVar}
