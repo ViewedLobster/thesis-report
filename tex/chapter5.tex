@@ -474,13 +474,36 @@ Figure~\ref{fig:expr_typing}.
 \end{def:csep}
 
 \begin{def:ocapreach}
-  For a heap $H$ and local environment $L$ we have $\ocr{(L,H)}$ iff
+  For a heap $H$ and local environment $L$ we have $\ocrloc{(L,H)}$ iff
   \begin{align}
     \label{eq:ocr_def}
     \forall (x &\mapsto k) \in L, o \in \dom(H). \notag\\
-    &\reach{(H, k)} \implies \ocap{(\typeOf{(o, H)})}
+    &\reach{(H, k, o)} \implies \ocap{(\typeOf{(o, H)})}
   \end{align}
 \end{def:ocapreach}
+
+\begin{def:accroots}
+  For a heap $H$ and a frame stack $FS$ we define $\accRoots{(FS, H)}$ as
+
+  \begin{equation}
+    \accRoots{(FS, H)} = \left\{ o \in \dom{(H)}: \accRoot{(o, FS)} \right\}
+  \end{equation}
+\end{def:accroots}
+
+\begin{def:state}
+  A state $S$ is a value of either $\Error$ or a pair $H, P$ where $H$ is a heap
+  and $P$ is a set of threads. For a state $S$ we have the relation
+  \begin{equation}
+    \vdash S \tsep \stateok.
+  \end{equation}
+
+  $\vdash S \tsep \stateok$ if $S = \Error$ or $S = H, P$ and
+  \begin{align}
+    H \vdash P \andalso H \vdash P \tsep \ocr \andalso \isolation{(H, P)}
+    \andalso H \vdash P \tsep \gsep
+  \end{align}
+  
+\end{def:state}
 
 \begin{figure}
   \scrule{WF-LocalVar}
@@ -531,10 +554,6 @@ Figure~\ref{fig:expr_typing}.
   { H; a \vdash FS \andalso H \vdash P }
   { H \vdash P \cup \left\{FS |_a^d \right\} }
 
-  \RuleSpace{}
-
-  \scax{T-Error}
-  {H \vdash \Error{} }
   \caption{Rules for typing thread sets and the special value \Error{} under some heap $H$.}
   \label{fig:ts_typing}
 \end{figure}
@@ -591,41 +610,58 @@ Figure~\ref{fig:expr_typing}.
   { \accRoot{(o, F)} \: \lor \: \accRoot{(o, FS)} }
   { \accRoot{(o, F \circ FS)} }
 
+  \RuleSpace{}
+
+
   \caption{Definition of accRoot}
   \label{fig:def_accroot}
 \end{figure}
 
 \begin{figure}
-  \scax{OCR-Empty}
-  {H; a \vdash \varepsilon \: \ocr }
+  \scax{OCR-EmptyFS}
+  {H; a \vdash \varepsilon \tsep \ocr }
 
   \RuleSpace{}
 
   \scrule{OCR-FS}
-  { H; a \vdash F \: \ocr \andalso H; a \vdash FS \: \ocr }
-  { H; a \vdash F \circ FS \: \ocr }
+  { H; a \vdash F \tsep \ocr \andalso H; a \vdash FS \tsep \ocr }
+  { H; a \vdash F \circ FS \tsep \ocr }
 
   \RuleSpace{}
 
   \scrule{OCR-F}
-  { a = \ocap \implies \ocr(L, H) }
-  { H; a \vdash \sFrame{L}{t} \: \ocr }
+  { a = \ocap \implies \ocrloc(L, H) }
+  { H; a \vdash \sFrame{L}{t} \tsep \ocr }
 
   \RuleSpace{}
 
   \scax{OCR-PEmpty}
-  {H \vdash \emptyset \: \ocr}
+  {H \vdash \emptyset \tsep \ocr}
 
   \RuleSpace{}
 
   \scrule{OCR-P}
-  {H \vdash P \: \ocr \andalso H; a \vdash FS \: \ocr}
-  {H \vdash P \cup \left\{ FS|_a^d \right\}}
+  {H \vdash P \tsep \ocr \andalso H; a \vdash FS \tsep \ocr}
+  {H \vdash P \cup \left\{ FS|_a^d \right\} \tsep \ocr}
 
   \caption{Definition of OCAP reachability}
   \label{fig:def_ocapreach}
 \end{figure}
 
+\begin{figure}
+  \scrule{GSep-FS}
+  {a = \ocap \implies \forall o \in \accRoots{(FS, H)}. \: \csep{(H, o, o_g)} }
+  {H;a \vdash FS \tsep \gsep}
+
+  \RuleSpace{}
+
+  \scrule{GSep-Threads}
+  {\forall FS|_a^d \in P. \: H;a \vdash FS \tsep \gsep}
+  {H \vdash P \tsep \gsep}
+
+  \caption{Definition of global separation}
+  \label{fig:def_gsep}
+\end{figure}
 
 % TODO include the \Gamma_{\CellType} definition somewhere
 
