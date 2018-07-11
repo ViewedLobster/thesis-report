@@ -102,7 +102,7 @@
     \item $P = Q \cup_D \left\{ FS_a^d \right\}$, $\isolation{(H, P)}$ and $P'
       = Q \cup_D \left\{ FS'|_a^d \right\}$
     \item $\Graph{(H)} = \Graph{(H')}$
-    \item $\forall HS|_b^e. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
+    \item $\forall HS|_b^e \in P. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
     \item $\accRoots{(FS', H')} \subseteq \accRoots{(FS, H)}$
     \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
   \end{enumerate}
@@ -114,5 +114,106 @@
   Otherwise many of the preconditions above would not make sense.
 \end{remark}
 
+% TODO proof
 
+\begin{proposition}
+  Let $H, H'$ be heaps and $P, P'$ thread sets such that
+  \begin{enumerate}
+    \item $P = Q \cup_D \left\{ FS_a^d \right\}$, $\isolation{(H, P)}$ and $P'
+      = Q \cup_D \left\{ FS'|_a^d \right\}$
+    \item $\Graph{(H)} = \Graph{(H')}$
+    \item $\forall HS|_b^e \in P.$ \\ 
+      $\reachable{(\accRoots{(HS, H')}, \Graph{(H')})} \subseteq$ \\
+      $\reachable{(\accRoots{(HS, H)}, \Graph{(H)})}$
+    \item $\reachable{(\accRoots{(FS', H')}, \Graph{(H')})} \subseteq$ \\
+      $\reachable{(\accRoots{(FS, H)}, \Graph{(H)})}$
+    \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
+  \end{enumerate}
+  Then $\isolation{(H', P')}$.
+\end{proposition}
+
+\begin{remark}
+  Note that this and the previous proposition is very similar.
+\end{remark}
+
+% TODO proof (should just reference the previous one)
+
+\begin{definition}
+  Let $FS_g = \Frame{L_0}{global}{-} \circ \varepsilon$ bet the framestack where
+  $L_0 = [global \mapsto o_g]$. Then for any thread set $P$, let $\tilde{P}$ be the
+  thread set
+  \begin{equation*}
+    \tilde{P} = P \cup \left\{ FS_g|_{\nocap}^d \right\}
+  \end{equation*}
+  for some valid $d$.
+\end{definition}
+
+\begin{proposition}
+  For any heap $H$ and thread set $P$
+  \begin{equation*}
+    \isolation{(H, \tilde{P})} \iff \isolation{(H, P)} \text{ and } H \vdash P
+    \tsep \gsep 
+  \end{equation*}
+\end{proposition}
+
+%TODO check formulation of prop
+\begin{proposition}
+  Let $H, P$ be such that $\vdash H$, $H \vdash P$ %and $\isolation{(H, P)}$ and
+  and let $H', P'$ be such that $H, P \Rrightarrow H', P'$. Then if
+  \begin{equation*}
+    \isolation{(H,P)} \implies \isolation{(H', P')}
+  \end{equation*}
+  we have
+  \begin{equation*}
+    \isolation{(H, \tilde{P})} \implies \isolation{(H', \tilde{P'})}
+  \end{equation*}
+\end{proposition}
+
+\begin{proposition}
+  Let $H, H'$ be heaps. If $\dom{(H)} = \dom{(H')}$ and
+  \begin{equation*}
+    \forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}
+  \end{equation*}
+  then 
+  \begin{equation*}
+    \forall k \in \Values. \: \typeOf{(k, H)} = \typeOf{(k, H')}
+  \end{equation*}
+\end{proposition}
+
+\begin{proof}
+  Trivial.
+\end{proof}
+
+\begin{proposition}
+  For any $H, P$ we have 
+  \begin{equation}
+    H \vdash P \iff \forall HS|_b^e \in P.\: H;b \vdash HS
+  \end{equation}
+\end{proposition}
+
+\begin{proof} (Sketch) Done in each direction separately.
+  \begin{description}
+    \item[Case $\implies$:] By induction on the shape of the derivation tree.
+    \item[Case $\impliedby$:] By induction on size of $P$.
+  \end{description}
+\end{proof}
+
+% TODO define heap
+\begin{proposition}
+  Let $H, H'$ be heaps such that $\dom{(H)} \subseteq \dom{(H')}$ and 
+  \begin{equation*}
+    \forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}.
+  \end{equation*}
+  Then
+  \begin{equation*}
+    H; a \vdash FS \implies H'; a \vdash FS
+  \end{equation*}
+  and
+  \begin{equation*}
+    H; a \vdash^{x :\tau} FS \implies H'; a \vdash^{x: \tau} FS
+  \end{equation*}
+\end{proposition}
+
+
+% next up 2.15
 
