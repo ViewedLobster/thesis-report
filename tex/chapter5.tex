@@ -309,6 +309,7 @@ Figure~\ref{fig:expr_typing}.
 
   \RuleSpace{}
 
+  % TODO fix the variable names
   \scrule{E-When}
   {L(x) = o \andalso H(o) = \Cell{DEP, l} \andalso L(y) = l' \\
   L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
@@ -506,13 +507,13 @@ Figure~\ref{fig:expr_typing}.
 \end{definition}
 
 \begin{figure}
-  \scrule{WF-LocalVar}
+  \scrule{WF-EnvVar}
   {\typeOf{(L(x), H) \stof \Gamma{(x)}}}
   { H \vdash \Gamma; L; x }
 
   \RuleSpace{}
 
-  \scrule{WF-LocalEnv}
+  \scrule{WF-Env}
   {\dom{(\Gamma)} \subseteq \dom{(L)} \\
     \forall x \in \dom{(\Gamma)}. \: H \vdash \Gamma; L; x 
   }
@@ -550,7 +551,7 @@ Figure~\ref{fig:expr_typing}.
 
   \RuleSpace{}
 
-  \scrule{T-ThreadSet}
+  \scrule{T-Procs}
   { H; a \vdash FS \andalso H \vdash P }
   { H \vdash P \cup \left\{FS |_a^d \right\} }
 
@@ -643,6 +644,7 @@ Figure~\ref{fig:expr_typing}.
   \caption{Definition of OCAP reachability}
   \label{fig:def_ocapreach}
 \end{figure}
+% TODO define \ocrloc
 
 \begin{figure}
   \scrule{GSep-FS}

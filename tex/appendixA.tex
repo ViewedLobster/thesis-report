@@ -82,6 +82,20 @@
 \end{proposition}
 
 % TODO proof 
+\begin{proof}
+  First of all we let $R = \reachable{(\{o\}, \Graph{(H)})}, R' =
+  \reachable{(\{o'\}, \Graph{(H)})}$.
+  We prove each direction of implication separately.
+  \begin{description}
+    \item[Case $\implies$:] Take any $q \in  R\cap R'$. By definition of
+      $\reachable$, reachability equivalence (prop.~\ref{prop:reacheq}) and 
+      definition of $\csep{(H, o, o')}$ we have $\typeOf{(q, H)} \stof \CellType$.
+    \item[Case $\impliedby$:] Take any $q, q'\in \dom{(H)}$ such that
+      $\reach{(H, o, q)}$ and $\reach{(H, o', q')}$. If $q \neq q$ we are done.
+      Otherwise $q = q'$ and by definition of $\reachable$ $q \in R \cap R'$.
+      Finally $\typeOf{(q, H)} \stof \CellType$ by assumption.
+  \end{description}
+\end{proof}
 
 \begin{proposition} For any heap $H$ and frame stacks $FS, HS$ we have
   \begin{flalign*}
@@ -96,17 +110,17 @@
 
 % TODO proof
 
-\begin{proposition}
+\begin{proposition} \label{prop:simple_isolation_orc}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
-    \item $P = Q \cup_D \left\{ FS_a^d \right\}$, $\isolation{(H, P)}$ and $P'
-      = Q \cup_D \left\{ FS'|_a^d \right\}$
+    \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
+      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^d \right\}$
     \item $\Graph{(H)} = \Graph{(H')}$
-    \item $\forall HS|_b^e \in P. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
+    \item $\forall HS|_b^e \in Q. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
     \item $\accRoots{(FS', H')} \subseteq \accRoots{(FS, H)}$
     \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
   \end{enumerate}
-  Then $\isolation{(H', P')}$.
+  Then $\isolation{(H', P')}$ and $H' \vdash P' \tsep \ocr$.
 \end{proposition}
 
 \begin{remark}
@@ -116,24 +130,24 @@
 
 % TODO proof
 
-\begin{proposition}
+\begin{proposition} \label{prop:simple_isolation_orc_gen}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
-    \item $P = Q \cup_D \left\{ FS_a^d \right\}$, $\isolation{(H, P)}$ and $P'
-      = Q \cup_D \left\{ FS'|_a^d \right\}$
+    \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
+      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^d \right\}$
     \item $\Graph{(H)} = \Graph{(H')}$
-    \item $\forall HS|_b^e \in P.$ \\ 
+    \item $\forall HS|_b^e \in Q.$ \\ 
       $\reachable{(\accRoots{(HS, H')}, \Graph{(H')})} \subseteq$ \\
       $\reachable{(\accRoots{(HS, H)}, \Graph{(H)})}$
     \item $\reachable{(\accRoots{(FS', H')}, \Graph{(H')})} \subseteq$ \\
       $\reachable{(\accRoots{(FS, H)}, \Graph{(H)})}$
     \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
   \end{enumerate}
-  Then $\isolation{(H', P')}$.
+  Then $\isolation{(H', P')}$ and $H' \vdash P' \tsep \ocr$.
 \end{proposition}
 
 \begin{remark}
-  Note that this and the previous proposition is very similar.
+  Note that this is a generalization of the previous proposition.
 \end{remark}
 
 % TODO proof (should just reference the previous one)
@@ -148,7 +162,7 @@
   for some valid $d$.
 \end{definition}
 
-\begin{proposition}
+\begin{proposition} \label{prop:gsep_eq}
   For any heap $H$ and thread set $P$
   \begin{equation*}
     \isolation{(H, \tilde{P})} \iff \isolation{(H, P)} \text{ and } H \vdash P
@@ -157,7 +171,7 @@
 \end{proposition}
 
 %TODO check formulation of prop
-\begin{proposition}
+\begin{proposition} \label{prop:gsep_simple}
   Let $H, P$ be such that $\vdash H$, $H \vdash P$ %and $\isolation{(H, P)}$ and
   and let $H', P'$ be such that $H, P \Rrightarrow H', P'$. Then if
   \begin{equation*}
@@ -168,6 +182,13 @@
     \isolation{(H, \tilde{P})} \implies \isolation{(H', \tilde{P'})}
   \end{equation*}
 \end{proposition}
+
+\begin{remark}
+  This proposition can e.g. noteably be applied in the cases where we have
+  applied prop.~\ref{prop:simple_isolation_orc}
+  or~\ref{prop:simple_isolation_orc_gen} to prove isolation since the proof of
+  these does not rely on global object separation.
+\end{remark}
 
 \begin{proposition}
   Let $H, H'$ be heaps. If $\dom{(H)} = \dom{(H')}$ and
@@ -184,7 +205,7 @@
   Trivial.
 \end{proof}
 
-\begin{proposition}
+\begin{proposition} \label{prop:tprocseq}
   For any $H, P$ we have 
   \begin{equation}
     H \vdash P \iff \forall HS|_b^e \in P.\: H;b \vdash HS
@@ -214,6 +235,130 @@
   \end{equation*}
 \end{proposition}
 
+% TODO fix the statement
+\begin{proposition}
+  Let $HS|_b^e \in Q$ where $Q$ as in thm case {\sc E-Assign}. Then
+  \begin{align*}
+    &\reachable{(\accRoots{(FS',H')}, \Graph{(H')})} \subseteq \\
+    &\reachable{(\accRoots{(FS,H)}, \Graph{(H)})}
+  \end{align*}
+  and if $a = \ocap$ or $b = \ocap$ then
+  \begin{align*}
+    &\reachable{(\accRoots{(HS,H')}, \Graph{(H')})} \subseteq \\
+    &\reachable{(\accRoots{(HS,H)}, \Graph{(H)})}
+  \end{align*}
+\end{proposition}
 
-% next up 2.15
+\begin{corollary}
+  If $b = \ocap$ then 
+  \begin{align*}
+    &\reachable{(\accRoots{(HS,H')}, \Graph{(H')})} \subseteq \\
+    &\reachable{(\accRoots{(HS,H)}, \Graph{(H)})}
+  \end{align*}
+\end{corollary}
+
+\begin{corollary}
+  \begin{align*}
+    &\reachable{(\accRoots{(FS',H')}, \Graph{(H')})} \subseteq \\
+    &\reachable{(\accRoots{(FS,H)}, \Graph{(H)})}
+  \end{align*}
+\end{corollary}
+
+\begin{proposition}
+  Let $HS|_b^e \in Q$ where $Q$ as in thm case {\sc E-Assign}. Then
+  \begin{align*}
+    &\reachable{(\accRoots{(HS,H')}, \Graph{(H')})} \subseteq \\
+    &\reachable{(\accRoots{(HS,H)}, \Graph{(H)})}\: \cup \\ 
+    &\reachable{(\accRoots{(FS,H)}, \Graph{(H)})}
+  \end{align*}
+\end{proposition}
+
+\begin{proposition}
+  If 
+  \[
+    \forall o \in \dom{(H)} = \dom{(H')}. \: \typeOf{(o, H)} = \typeOf{(o,
+  H')}
+  \] 
+  and $H \vdash \Gamma; L$ then $H' \vdash \Gamma; L$
+\end{proposition}
+\begin{proof}
+  Trivial.
+\end{proof}
+
+
+% TODO 2.20 can it be included in 2.5 perhaps?
+
+\section{Proof of preservation}
+\label{sec:proof_of_preservation}
+
+\begin{proof} 
+  First of all we have that $S \neq \Error$ since no step can be made from this
+  state. Thus $S = H, P$ and
+  \begin{equation*}
+    \vdash H \andalso H \vdash P \andalso H \vdash P \tsep \ocr \andalso
+    \isolated{(H, P)} \andalso H \vdash P \tsep \gsep
+  \end{equation*}
+  We also assume we have $S' = H', P'$ since otherwise $S' = \Error$ and the
+  theorem holds trivially. What remains is to prove
+  \begin{equation*}
+    \vdash H' \andalso H' \vdash P' \andalso H' \vdash P' \tsep \ocr \andalso
+    \isolated{(H', P')} \andalso H' \vdash P' \tsep \gsep.
+  \end{equation*}
+  We proceed by cases.
+  \begin{description}
+    \item[Case {\sc E-FSProp}:] According to this rule $P = Q \cup_D \left\{
+        FS|_a^d \right\}$ and $P' = Q \cup \left\{ FS'|_a^d \right\}$. We proceed by cases.
+      \begin{description}
+        \item[Case {\sc E-FProp}:] By the rule definition $FS|_a^d = F \circ
+          GS|_a^d$ and $FS'|_a^d = F' \circ GS|_a^d$. Furthermore we can assume
+          that $F = \sframe{L, t}$ and $F' = \sframe{L', t'}$.
+          We proceed by cases.
+          \begin{description}
+            \item[Case {\sc E-Null}:] By this rule we have $t =
+              \Let{x}{\NullVal}{t'}$, $H = H'$ and $L' = L[x \mapsto \NullVal]$.
+              Immediatelly we have $\vdash H'$.
+
+              By {\sc T-Procs} and proposition~\ref{prop:tprocseq} we have 
+              \begin{equation} \label{eq:enull1}
+               H \vdash Q  \andalso H; a \vdash FS 
+              \end{equation}
+              Trivially $H' \vdash Q$. 
+              By~\eqref{eq:enull1} and rule {\sc T-FS1} we have
+              \begin{equation} \label{eq:enull2}
+                H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
+                \andalso H; a \vdash^{s: \sigma} GS.
+              \end{equation}
+              Let $\Gamma' = \Gamma, x: \NullType$. By {\sc T-Let}, {\sc
+              T-Null} and \eqref{eq:enull2} we have
+              \begin{equation} \label{eq:enull3}
+                \TypeRel{\Gamma'}{a}{t'}{\sigma}.
+              \end{equation}
+              By {\sc T-FS1}, \eqref{eq:enull3} and \eqref{eq:enull2}
+              \begin{equation}\label{eq:enull4}
+                H;a \vdash FS'
+              \end{equation}
+              By \eqref{eq:enull4}, {\sc T-Procs} and $H = H'$ we get  
+              \begin{equation}
+                H' \vdash P'
+              \end{equation}
+              $H' \vdash P' \tsep \ocr$ and $\isolation{(H', P')}$ follows from
+              proposition~\ref{prop:simple_isolation_orc}. Then $H' \vdash P'
+              \tsep \gsep$ follows from propositions~\ref{prop:gsep_eq}
+              and~\ref{prop:gsep_simple}.
+            \item[Case {\sc E-LVal}:] Similarly.
+            \item[Case {\sc E-Var}:] Similarly.
+          \end{description}
+      \end{description}
+  \end{description}
+\end{proof}
+
+
+
+
+
+
+
+
+
+
 
