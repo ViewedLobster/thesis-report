@@ -230,6 +230,11 @@ Figure~\ref{fig:expr_typing}.
 
   \RuleSpace{}
 
+  \scax{OCAP-Cell}
+  {\ocap(\CellType)}
+
+  \RuleSpace{}
+
   \scrule{OCAP-Class}
   {\ocap{(D)} \andalso C \vdash_{\ocap} \overline{md} \\
   \forall (\VarDecl{f}{\sigma}) \in \overline{vd}. \: ocap(\sigma)}
@@ -311,15 +316,15 @@ Figure~\ref{fig:expr_typing}.
 
   % TODO fix the variable names
   \scrule{E-When}
-  {L(x) = o \andalso H(o) = \Cell{DEP, l} \andalso L(y) = l' \\
+  {L(y) = o \andalso H(o) = \Cell{DEP, l} \andalso L(z) = l' \\
   L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
-  \andalso cb = (L_{\text{env}}, z \Rightarrow t') \\
+  \andalso cb = (L_{\text{env}}, w \Rightarrow t') \\
   d\text{ fresh thread id } \andalso DEP' = DEP \cup (l', cb)^d \\
   H' = H[o \mapsto \Cell{DEP', l}] }
-  { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, z \Rightarrow t') }}{t} } \\ \FRedTo \;
+  { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, w \Rightarrow t') }}{t} } \\ \FRedTo \;
   H', \sFrame{L[x \mapsto L(y)]}{t} }
   \caption{\RACL{} single frame reduction rules.}
-  \label{fig:frame_red_rulesj}
+  \label{fig:frame_red_rules}
 \end{figure}
 
 \begin{figure}
@@ -474,21 +479,21 @@ Figure~\ref{fig:expr_typing}.
   \end{align}
 \end{definition}
 
-\begin{definition}{(OCAP reachability)}
-  For a heap $H$ and local environment $L$ we have $\ocrloc{(L,H)}$ iff
-  \begin{align}
-    \label{eq:ocr_def}
-    \forall (x &\mapsto k) \in L, o \in \dom(H). \notag\\
-    &\reach{(H, k, o)} \implies \ocap{(\typeOf{(o, H)})}
-  \end{align}
-\end{definition}
-
 \begin{definition}{(Accessible Roots)}
   For a heap $H$ and a frame stack $FS$ we define $\accRoots{(FS, H)}$ as
 
   \begin{equation}
     \accRoots{(FS, H)} = \left\{ o \in \dom{(H)}: \accRoot{(o, FS)} \right\}
   \end{equation}
+\end{definition}
+
+\begin{definition}{(OCAP reachability)}
+  For a heap $H$ and frame stack $FS$ we have $\ocrloc{(FS,H)}$ iff
+  \begin{align}
+    \label{eq:ocr_def}
+    \forall o \in \: &\accRoots(FS,H), o' \in \dom(H). \notag\\
+    &\reach{(H, o, o')} \implies \ocap{(\typeOf{(o', H)})}
+  \end{align}
 \end{definition}
 
 \begin{definition}{(Well Typed States)}
@@ -571,7 +576,7 @@ Figure~\ref{fig:expr_typing}.
   
   \RuleSpace{}
 
-  \scrule{ISO-Threads}
+  \scrule{ISO-Procs}
   {
     \forall FS|_a^d, GS_b^e \in P \text{ where } FS|_a^d \neq GS|_b^e . \\
     a = \ocap \: \lor \: b = \ocap \implies \isolated{(H, FS, GS)}
@@ -615,20 +620,9 @@ Figure~\ref{fig:expr_typing}.
 \end{figure}
 
 \begin{figure}
-  \scax{OCR-EmptyFS}
-  {H; a \vdash \varepsilon \tsep \ocr }
-
-  \RuleSpace{}
-
   \scrule{OCR-FS}
-  { H; a \vdash F \tsep \ocr \andalso H; a \vdash FS \tsep \ocr }
-  { H; a \vdash F \circ FS \tsep \ocr }
-
-  \RuleSpace{}
-
-  \scrule{OCR-F}
-  { a = \ocap \implies \ocrloc(L, H) }
-  { H; a \vdash \sFrame{L}{t} \tsep \ocr }
+  { a = \ocap \implies \ocrloc(FS, H) }
+  { H; a \vdash FS \tsep \ocr }
 
   \RuleSpace{}
 

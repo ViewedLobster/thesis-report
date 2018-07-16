@@ -70,7 +70,8 @@
   Follows from definition of $\accRoot$, $\accRoots$ and $\reachable$.
 \end{proof}
 
-\begin{proposition} For any heap $H$ and object references $o, o'$ we have
+\begin{proposition} \label{prop:csep_eq}
+  For any heap $H$ and object references $o, o'$ we have
   \begin{flalign*}
     &\csep{(H, o, o')} \iff &\\
     & \begin{aligned}
@@ -96,7 +97,8 @@
   \end{description}
 \end{proof}
 
-\begin{proposition} For any heap $H$ and frame stacks $FS, HS$ we have
+\begin{proposition} \label{prop:isolation_eq}
+  For any heap $H$ and frame stacks $FS, HS$ we have
   \begin{flalign*}
     &\isolated{(H, FS, HS)}  \iff &\\
     &\begin{aligned}
@@ -108,28 +110,47 @@
 \end{proposition}
 
 % TODO proof
+\begin{proof}
+  Let $R = \reachable(\accRoots(FS, H), \Graph(H)), R' =
+  \reachable(\accRoots(HS, H), \Graph(H))$. We prove each direction of
+  implication separately.
+  \begin{description}
+    \item[Case $\implies$:] Take $q \in R \cap R'$. Then 
+      \begin{equation*}
+        \exists o \in \accRoots(FS, H), o' \in \accRoots(HS, H)
+      \end{equation*}
+      such that
+      \begin{equation*}
+        q \in \reachable(\{o\}, \Graph(H)) \cap \reachable(\{o'\}, \Graph(H))
+      \end{equation*}
+      By definition of $\accRoots$ we have
+      \begin{equation*}
+        \accRoot(o, FS, H) \land \accRoot(o', HS, H)
+      \end{equation*}
+      and thus by $\isolated(H, FS, HS)$ we have $\csep(H, o, o')$. 
+      Proposition~\ref{prop:csep_eq} yields $\typeOf(q, H) \stof \CellType$.
+    \item[Case $\impliedby$:] Take any $o, o' \in \dom(H)$ such that
+      \begin{equation*}
+        \accRoot(o, FS, H) \land \accRoot(o', HS).
+      \end{equation*}
+      Clearly then $o \in \accRoots(FS, H)$ and $o \in \accRoots(HS, H)$.
+      Moreover
+      \begin{gather*}
+        \reachable(\{o\}, \Graph(H)) \subseteq R \\
+        \reachable(\{o'\}, \Graph(H)) \subseteq R'
+      \end{gather*}
+      By assumption then
+      \begin{align*}
+        \forall q \in &\reachable(\{o\}, \Graph(H)) \cap \reachable(\{o'\},
+        \Graph(H)). \\ 
+        &\typeOf(q, H) \stof \CellType
+      \end{align*}
+      and by proposition~\ref{prop:csep_eq} we have $\csep(H, o, o')$. Since
+      $o, o'$ arbitrary we are done.
+  \end{description}
+\end{proof}
 
-\begin{proposition} \label{prop:simple_isolation_orc}
-  Let $H, H'$ be heaps and $P, P'$ thread sets such that
-  \begin{enumerate}
-    \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
-      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^d \right\}$
-    \item $\Graph{(H)} = \Graph{(H')}$
-    \item $\forall HS|_b^e \in Q. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
-    \item $\accRoots{(FS', H')} \subseteq \accRoots{(FS, H)}$
-    \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
-  \end{enumerate}
-  Then $\isolation{(H', P')}$ and $H' \vdash P' \tsep \ocr$.
-\end{proposition}
-
-\begin{remark}
-  Note that $\Graph{(H)} = \Graph{(H')}$ implies $\dom{(H)} = \dom{(H')}$.
-  Otherwise many of the preconditions above would not make sense.
-\end{remark}
-
-% TODO proof
-
-\begin{proposition} \label{prop:simple_isolation_orc_gen}
+\begin{proposition} \label{prop:common_isolation_orc_gen}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
     \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
@@ -146,12 +167,52 @@
 \end{proposition}
 
 \begin{remark}
-  Note that this is a generalization of the previous proposition.
+  Note that $\Graph{(H)} = \Graph{(H')}$ implies $\dom{(H)} = \dom{(H')}$.
+  Otherwise many of the preconditions above would not make sense.
 \end{remark}
 
-% TODO proof (should just reference the previous one)
+\begin{proof}
+  We prove that 
+  \begin{equation*}
+    \forall \text{ distinct } HS|_a^d, GS|_b^e \in P'.\; a = \ocap \lor b = \ocap \implies
+    \isolated(H', HS, GS).
+  \end{equation*}
+  This implies $\isolation(H', P')$ by rule {\sc ISO-Procs}.
+  Take any $HS|_b^e, GS|_c^f \in P$. Then by assumption 3, 4 and basic set
+  properties
+  \begin{equation} \label{eq:reachinclusion1}
+    \begin{gathered}
+      \reachable(\accRoots(HS, H'), \Graph(H')) \cap \reachable(\accRoots(GS, H'),
+      \Graph(H')) \\
+      \subseteq \\
+      \reachable(\accRoots(HS, H), \Graph(H)) \cap \reachable(\accRoots(GS, H),
+      \Graph(H)).
+    \end{gathered}
+  \end{equation}
+  By this, proposition~\ref{prop:isolation_eq} and $\isolation(H, HS, GS)$ we have
+  $\isolation(H', HS, GS)$. By \eqref{eq:reachinclusion1} and assumption
+  we have $H' \vdash P' \tsep \ocr$.
+\end{proof}
 
-\begin{definition}
+\begin{corollary} \label{prop:common_isolation_orc}
+  Let $H, H'$ be heaps and $P, P'$ thread sets such that
+  \begin{enumerate}
+    \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
+      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^d \right\}$
+    \item $\Graph{(H)} = \Graph{(H')}$
+    \item $\forall HS|_b^e \in Q. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
+    \item $\accRoots{(FS', H')} \subseteq \accRoots{(FS, H)}$
+    \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
+  \end{enumerate}
+  Then $\isolation{(H', P')}$ and $H' \vdash P' \tsep \ocr$.
+\end{corollary}
+
+\begin{proof}
+  Assumption 2 and 3 implies assumption 2 and 3 of
+  proposition~\ref{prop:common_isolation_orc_gen}
+\end{proof}
+
+\begin{definition} \label{def:ptilde}
   Let $FS_g = \Frame{L_0}{global}{-} \circ \varepsilon$ bet the framestack where
   $L_0 = [global \mapsto o_g]$. Then for any thread set $P$, let $\tilde{P}$ be the
   thread set
@@ -169,8 +230,12 @@
   \end{equation*}
 \end{proposition}
 
+\begin{proof}
+  
+\end{proof}
+
 %TODO check formulation of prop
-\begin{proposition} \label{prop:gsep_simple}
+\begin{proposition} \label{prop:common_gsep}
   Let $H, P$ be such that $\vdash H$, $H \vdash P$ %and $\isolation{(H, P)}$ and
   and let $H', P'$ be such that $H, P \Rrightarrow H', P'$. Then if
   \begin{equation*}
@@ -184,8 +249,8 @@
 
 \begin{remark}
   This proposition can e.g. noteably be applied in the cases where we have
-  applied prop.~\ref{prop:simple_isolation_orc}
-  or~\ref{prop:simple_isolation_orc_gen} to prove isolation since the proof of
+  applied prop.~\ref{prop:common_isolation_orc_gen}
+  or~\ref{prop:common_isolation_orc} to prove isolation since the proof of
   these does not rely on global object separation.
 \end{remark}
 
@@ -341,9 +406,9 @@
                 H' \vdash P'
               \end{equation}
               $H' \vdash P' \tsep \ocr$ and $\isolation{(H', P')}$ follows from
-              proposition~\ref{prop:simple_isolation_orc}. Then $H' \vdash P'
+              proposition~\ref{prop:common_isolation_orc}. Then $H' \vdash P'
               \tsep \gsep$ follows from propositions~\ref{prop:gsep_eq}
-              and~\ref{prop:gsep_simple}.
+              and~\ref{prop:common_gsep}.
             \item[Case {\sc E-LVal}:] Similarly.
             \item[Case {\sc E-Var}:] Similarly.
           \end{description}
