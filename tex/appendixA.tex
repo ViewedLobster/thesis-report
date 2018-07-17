@@ -236,38 +236,66 @@
     o_g \right\}$ 
 \end{proof}
 
+We state the following two propositions without proof, but they should be quite
+obvious.
+% TODO define transition identifier
+\begin{proposition} \label{prop:uniq_trans}
+  Let $H, P \Rrightarrow H', P'$. Then there is a unique transition identifier
+  $R^{\alpha, \beta}$ such that $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$.
+\end{proposition}
+
+\begin{proposition} \label{prop:tilde_trans}
+  Let $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$. Then $H, \tilde{P}
+  \Rrightarrow^{R^{\alpha, \beta}} H', \tilde{P'}$
+\end{proposition}
+
 %TODO check formulation of prop
 \begin{proposition} \label{prop:common_gsep}
-  Let $H, H' \in \Heaps$ be and $P, P' \in \Threads$. 
-  If
-  \begin{equation}
-    \begin{gathered}
-      \isolation(H, P) \text{ and } H, P \Rrightarrow H', P'
+  If for any $H, H', P, P'$ such that $\vdash H, H \vdash P$ and $H, P
+  \Rrightarrow^{R^{\alpha, \beta}} H', P'$
+  \begin{equation*}
+      \isolation(H, P) 
       \implies 
       \isolation(H', P')
-    \end{gathered}
-  \end{equation}
-  Let $H, P$ be such that $\vdash H$, $H \vdash P$ %and $\isolation{(H, P)}$ and
-  and let $H', P'$ be such that $H, P \Rrightarrow H', P'$. Then if
-  \begin{equation*}
-    \isolation{(H,P)} \implies \isolation{(H', P')}
   \end{equation*}
-  we have
+  then
   \begin{equation*}
-    \isolation{(H, \tilde{P})} \implies \isolation{(H', \tilde{P'})}
+    \isolation(H, \tilde{P}) \implies \isolation(H', \tilde{P'})
   \end{equation*}
 \end{proposition}
 
+\begin{proof}
+  By proposition~\ref{prop:tilde_trans} $H, \tilde{P} \Rrightarrow^{R^{\alpha,
+  \beta}} H', \tilde{P'}$. It is easy to see that $\vdash H$ and $H \vdash P$.
+  Since the assumption of the proposition refers to any $H, H', P, P'$ for which
+  these three properties hold the statement also holds for $H, H',
+  \tilde{P}, \tilde{P'}$.
+\end{proof}
+
 \begin{remark}
-  This proposition can e.g. noteably be applied in the cases where we have
-  applied prop.~\ref{prop:common_isolation_orc_gen}
-  or~\ref{prop:common_isolation_orc} to prove isolation since the proof of
-  these propositions does not rely on global object separation.
+  This proposition may seem a bit circular, but what it does is allow us to get
+  the global separation property for free in most cases in the proof of
+  preservation by combining it with proposition~\ref{prop:gsep_eq}. We state
+  this in the following corollary.
 \end{remark}
 
-\begin{proof}
-  
-\end{proof}
+\begin{corollary}
+  If for any $H, H', P, P'$ such that $\vdash H, H \vdash P$ and $H, P
+  \Rrightarrow^{R^{\alpha, \beta}} H', P'$
+  \begin{equation*}
+      \isolation(H, P) 
+      \implies 
+      \isolation(H', P')
+  \end{equation*}
+  then
+  \begin{equation*}
+    \begin{gathered}
+      \isolation(H, P) \text{ and } H \vdash P \tsep \gsep \\
+      \implies \\
+      \isolation(H', P') \text{ and } H \vdash P' \tsep \gsep
+    \end{gathered}
+  \end{equation*}
+\end{corollary}
 
 \begin{proposition}
   Let $H, H'$ be heaps. If $\dom{(H)} = \dom{(H')}$ and
@@ -283,6 +311,14 @@
 \begin{proof}
   Trivial.
 \end{proof}
+
+\begin{proposition} \label{prop:2.19}
+  If
+  \begin{equation*}
+    \forall o \in \dom(H) \subseteq \dom(H'). \: \typeOf(o, H) = \typeOf(o, H')
+  \end{equation*}
+  and $H \vdash \Gamma; L$, then $H' \vdash \Gamma; L$.
+\end{proposition}
 
 \begin{proposition} \label{prop:tprocseq}
   For any $H, P$ we have 
@@ -304,15 +340,43 @@
   \begin{equation*}
     \forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}.
   \end{equation*}
-  Then
-  \begin{equation*}
+  Then for any frame stack $FS$
+  \begin{equation}\label{eq:fs_impl_typing1}
     H; a \vdash FS \implies H'; a \vdash FS
-  \end{equation*}
+  \end{equation}
   and
-  \begin{equation*}
-    H; a \vdash^{x :\tau} FS \implies H'; a \vdash^{x: \tau} FS
-  \end{equation*}
+  \begin{equation} \label{eq:fs_impl_typing2}
+    H; a \vdash^{x :\sigma} FS \implies H'; a \vdash^{x: \sigma} FS 
+  \end{equation}
 \end{proposition}
+
+\begin{proof}
+  We first prove \eqref{eq:fs_impl_typing2} by induction on the lenght $n$ of
+  $FS$. To prove the implication we assume that $H; a \vdash^{x: \tau} FS$.
+  
+  If $n = 0$ we have $FS = \varepsilon$. By {\sc T-FSEmpty2} we are done.
+  
+  If $n = i + 1$ we have $FS = F \circ GS$ where length of $GS$ is $i$. By  
+  $H; a \vdash^{x: \sigma} FS$ and {\sc T-FS2} we have 
+  \begin{equation*}
+    F = \xframe{L, t}^{y} \andalso H \vdash \Gamma; L \andalso \TypeRel{\Gamma, x:
+    \sigma}{a}{t}{\tau} \andalso H; a \vdash^{y: \tau} GS.
+  \end{equation*}
+  By induction hypothesis we then have $H'; a \vdash^{y: \tau} GS$. We get $H'
+  \vdash \Gamma; L$ from proposition \ref{prop:2.19}. Applying rule {\sc T-FS2}
+  yields $H'; a \vdash^{x: \sigma} FS$.
+
+  Now we prove \eqref{eq:fs_impl_typing1}. Similarly assuming $H; a \vdash^{x:
+  \tau} FS$ we have two cases. If $FS = \varepsilon$ we are done by {\sc
+  T-FSEmpty1}. If $FS = F \circ GS$ we by {\sc T-FS1} have
+  \begin{equation*}
+    F = \xframe{L, t}^{x} \andalso H \vdash \Gamma; L \andalso
+    \TypeRel{\Gamma}{a}{t}{\tau} \andalso H; a \vdash^{x: \sigma} GS.
+  \end{equation*}
+  By \eqref{eq:fs_impl_typing1} $H'; a \vdash^{x: \sigma} GS$ and
+  proposition~\ref{prop:2.19} yields $H' \vdash \Gamma; L$. Applying rule {\sc
+  T-FS1} gives us $H'; a \vdash FS$.
+\end{proof}
 
 % TODO fix the statement
 \begin{proposition}
