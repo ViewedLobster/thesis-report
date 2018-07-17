@@ -567,8 +567,7 @@ Figure~\ref{fig:expr_typing}.
 \begin{figure}
   \scrule{ISO-FS}
   { 
-    \forall o, o' \in \dom{(H)} . \\
-    \accRoot{(o, FS)} \land \accRoot{(o', GS)} \implies \csep{(H, o, o')}
+    \forall o \in \accRoots(FS), o' \in \accRoots(GS) . \: \csep{(H, o, o')}
   }
   {
     \isolated{(H, FS, GS)}

@@ -178,7 +178,7 @@
     \isolated(H', HS, GS).
   \end{equation*}
   This implies $\isolation(H', P')$ by rule {\sc ISO-Procs}.
-  Take any $HS|_b^e, GS|_c^f \in P$. Then by assumption 3, 4 and basic set
+  Take any distinct $HS|_b^e, GS|_c^f \in P$. Then by assumption 3, 4 and basic set
   properties
   \begin{equation} \label{eq:reachinclusion1}
     \begin{gathered}
@@ -231,11 +231,22 @@
 \end{proposition}
 
 \begin{proof}
-  
+  This follows almost immediately by the definitions of isolation and global
+  object separation, and the fact that $\accRoots(FS_g) = \left\{
+    o_g \right\}$ 
 \end{proof}
 
 %TODO check formulation of prop
 \begin{proposition} \label{prop:common_gsep}
+  Let $H, H' \in \Heaps$ be and $P, P' \in \Threads$. 
+  If
+  \begin{equation}
+    \begin{gathered}
+      \isolation(H, P) \text{ and } H, P \Rrightarrow H', P'
+      \implies 
+      \isolation(H', P')
+    \end{gathered}
+  \end{equation}
   Let $H, P$ be such that $\vdash H$, $H \vdash P$ %and $\isolation{(H, P)}$ and
   and let $H', P'$ be such that $H, P \Rrightarrow H', P'$. Then if
   \begin{equation*}
@@ -251,8 +262,12 @@
   This proposition can e.g. noteably be applied in the cases where we have
   applied prop.~\ref{prop:common_isolation_orc_gen}
   or~\ref{prop:common_isolation_orc} to prove isolation since the proof of
-  these does not rely on global object separation.
+  these propositions does not rely on global object separation.
 \end{remark}
+
+\begin{proof}
+  
+\end{proof}
 
 \begin{proposition}
   Let $H, H'$ be heaps. If $\dom{(H)} = \dom{(H')}$ and
@@ -340,10 +355,10 @@
 \begin{proposition}
   If 
   \[
-    \forall o \in \dom{(H)} = \dom{(H')}. \: \typeOf{(o, H)} = \typeOf{(o,
+    \forall o \in \dom{(H)} \subseteq \dom{(H')}. \: \typeOf{(o, H)} = \typeOf{(o,
   H')}
   \] 
-  and $H \vdash \Gamma; L$ then $H' \vdash \Gamma; L$
+  and $H \vdash \Gamma; L$, then $H' \vdash \Gamma; L$
 \end{proposition}
 \begin{proof}
   Trivial.
