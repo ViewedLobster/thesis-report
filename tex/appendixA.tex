@@ -150,7 +150,7 @@
   \end{description}
 \end{proof}
 
-\begin{proposition} \label{prop:common_isolation_orc_gen}
+\begin{proposition} \label{prop:2.11}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
     \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
@@ -190,11 +190,11 @@
     \end{gathered}
   \end{equation}
   By this, proposition~\ref{prop:isolation_eq} and $\isolation(H, HS, GS)$ we have
-  $\isolation(H', HS, GS)$. By \eqref{eq:reachinclusion1} and assumption
+  $\isolation(H', HS, GS)$. By \eqref{eq:reachinclusion1} and assumption 5
   we have $H' \vdash P' \tsep \ocr$.
 \end{proof}
 
-\begin{corollary} \label{prop:common_isolation_orc}
+\begin{corollary} 
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
     \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
@@ -209,7 +209,7 @@
 
 \begin{proof}
   Assumption 2 and 3 implies assumption 2 and 3 of
-  proposition~\ref{prop:common_isolation_orc_gen}
+  proposition~\ref{prop:2.11}
 \end{proof}
 
 \begin{definition} \label{def:ptilde}
@@ -222,7 +222,7 @@
   for some valid $d$.
 \end{definition}
 
-\begin{proposition} \label{prop:gsep_eq}
+\begin{proposition} \label{prop:2.8}
   For any heap $H$ and thread set $P$
   \begin{equation*}
     \isolation{(H, \tilde{P})} \iff \isolation{(H, P)} \text{ and } H \vdash P
@@ -250,7 +250,7 @@ obvious.
 \end{proposition}
 
 %TODO check formulation of prop
-\begin{proposition} \label{prop:common_gsep}
+\begin{proposition} \label{prop:2.9}
   If for any $H, H', P, P'$ such that $\vdash H, H \vdash P$ and $H, P
   \Rrightarrow^{R^{\alpha, \beta}} H', P'$
   \begin{equation*}
@@ -276,7 +276,7 @@ obvious.
 \begin{remark}
   This proposition may seem a bit circular, but what it does is allow us to get
   the global separation property for free in most cases in the proof of
-  preservation by combining it with proposition~\ref{prop:gsep_eq}. We state
+  preservation by combining it with proposition~\ref{prop:2.8}. We state
   this in the following corollary.
 \end{remark}
 
@@ -298,7 +298,8 @@ obvious.
   \end{equation*}
 \end{corollary}
 
-\begin{proposition}
+% TODO define \Values set
+\begin{proposition} \label{prop:2.12}
   Let $H, H'$ be heaps. If $\dom{(H)} = \dom{(H')}$ and
   \begin{equation*}
     \forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}
@@ -310,7 +311,8 @@ obvious.
 \end{proposition}
 
 \begin{proof}
-  Trivial.
+  It is easy to see since the only values in $\Values$ where its type depends on
+  $H$ is the object references $o$.
 \end{proof}
 
 \begin{proposition} \label{prop:2.19}
@@ -321,7 +323,12 @@ obvious.
   and $H \vdash \Gamma; L$, then $H' \vdash \Gamma; L$.
 \end{proposition}
 
-\begin{proposition} \label{prop:tprocseq}
+\begin{proof}
+  It is obvious from the structure of the rules {\sc WF-EnvVar} and {\sc
+  WF-Env} and the assumptions of the proposition.
+\end{proof}
+
+\begin{proposition} \label{prop:2.13}
   For any $H, P$ we have 
   \begin{equation}
     H \vdash P \iff \forall HS|_b^e \in P.\: H;b \vdash HS
@@ -336,7 +343,7 @@ obvious.
 \end{proof}
 
 % TODO define heap
-\begin{proposition}
+\begin{proposition} \label{prop:2.14}
   Let $H, H'$ be heaps such that $\dom{(H)} \subseteq \dom{(H')}$ and 
   \begin{equation*}
     \forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}.
@@ -417,18 +424,11 @@ obvious.
   \end{align*}
 \end{proposition}
 
+% TODO is this needed
 \begin{proposition}
-  If 
-  \[
-    \forall o \in \dom{(H)} \subseteq \dom{(H')}. \: \typeOf{(o, H)} = \typeOf{(o,
-  H')}
-  \] 
-  and $H \vdash \Gamma; L$, then $H' \vdash \Gamma; L$
+  Let $\TypeRel{\Gamma}{a}{y}{\sigma}$ and $H \vdash \Gamma;L$ for some $H, L$.
+  Then $\sigma
 \end{proposition}
-\begin{proof}
-  Trivial.
-\end{proof}
-
 
 % TODO 2.20 can it be included in 2.5 perhaps?
 
@@ -462,7 +462,7 @@ obvious.
               \Let{x}{\NullVal}{t'}$, $H = H'$ and $L' = L[x \mapsto \NullVal]$.
               Immediatelly we have $\vdash H'$.
 
-              By {\sc T-Procs} and proposition~\ref{prop:tprocseq} we have 
+              By {\sc T-Procs} and proposition~\ref{prop:2.13} we have 
               \begin{equation} \label{eq:enull1}
                H \vdash Q  \andalso H; a \vdash FS 
               \end{equation}
@@ -486,18 +486,119 @@ obvious.
                 H' \vdash P'
               \end{equation}
               $H' \vdash P' \tsep \ocr$ and $\isolation{(H', P')}$ follows from
-              proposition~\ref{prop:common_isolation_orc}. Then $H' \vdash P'
-              \tsep \gsep$ follows from propositions~\ref{prop:gsep_eq}
-              and~\ref{prop:common_gsep}.
+              the corollary of proposition~\ref{prop:2.11}. Then $H' \vdash P'
+              \tsep \gsep$ follows from propositions~\ref{prop:2.8}
+              and~\ref{prop:2.9} since we never use the $\gsep$ property to
+              prove isolation.
             \item[Case {\sc E-LVal}:] Similarly.
-            \item[Case {\sc E-Var}:] Similarly.
+            \item[Case {\sc E-Var}:] First, by rule {\sc E-Var} we have
+              \begin{equation*} 
+                \begin{gathered}
+                  F = \sframe{L, t} \andalso t = \Let{x}{y}{t'} \\ 
+                  F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(y)].
+                \end{gathered}
+              \end{equation*}
+              Also
+              \begin{equation} \label{eq:evar1}
+                H = H'
+              \end{equation}
+              so $\vdash H'$.
+              By {\sc T-Procs}, {\sc T-FS1} and proposition \ref{prop:2.13}
+              \begin{equation} \label{eq:evar3}
+                H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
+                \andalso H; a \vdash^{s: \sigma} GS
+              \end{equation}
+              By {\sc T-Let, T-Var} and $\TypeRel{\Gamma}{a}{t}{\sigma}$
+              \begin{equation} \label{eq:evar4}
+                \TypeRel{\Gamma}{a}{y}{\gamma} \andalso \TypeRel{\Gamma, x:
+                \gamma}{a}{t'}{\sigma}.
+              \end{equation}
+              Let $\Gamma' = \Gamma, x: \gamma$.
+              Then by \eqref{eq:evar4}
+              \begin{equation} \label{eq:evar5}
+                \TypeRel{\Gamma'}{a}{t'}{\sigma}.
+              \end{equation}
+              By $H \vdash \Gamma; L$, \eqref{eq:evar1}, \eqref{eq:evar5}, and
+              rules {\sc WF-EnvVar}, {\sc WF-Env}
+              \begin{equation*}
+                \typeOf(L'(x), H') = \typeOf(L(y), H) \stof \Gamma(y) \stof
+                \Gamma'(x).
+              \end{equation*}
+              From definitions of $\Gamma', L'$ and $H \vdash \Gamma;L$ we also have 
+              \begin{equation*}
+                \begin{aligned}
+                  \forall z \in &\dom(\Gamma') \text{ s.t. } z \neq x. \\
+                  & \typeOf(L'(z), H') \leq \Gamma'(z).
+                \end{aligned}
+              \end{equation*}
+              Thus
+              \begin{equation} \label{eq:evar6}
+                H' \vdash \Gamma'; L'
+              \end{equation}
+              by applying rules {\sc WF-EnvVar} and {\sc WF-Env}.
+              By {\sc T-FS1}, \eqref{eq:evar3}, \eqref{eq:evar5},
+              \eqref{eq:evar6} we have
+              \begin{equation} \label{eq:evar7}
+                H; a \vdash FS'.
+              \end{equation}
+              By proposition \ref{prop:2.13} and $H \vdash P$ we get
+              \begin{equation*} 
+                \forall HS|_b^d \in Q. \: H; b \vdash HS.
+              \end{equation*}
+              By this, \eqref{eq:evar1}, proposition \ref{prop:2.14} and \ref{prop:2.13}
+              \begin{equation*}
+                H' \vdash Q
+              \end{equation*}
+              Combining this with \eqref{eq:evar7} and {\sc T-Procs} finally
+              yields
+              \begin{equation*}
+                H' \vdash P'
+              \end{equation*}
+
+              We now move on to OCAP reachability, isolation and global object
+              separation. We note that all preconditions of the corollary of
+              proposition~\ref{prop:2.11} holds. Thus we immediately have 
+              \begin{equation*}
+                H' \vdash P' \tsep \ocr \andalso \isolation(H', P').
+              \end{equation*}
+              $H' \vdash P' \tsep \gsep$ immediately follows by corollary to
+              proposition \ref{prop:2.9}.
+            \item[Case {\sc E-Select}:] By rule {\sc E-Select}
+              \begin{equation}
+                \begin{gathered}
+                  H = H' \andalso F = \sframe{L, t} \andalso t =
+                  \Let{x}{\FSel{y}{f}}{t'} \\
+                  L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)
+                  \\
+                  F' = \sframe{L', t'} \andalso L' = L[x \mapsto FM(f)]
+                \end{gathered}
+              \end{equation}
+              We immediately see $\vdash H'$. By $\vdash H$ we have
+              \begin{equation}
+                \typeOf(FM(f), H) \stof \ftype(f, C).
+              \end{equation}
+              $H \vdash P$, propositions \ref{prop:2.13}, \ref{prop:2.14} yields
+              $H \vdash Q$ and thus $H' \vdash Q$.
+              $H \vdash P$, proposition \ref{prop:2.13} gives 
+              \begin{equation}
+                H; a \vdash FS
+              \end{equation}
+              which under inspection of rule {\sc T-FS1} immediately gives
+              \begin{equation}
+                H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
+                \andalso H; a \vdash^{s: \sigma} GS.
+              \end{equation}
+              $\TypeRel{\Gamma}{a}{t}{\sigma}$ together with rule {\sc T-Let}
+              gives
+              \begin{equation}
+                \TypeRel{\Gamma}{a}{\FSel{y}{f}}{\gamma} \andalso
+                \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma}.
+              \end{equation}
+
           \end{description}
       \end{description}
   \end{description}
 \end{proof}
-
-
-
 
 
 
