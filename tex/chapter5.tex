@@ -180,12 +180,6 @@ Figure~\ref{fig:expr_typing}.
     \TypeRel{\Gamma_{cells}, z : \LatType}{\ocap}{t}{\sigma}}
     { \TypeRel{\Gamma}{a}{\When{x}{y}{ \CB{\overline{cap}}{z}{t}}}{\CellType} }
 
-    
-    \RuleSpace{}
-
-    \scrule{T-SubT}
-    {\TypeRel{\Gamma}{a}{e}{\sigma'} \andalso \sigma' \stof \sigma}
-    {\TypeRel{\Gamma}{a}{e}{\sigma}}
   %\end{multicols}
   \caption{\RACL{} typing rules for expressions and terms.}
   \label{fig:expr_typing}

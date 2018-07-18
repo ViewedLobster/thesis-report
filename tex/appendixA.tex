@@ -424,12 +424,6 @@ obvious.
   \end{align*}
 \end{proposition}
 
-% TODO is this needed
-\begin{proposition}
-  Let $\TypeRel{\Gamma}{a}{y}{\sigma}$ and $H \vdash \Gamma;L$ for some $H, L$.
-  Then $\sigma
-\end{proposition}
-
 % TODO 2.20 can it be included in 2.5 perhaps?
 
 \section{Proof of preservation}
@@ -594,6 +588,17 @@ obvious.
                 \TypeRel{\Gamma}{a}{\FSel{y}{f}}{\gamma} \andalso
                 \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma}.
               \end{equation}
+              which combined with {\sc T-Select} and {\sc T-Var} gives us
+              \begin{equation}
+                (y: C) \in \Gamma \andalso \ftype(f, C) = \gamma
+              \end{equation}
+              Let $\Gamma' = \Gamma, x: \gamma$. Similarly to case {\sc E-Var}
+              we see that
+              \begin{equation}
+                
+              \end{equation}
+              
+              
 
           \end{description}
       \end{description}
