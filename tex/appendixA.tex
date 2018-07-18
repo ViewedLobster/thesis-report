@@ -97,7 +97,7 @@
   \end{description}
 \end{proof}
 
-\begin{proposition} \label{prop:isolation_eq}
+\begin{proposition} \label{prop:2.6}
   For any heap $H$ and frame stacks $FS, HS$ we have
   \begin{flalign*}
     &\isolated{(H, FS, HS)}  \iff &\\
@@ -189,12 +189,12 @@
       \Graph(H)).
     \end{gathered}
   \end{equation}
-  By this, proposition~\ref{prop:isolation_eq} and $\isolation(H, HS, GS)$ we have
+  By this, proposition~\ref{prop:2.6} and $\isolation(H, HS, GS)$ we have
   $\isolation(H', HS, GS)$. By \eqref{eq:reachinclusion1} and assumption 5
   we have $H' \vdash P' \tsep \ocr$.
 \end{proof}
 
-\begin{corollary} 
+\begin{corollary} \label{cor:2.11}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
     \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
@@ -533,7 +533,7 @@ obvious.
               By {\sc T-FS1}, \eqref{eq:evar3}, \eqref{eq:evar5},
               \eqref{eq:evar6} we have
               \begin{equation} \label{eq:evar7}
-                H; a \vdash FS'.
+                H'; a \vdash FS'.
               \end{equation}
               By proposition \ref{prop:2.13} and $H \vdash P$ we get
               \begin{equation*} 
@@ -558,7 +558,7 @@ obvious.
               $H' \vdash P' \tsep \gsep$ immediately follows by corollary to
               proposition \ref{prop:2.9}.
             \item[Case {\sc E-Select}:] By rule {\sc E-Select}
-              \begin{equation}
+              \begin{equation} \label{eq:eselect1}
                 \begin{gathered}
                   H = H' \andalso F = \sframe{L, t} \andalso t =
                   \Let{x}{\FSel{y}{f}}{t'} \\
@@ -568,38 +568,329 @@ obvious.
                 \end{gathered}
               \end{equation}
               We immediately see $\vdash H'$. By $\vdash H$ we have
-              \begin{equation}
+              \begin{equation} \label{eq:eselect2}
                 \typeOf(FM(f), H) \stof \ftype(f, C).
               \end{equation}
               $H \vdash P$, propositions \ref{prop:2.13}, \ref{prop:2.14} yields
               $H \vdash Q$ and thus $H' \vdash Q$.
               $H \vdash P$, proposition \ref{prop:2.13} gives 
-              \begin{equation}
+              \begin{equation} \label{eq:eselect3}
                 H; a \vdash FS
               \end{equation}
               which under inspection of rule {\sc T-FS1} immediately gives
-              \begin{equation}
+              \begin{equation} \label{eq:eselect4}
                 H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
                 \andalso H; a \vdash^{s: \sigma} GS.
               \end{equation}
               $\TypeRel{\Gamma}{a}{t}{\sigma}$ together with rule {\sc T-Let}
               gives
-              \begin{equation}
+              \begin{equation} \label{eq:eselect5}
                 \TypeRel{\Gamma}{a}{\FSel{y}{f}}{\gamma} \andalso
                 \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma}.
               \end{equation}
               which combined with {\sc T-Select} and {\sc T-Var} gives us
-              \begin{equation}
+              \begin{equation} \label{eq:eselect6}
                 (y: C) \in \Gamma \andalso \ftype(f, C) = \gamma
               \end{equation}
               Let $\Gamma' = \Gamma, x: \gamma$. Similarly to case {\sc E-Var}
               we see that
-              \begin{equation}
-                
+              \begin{equation} \label{eq:eselect7}
+                \forall z \in L \text{ s.t. } z \neq x . \: \typeOf(L(z), H')
+                \stof \Gamma'(z).
               \end{equation}
+              Furthermore, because of \eqref{eq:eselect2} and $H = H'$
+              \begin{equation} \label{eq:eselect8}
+                \begin{aligned}
+                  \typeOf(L'(x), H') &= \typeOf(FM(f), H') \\
+                                     &\stof \ftype(f, C) \\
+                                     &= \Gamma'(x)
+                \end{aligned}
+              \end{equation}
+              Using {\sc WF-Env, WF-EnvVar}, \eqref{eq:eselect7} and
+              \eqref{eq:eselect8} we have
+              \begin{equation} \label{eq:eselect9}
+                H' \vdash \Gamma';L'.
+              \end{equation}
+              Using {\sc T-FS1} with \eqref{eq:eselect4}, \eqref{eq:eselect5}
+              and \eqref{eq:eselect9} we finally get
+              \begin{equation}
+                H';a \vdash FS'
+              \end{equation}
+              which with the help of {\sc T-Procs} gives us 
+              \begin{equation*}
+                H'\vdash P'.
+              \end{equation*}
               
-              
+              Moving on to OCAP reachability, isolation and global object
+              separation we can easily see that the preconditions of proposition
+              \ref{prop:2.11} holds and thus we immediately get
+              \begin{equation*}
+                H' \vdash P' \tsep \ocr \andalso \isolation(H', P')
+              \end{equation*}
+              Again using corollary to proposition \ref{prop:2.9} we get
+              \begin{equation*}
+                H' \vdash P' \tsep \gsep.
+              \end{equation*}
 
+
+            \item[Case {\sc E-Assign}:] The {\sc E-Assign} rule gives us that
+              \begin{equation} \label{eq:eassign1}
+                \begin{gathered}
+                  F = \sframe{L, t} \andalso t = \Let{x}{\FAss{y}{f}{z}}{t'} \\
+                  F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(z)] \\
+                  L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)
+                  \\
+                  FM' = FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, FM'}]
+                \end{gathered}
+              \end{equation}
+              We begin by proving $\vdash H'$. First we note
+              that only change from $H$ to $H'$ is in what object $o$ maps to.
+              Clearly from \eqref{eq:eassign1} we have
+              \begin{equation} \label{eq:eassign2}
+                \forall o \in \dom(H) = \dom(H'). \: \typeOf(o, H) = \typeOf(o,
+                H')
+              \end{equation}
+              Thus by proposition \ref{prop:2.12} 
+              \begin{equation} \label{eq:eassign3}
+                \forall k \in \Values. \: \typeOf(k, H) = \typeOf(k,
+                H')
+              \end{equation}
+
+              \begin{addmargin}[1em]{1em}
+                \begin{remark}
+                  This means that immediately it is clear that the conditions for
+                  $\vdash H'$ holds for all $o' \in \dom(H')$ s.t. $o' \neq o$.
+                \end{remark}
+              \end{addmargin}
+
+              By $\vdash H$, definition of $H'$ and \eqref{eq:eassign3}
+              \begin{equation} \label{eq:eassign4}
+                \begin{aligned}
+                  \forall f' &\in \fields(C), f' \neq f. \\ 
+                                 &\typeOf(FM'(f'), H') \stof \ftype(f, C)
+                \end{aligned}
+              \end{equation}
+              By $H \vdash P$ and prop. \ref{prop:2.13}
+              \begin{equation} \label{eq:eassign5}
+                H;a \vdash FS.
+              \end{equation}
+              This and {\sc T-FS1} yields
+              \begin{equation}\label{eq:eassign6}
+                H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
+                \andalso H; a \vdash^{s: \sigma} GS
+              \end{equation}
+              By $H;a \vdash^{s: \sigma} GS$, \eqref{eq:eassign2} and prop.
+              \ref{prop:2.14} we have 
+              \begin{equation} \label{eq:eassign7} 
+                H'; a \vdash^{s: \sigma} GS
+              \end{equation}
+              $\TypeRel{\Gamma}{a}{t}{\sigma}$ and {\sc T-Let} gives
+              \begin{equation} \label{eq:eassign8}
+                \TypeRel{\Gamma}{a}{\FAss{y}{f}{z}}{\gamma} \andalso
+                \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma}
+              \end{equation}
+              which whith {\sc T-Assign} gives us
+              \begin{equation} \label{eq:eassign9}
+                \TypeRel{\Gamma}{a}{y}{C'} \andalso \ftype(f, C') = \alpha \\
+                \TypeRel{\Gamma}{a}{z}{\alpha'} \andalso \alpha' \stof \alpha
+              \end{equation}
+              By {\sc T-Var} and \TypeRel{\Gamma}{a}{y}{C'}
+              \begin{equation}\label{eq:eassign10}
+                (y: C') \in \Gamma 
+              \end{equation}
+              or equivalently $\Gamma(y) = C'$.
+              Similarly
+              \begin{equation} \label{eq:eassign11}
+                (z: \alpha') \in \Gamma.
+              \end{equation}
+              By $H \vdash \Gamma; L$ we have $H \vdash \Gamma; L; z$ and thus
+              \begin{equation} \label{eq:eassign12}
+                \begin{aligned}
+                  \typeOf(L(z), H) &= \alpha'' \\ 
+                                   &\stof \alpha' \\ 
+                                   &\stof \alpha \\ 
+                                   &= \ftype(f, C') \\ 
+                                   &= \ftype(f, C)
+                \end{aligned}
+              \end{equation}
+              where the last equality comes from the fact that the classes are
+              well formed. By \eqref{eq:eassign1} we have $FM'(f) = L(z)$ and
+              combining this with \eqref{eq:eassign12} we get
+              \begin{equation} \label{eq:eassign13}
+                \typeOf(FM'(f), H) \stof \ftype(f, C).
+              \end{equation}
+              Combined with \eqref{eq:eassign3}, \eqref{eq:eassign4} and the
+              remark above we get
+              \begin{equation*} 
+                \vdash H'
+              \end{equation*}
+
+              $H' \vdash P'$ follows similarly to {\sc E-Var} case.
+
+              We now move on to OCAP reachability, isolation and global object
+              separation.  Note that the only insteresting case is if $L(z)$ is
+              an object refence, since otherwise the preconditions to corollary
+              \ref{cor:2.11} holds and we are done similarly to previous cases.
+              Therefore we assume $L(z) \in \dom(H)$.  To help our efforts we
+              state the following lemma.
+
+              \begin{lemma} \label{lem:2.15}
+                Let $HS|_b^e \in Q$ and $L(z) \in \dom(H)$. Then
+                \begin{equation*}
+                  \begin{aligned}
+                    &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(FS, H), \Graph(H))
+                  \end{aligned}
+                \end{equation*}
+                and
+                \begin{equation*}
+                  \begin{aligned}
+                    &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(HS, H), \Graph(H)) \cup  \\
+                    &\reachable(\accRoots(FS, H), \Graph(H)).
+                  \end{aligned}
+                \end{equation*}
+                Furthermore, if $a = \ocap$ or $b = \ocap$ then
+                \begin{equation*}
+                  \begin{aligned}
+                    &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(HS, H), \Graph(H))
+                  \end{aligned}
+                \end{equation*}
+              \end{lemma}
+
+              \begin{proof}
+                Let $\Graph(H) = (V_H, E_H)$. Then clearly
+                \begin{equation}
+                  \Graph(H') = \left(V_H, E_H \setminus \{(o_y, FM(f))_f \} \cup
+                  \{(o_y, o_z)_f \} \right)
+                \end{equation}
+                Let $L(y) = o_y$. We prove each part separately. 
+                We begin with
+                \begin{equation*}
+                  \begin{aligned}
+                    &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(FS, H), \Graph(H)).
+                  \end{aligned}
+                \end{equation*}
+                Let
+                \begin{equation*}
+                  q \in \reachable(\accRoots(FS', H'), \Graph(H')).
+                \end{equation*}
+                Because of reachability equivalence (proposition
+                \ref{prop:reacheq}) this means
+                \begin{equation}
+                  \begin{aligned}
+                    o &\in \accRoots(FS', H'). \\
+                    & \exists \text{ path } o_0, \dots, o_n \in \Graph(H')
+                    \text{ s.t. } o_0 = o, o_n = q
+                  \end{aligned}
+                \end{equation}
+                Let $f_i$ the associated field names from which the path is
+                formed, i.e. $(o_i, o_{i+1}) \in \Graph(H')$.
+                Clearly $o \in \accRoots(FS, H)$. 
+
+                There are two cases:
+                \begin{enumerate}
+                  \item For some $i \in \left\{ 0, \dots, n-1 \right\}$ $o_i =
+                    o_y, o_{i+1} = o_z$ and $f_i = f$.
+                  \item There is no such $i$.
+                \end{enumerate}
+                We prove each case separately. For case 1 let $i$ be the last
+                such index. Examine the path 
+                \begin{equation}
+                  o_{i+1}, \dots, o_n
+                \end{equation}
+                Clearly this path is in $\Graph(H)$ since we chose $i$ to be the
+                last index that fulfills case 1.  Since $o_{i+1} = o_z$ and
+                $o_z$ obviously is in $\accRoots(FS, H)$
+                \begin{equation}
+                  q \in \reachable(\accRoots(FS, H), \Graph(H)).
+                \end{equation}
+
+                For case 2 the new edge $(o_y, o_z)_f$ is not part of the path.
+                Thus all edges $(o_i, o_{i+1})_{f_i}$ are in $\Graph(H)$ and and
+                thus the path $o_0, \dots, o_n$ is a path in $\Graph(H)$ aswell.
+                This means $q \in \reachable(\accRoots(FS, H), \Graph(H))$ which
+                concludes the proof of the first part of the lemma.
+
+                To prove 
+                \begin{equation*}
+                  \begin{aligned}
+                    &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(HS, H), \Graph(H)) \cup  \\
+                    &\reachable(\accRoots(FS, H), \Graph(H)).
+                  \end{aligned}
+                \end{equation*}
+                take any
+                \begin{equation}
+                  q \in \reachable(\accRoots(HS, H'), \Graph(H')).
+                \end{equation}
+                Similarly to before
+                \begin{equation}
+                  \begin{aligned}
+                    o &\in \accRoots(HS, H'). \\
+                    & \exists \text{ path } o_0, \dots, o_n \in \Graph(H')
+                    \text{ s.t. } o_0 = o, o_n = q
+                  \end{aligned}
+                \end{equation}
+                We let $f_i$ be as before.
+                We have exactly the same cases. For case 1 we let $i$ be the last
+                such index. Then similarly to before we get that $o_{i+1} \in
+                \accRoots(FS, H)$ and $q \in \reachable(\accRoots(FS, H),
+                \Graph(H))$.
+                
+                Case 2 is analogous and reaches the conclusion that $q \in
+                \reachable(\accRoots(HS, H), \Graph(H))$.
+
+                Lastly we prove that if $a = \ocap$ or $b = \ocap$ then
+                \begin{equation*}
+                  \begin{aligned}
+                    &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(HS, H), \Graph(H)).
+                  \end{aligned}
+                \end{equation*}
+                To prove this implication we assume that either $a = \ocap$ or
+                $b = \ocap$. As before we take any
+                \begin{equation}
+                  q \in \reachable(\accRoots(HS, H'), \Graph(H')).
+                \end{equation}
+                Similarly we get that there there must be an $o \in
+                \accRoots(HS, H')$ such that
+                \begin{equation}
+                  \exists \text{ path } o_0, \dots, o_n \in \Graph(H') \text{ s.t. } o_0 = o,
+                  o_n = q
+                \end{equation}
+                with related field names $f_i$. We get the exact same cases as
+                above, but we instead let $i$ be the first index with the
+                properties described. This means we have the edge $(o_y, o_z)_f$
+                as part of our path. Specifically this means
+                \begin{equation}
+                  o_y \in \reachable(\accRoots(FS, H), \Graph(H))
+                \end{equation}
+                since $o_0, \cdot, o_i$ is a path in \Graph from $o$ to $o_y$.
+                Moreover
+                \begin{equation}
+                  o_y \in \reachable(\accRoots(FS, H), \Graph(H))
+                \end{equation}
+                since $(y \mapsto o_y) \in L$ and from the {\sc E-Assign} rule
+                definition it is clear that
+                \begin{equation}
+                  \typeOf(o_y, H) \not\stof \CellType.
+                \end{equation}
+                But this contradicts isolation. To see this first  note that
+                $H \vdash P$ together with $a = \ocap$ or $b = \ocap$ implies
+                $\isolated(H, FS, HS)$. Then apply proposition~\ref{prop:2.6}.
+                
+                For the second case it is clear that $o_0, \dots, o_n$ is also a
+                path from $o$ to $q$ in $\Graph(H)$ which immediately implies
+                $q \in \reachable(\accRoots(HS, H), \Graph(H))$.
+
+                This concludes the proof of the lemma.
+              \end{proof}
+
+
+              
           \end{description}
       \end{description}
   \end{description}
