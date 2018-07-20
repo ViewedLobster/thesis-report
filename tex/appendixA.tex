@@ -280,7 +280,7 @@ obvious.
   this in the following corollary.
 \end{remark}
 
-\begin{corollary}
+\begin{corollary} \label{cor:2.9}
   If for any $H, H', P, P'$ such that $\vdash H, H \vdash P$ and $H, P
   \Rrightarrow^{R^{\alpha, \beta}} H', P'$
   \begin{equation*}
@@ -736,27 +736,27 @@ obvious.
 
               \begin{lemma} \label{lem:2.15}
                 Let $HS|_b^e \in Q$ and $L(z) \in \dom(H)$. Then
-                \begin{equation*}
+                \begin{equation} \label{eq:lem2.15a}
                   \begin{aligned}
                     &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
                     &\reachable(\accRoots(FS, H), \Graph(H))
                   \end{aligned}
-                \end{equation*}
+                \end{equation}
                 and
-                \begin{equation*}
+                \begin{equation}\label{eq:lem2.15b}
                   \begin{aligned}
                     &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
                     &\reachable(\accRoots(HS, H), \Graph(H)) \cup  \\
                     &\reachable(\accRoots(FS, H), \Graph(H)).
                   \end{aligned}
-                \end{equation*}
+                \end{equation}
                 Furthermore, if $a = \ocap$ or $b = \ocap$ then
-                \begin{equation*}
+                \begin{equation}\label{eq:lem2.15c}
                   \begin{aligned}
                     &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
                     &\reachable(\accRoots(HS, H), \Graph(H))
                   \end{aligned}
-                \end{equation*}
+                \end{equation}
               \end{lemma}
 
               \begin{proof}
@@ -766,14 +766,7 @@ obvious.
                   \{(o_y, o_z)_f \} \right)
                 \end{equation}
                 Let $L(y) = o_y$. We prove each part separately. 
-                We begin with
-                \begin{equation*}
-                  \begin{aligned}
-                    &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
-                    &\reachable(\accRoots(FS, H), \Graph(H)).
-                  \end{aligned}
-                \end{equation*}
-                Let
+                We begin with \eqref{eq:lem2.15a}.  Let
                 \begin{equation*}
                   q \in \reachable(\accRoots(FS', H'), \Graph(H')).
                 \end{equation*}
@@ -814,15 +807,7 @@ obvious.
                 This means $q \in \reachable(\accRoots(FS, H), \Graph(H))$ which
                 concludes the proof of the first part of the lemma.
 
-                To prove 
-                \begin{equation*}
-                  \begin{aligned}
-                    &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
-                    &\reachable(\accRoots(HS, H), \Graph(H)) \cup  \\
-                    &\reachable(\accRoots(FS, H), \Graph(H)).
-                  \end{aligned}
-                \end{equation*}
-                take any
+                To prove \eqref{eq:lem2.15b} take any
                 \begin{equation}
                   q \in \reachable(\accRoots(HS, H'), \Graph(H')).
                 \end{equation}
@@ -844,14 +829,8 @@ obvious.
                 \reachable(\accRoots(HS, H), \Graph(H))$.
 
                 Lastly we prove that if $a = \ocap$ or $b = \ocap$ then
-                \begin{equation*}
-                  \begin{aligned}
-                    &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
-                    &\reachable(\accRoots(HS, H), \Graph(H)).
-                  \end{aligned}
-                \end{equation*}
-                To prove this implication we assume that either $a = \ocap$ or
-                $b = \ocap$. As before we take any
+                \eqref{eq:lem2.15c} holds. To prove this implication we assume
+                that either $a = \ocap$ or $b = \ocap$. As before we take any
                 \begin{equation}
                   q \in \reachable(\accRoots(HS, H'), \Graph(H')).
                 \end{equation}
@@ -889,8 +868,184 @@ obvious.
                 This concludes the proof of the lemma.
               \end{proof}
 
+              Continuing with the proof of case {\sc E-Assign} first off we use
+              the lemma to prove OCAP reachability.  We first take any thread
+              $HS|_b^e \in Q$ Studying the $\ocr$ rules it is clear that we can
+              prove that it holds trivially for any thread $HS|_b^e$ for which
+              $b = \nocap$.  Therefore we from now on assume that $b = \ocap$.
+              Studying the $\ocr$ rules a bit more we note that $H \vdash P
+              \tsep \ocr$ implies $H;b \vdash HS \tsep \ocr$ which in turn
+              implies
+              \begin{equation}\label{eq:eassign14}
+                \begin{aligned}
+                  \forall o &\in \reachable(\accRoots(HS, H), H). \\
+                            &\ocap(\typeOf(o, H)).
+                \end{aligned}
+              \end{equation}
+              It is also clear that $H';b \vdash HS \tsep \ocr$ if
+              \begin{equation}
+                \begin{aligned}
+                  \forall o &\in \reachable(\accRoots(HS, H'), \Graph(H')). \\
+                            &\ocap(\typeOf(o, H')).
+                \end{aligned}
+              \end{equation}
+              Equation \eqref{eq:eassign14} combined with lemma~\ref{lem:2.15} and
+              \eqref{eq:eassign2} makes it clear that this is in fact the case.
 
-              
+              In order to prove $H' \vdash P' \tsep \ocr$ the only thing that
+              remains is to show $H';a \vdash FS' \tsep \ocr$. This is anologous
+              to the above proof of $H';b \vdash HS \tsep \ocr$. Thus we have
+              \begin{equation*}
+                H' \vdash P' \tsep \gsep.
+              \end{equation*}
+
+              $\isolation(H', P')$ follows immediately from
+              proposition~\ref{prop:2.6}, lemma~\ref{lem:2.15} and applying rule
+              {\sc ISO-Procs}. We also note that nowhere have we relied on the
+              fact that $H~\vdash~P~\tsep~\gsep$ so using
+              corollary~\ref{cor:2.9} we also have $H'~\vdash~P'~\tsep~\gsep$.
+
+            % TODO add definition of \default, maybe \fdecls also
+            \item[Case {\sc E-New}:] According to rule {\sc E-New}
+              \begin{equation} \label{eq:enew1}
+                \begin{gathered} 
+                  F = \sframe{L, t} \andalso t = \Let{x}{\New{C}}{t'} \\
+                  F' = \sframe{L', t'} \andalso L' = L[x \mapsto o_x] \\
+                  o_x \text{ fresh object reference } \\
+                  FM = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in
+                  \fdecls(C)] \\
+                  H' = H[o_x \mapsto \Obj{C, FM}]
+                \end{gathered}
+              \end{equation}
+              If we let $\Graph(H) = (V_H, E_H)$ it is easy to see that
+              \begin{equation}
+                \Graph(H') = ( V_H \cup \left\{ o_x \right\}, E_H )
+              \end{equation}
+              By definition of $\default$
+              \begin{equation}
+                \begin{aligned}
+                  \forall f &\in \fields(C).\\
+                  &f \in \dom(FM) \land \typeOf(FM(f), H') \stof \ftype(f, C)
+                \end{aligned}
+              \end{equation}
+              Also $\forall o \in \dom(H'), o \neq o_x. H(o) = H'(o)$.
+              Combined this implies $\vdash H'$.
+
+              % TODO change all cases to include the subtype part of T-FS1 and
+              % T-FS2
+              By proposition~\ref{prop:2.13}
+              \begin{equation} 
+                H \vdash Q \andalso H; a \vdash FS.
+              \end{equation}
+              Propositions \ref{prop:2.13} and \ref{prop:2.14} implies
+              \begin{equation} \label{eq:enew-typing1}
+                H' \vdash Q.
+              \end{equation}
+              $H;a \vdash FS$ and {\sc T-FS1} yields
+              \begin{equation}
+                \begin{gathered}
+                  H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'}
+                  \\
+                  \sigma' \stof \sigma \andalso H;a \vdash^{s: \sigma} GS
+                \end{gathered} 
+              \end{equation}
+              Applying {\sc T-Let} and {\sc T-New} we get
+              \begin{equation} \label{eq:enew-typing5}
+                \TypeRel{\Gamma, x: C}{a}{t'}{\sigma'} \andalso a = \ocap
+                \implies \ocap(C)
+              \end{equation}
+              Letting $\Gamma' = \Gamma, x: C$ we have
+              \begin{equation} \label{eq:enew-typing2}
+                \TypeRel{\Gamma'}{a}{t'}{\sigma'}
+              \end{equation}
+              We have that $H' \vdash \Gamma';L';x$ since $\typeOf(L'(x), H')
+              \stof \Gamma'(x)$. Thus we have
+              \begin{equation} \label{eq:enew-typing3}
+                H' \vdash \Gamma'; L'
+              \end{equation}
+              By proposition \ref{prop:2.14}
+              \begin{equation} \label{eq:enew-typing4}
+                H';a \vdash^{s: \sigma} GS
+              \end{equation}
+              Using {\sc T-FS1} together with \eqref{eq:enew-typing2},
+              \eqref{eq:enew-typing3} and \eqref{eq:enew-typing4} we get
+              \begin{equation}
+                H';a \vdash FS'
+              \end{equation}
+              and combined with \eqref{eq:enew-typing1} and {\sc T-Procs} we finally
+              get
+              \begin{equation}
+                H' \vdash P'
+              \end{equation}
+
+              Moving on to OCAP reachability. It is easy to prove that
+              \begin{equation} \label{eq:enew-ocr1}
+                \begin{aligned}
+                  &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
+                  &\reachable(\accRoots(HS, H), \Graph(H)) 
+                \end{aligned}
+              \end{equation}
+              and
+              \begin{equation} \label{eq:enew-ocr2}
+                \begin{aligned}
+                  &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
+                  &\reachable(\accRoots(FS, H), \Graph(H)) \cup \left\{ o_x
+                  \right\}.
+                \end{aligned}
+              \end{equation}
+              Clearly $\typeOf(o_x, H') = C$. Using this fact together with
+              \eqref{eq:enew-typing5}, \eqref{eq:enew-ocr1} and
+              \eqref{eq:enew-ocr2} it is easily shown that
+              \begin{equation}
+                H' \vdash P' \tsep \ocr.
+              \end{equation}
+
+              Similarly it is easy to show $\isolation(H', P')$ using
+              \eqref{eq:enew-ocr1}, \eqref{eq:enew-ocr2} together with
+              proposition~\ref{prop:2.6}. Since the isolation proof never relies
+              on $H \vdash P \tsep \gsep$ we can apply
+              corollary~\ref{cor:2.9}. Thus we have proved
+              \begin{equation}
+                \isolation(H', P') \andalso H' \vdash P' \tsep \gsep
+              \end{equation}
+
+            \item[Case {\sc E-NewCell}:] We have
+              \begin{equation}
+                H' = H[o \mapsto \Cell{DEP, l}] \andalso DEP = \emptyset
+              \end{equation}
+              for some fresh object reference $o$. 
+              Since $DEP$ is empty \eqref{eq:defwth2} holds vacuously and since
+              all other heap elements are the same as in $H$ we have
+              \begin{equation}
+                \vdash H'
+              \end{equation}
+              Proving the rest is similar to case {\sc E-New}.
+
+            \item[Case {\sc E-Put}:] According to rule {\sc E-Put}
+              \begin{equation}
+                \begin{gathered}
+                  F = \sframe{L, t} \andalso t = \Let{x}{\Put{y}{z}}{t'} \\
+                  F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(y)] \\
+                  L(y) = o_y \andalso H(o_y) = \Cell{DEP, l} \\
+                  L(z) = l' \andalso H' = H[o_y \mapsto \Cell{DEP, l \sqcup l'}]
+                \end{gathered}
+              \end{equation}
+              Since the only change is $l$ being updated to $l \sqcup l'$, by
+              studying the definition for a well typed heap it is easy to
+              conclude that
+              \begin{equation}
+                \vdash H'.
+              \end{equation}
+              The proof of $H' \vdash P'$ follows similar to case {\sc E-Var}.
+              The preconditions of corollary~\ref{cor:2.11} clearly holds and we
+              can thus also apply corollary~\ref{cor:2.9} to get
+              \begin{equation}
+                H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
+                \vdash P' \tsep \gsep
+              \end{equation}
+            \item[Case {\sc E-When}]
+
+
           \end{description}
       \end{description}
   \end{description}

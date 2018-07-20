@@ -445,20 +445,22 @@ Figure~\ref{fig:expr_typing}.
   $\forall o \in \dom{(H)}$:
 
   If $H(o) = \Obj{C, FM}$ then
-  \begin{align}
-    \label{eq:class_ok}
-    \forall f &\in \fields{(C)}. \notag\\ 
-    &f \in \dom{(FM)} \: \land \notag\\ &\typeOf{(FM(f), H)} \stof \ftype{(f, C)}
-  \end{align}
+  \begin{equation} \label{eq:defwth1}
+    \begin{aligned}
+      \forall f &\in \fields{(C)}. \notag\\ 
+      &f \in \dom{(FM)} \: \land \notag\\ &\typeOf{(FM(f), H)} \stof \ftype{(f, C)}
+    \end{aligned}
+  \end{equation}
   and if $H(o) = \Cell{DEP, l}$ then
-  \begin{align}
-    \label{eq:cell_ok}
-    \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^d \in DEP. \notag\\
-    &\forall (x \mapsto k) \in L_{\text{env}}.\: \typeOf{(k, H)} \stof
-    \CellType \: \land \notag\\
-    &\TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), z:
-    \LatType}{\ocap}{t}{\gamma} 
-  \end{align}
+  \begin{equation} \label{eq:defwth2}
+    \begin{aligned}
+      \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^d \in DEP. \notag\\
+      &\forall (x \mapsto k) \in L_{\text{env}}.\: \typeOf{(k, H)} \stof
+      \CellType \: \land \notag\\
+      &\TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), z:
+      \LatType}{\ocap}{t}{\gamma} 
+    \end{aligned}
+  \end{equation}
 \end{definition}
 
 
@@ -535,15 +537,16 @@ Figure~\ref{fig:expr_typing}.
 
   \scrule{T-FS1}
   { F = \Frame{L}{t}{x} \andalso H \vdash \Gamma; L \\
-  \TypeRel{\Gamma}{a}{t}{\sigma} \andalso H; a \vdash^{x: \sigma} FS }
+  \TypeRel{\Gamma}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma \andalso H; a \vdash^{x: \sigma} FS }
   { H; a \vdash F \circ FS }
   
   \RuleSpace{}
 
   \scrule{T-FS2}
   { F = \Frame{L}{t}{y} \andalso H \vdash \Gamma; L \\
-  \TypeRel{\Gamma, x: \sigma}{a}{t}{\tau} \andalso H; a \vdash^{y: \tau} FS }
-  { H; a \vdash^{x: \sigma} F \circ FS }
+  \TypeRel{\Gamma, x: \tau}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma 
+  \andalso H; a \vdash^{y: \sigma} FS }
+  { H; a \vdash^{x: \tau} F \circ FS }
 
   \caption{Rules for typing frame stacks under some heap $H$ and effect $a$.}
   \label{fig:fs_typing}
