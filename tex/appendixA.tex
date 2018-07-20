@@ -1043,10 +1043,123 @@ obvious.
                 H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
                 \vdash P' \tsep \gsep
               \end{equation}
-            \item[Case {\sc E-When}]
+            \item[Case {\sc E-When}:] From rule {\sc E-When} we know
+              \begin{equation}
+                \begin{gathered}
+                  F = \sframe{L, t} \\ 
+                  t = \Let{x}{\When{y}{z}{\CB{\overline{cap}}{w}{t''}}}{t'} \\
+                  F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(y)] \\
+                  L(y) = o_y \andalso H(o_y) = \Cell{DEP, l} \andalso L(z) = l' \\
+                  L_{\text{env}} = [u \mapsto L(u'): (\Capt{u}{u'}) \in
+                  \overline{cap}] \andalso cb = (L_{\text{env}}, w \Rightarrow
+                  t'') \\
+                  d \text{ fresh thread id} \andalso DEP' = DEP \cup (l', cb)^d
+                  \\
+                  H' = H[o \mapsto \Cell{DEP', l}]
+                \end{gathered}
+              \end{equation}
+              Since only object on heap changed is $H(o_y)$ we have shown
+              $\vdash H'$ if we can show that
+              \begin{equation}
+                \begin{aligned}
+                  \forall (l''&, (L'_{\text{env}}, z' \Rightarrow t'''))^{d'} \in
+                  DEP'. \\
+                  &\forall (x \mapsto k) \in L'_{\text{env}}.\: \typeOf{(k, H')} \stof
+                  \CellType \: \land \\
+                  &\TypeRel{\Gamma_{\CellType{}}(L'_{\text{env}}), z':
+                  \LatType}{\ocap}{t'''}{\gamma} 
+                \end{aligned}
+              \end{equation}
+              We note that $\dom(H) = \dom(H')$ and that
+              \begin{equation}
+                \begin{aligned}
+                  \forall o &\in \dom(H).  \\
+                    &\typeOf(o, H) = \typeOf(o, H')
+                \end{aligned}
+              \end{equation}
+              and thus
+              \begin{equation}
+                \begin{aligned}
+                  \forall k \in \Values h. \\
+                    &\typeOf(k, H) = \typeOf(k, H')
+                \end{aligned}
+              \end{equation}
+              Because of this
+              \begin{equation}
+                \begin{aligned}
+                  \forall (l''&, (L'_{\text{env}}, z' \Rightarrow t'''))^{d'} \in
+                  DEP' \text{ s.t. } (l'', (L'_{\text{env}}, z' \Rightarrow t'''))^{d'} \neq
+                  (l', cb)^d. \\
+                  &\forall (x \mapsto k) \in L'_{\text{env}}.\: \typeOf{(k, H')} \stof
+                  \CellType \: \land \\
+                  &\TypeRel{\Gamma_{\CellType{}}(L'_{\text{env}}), z':
+                  \LatType}{\ocap}{t'''}{\gamma} 
+                \end{aligned}
+              \end{equation}
+              Thus what remains to prove $\vdash H'$ is to show that
+              \begin{equation} \label{eq:ewhen-h1}
+                \forall (x \mapsto k) \in L_{\text{env}}.\: \typeOf{(k, H')} \stof
+                \CellType
+              \end{equation}
+              and
+              \begin{equation} \label{eq:ewhen-h2}
+                \TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), w:
+                \LatType}{\ocap}{t''}{\gamma}.
+              \end{equation}
+              Similarly to earlier cases, using typing rules we can easily prove
+              that
+              \begin{equation}\label{eq:ewhen-h3}
+                H \vdash \Gamma; L \andalso \forall (\Capt{u}{u'}) \in
+                \overline{cap}. \: \TypeRel{\Gamma}{a}{u'}{\CellType} 
+              \end{equation}
+              and
+              \begin{equation} \label{eq:ewhen-h4}
+                \begin{gathered}
+                  \Gamma_{\text{cells}} = [u \mapsto \CellType: (\Capt{u}{u'}) \in
+                  \overline{cap}] \\
+                  \TypeRel{\Gamma_{\text{cells}}, w:
+                  \LatType}{\ocap}{t''}{\gamma'}.
+                \end{gathered}
+              \end{equation}
+              \eqref{eq:ewhen-h4} is just a different formulation of
+              \eqref{eq:ewhen-h2} since the actual value of $\gamma'$ does not
+              matter. Moreover with \eqref{eq:ewhen-h3} we can easily show
+              \eqref{eq:ewhen-h2} by using the definitions of {\sc WF-EnvVar}
+              and {\sc WF-Env}. Thus we are done and have
+              \begin{equation}
+                \vdash H'.
+              \end{equation}
+              Proof of $H' \vdash P'$ is similar to case {\sc E-Var} and
+              similarly to other cases we can apply corollaries \ref{cor:2.11}
+              and \ref{cor:2.9} to get
+              \begin{equation}
+                H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
+                \vdash P' \tsep \gsep.
+              \end{equation}
 
-
+              {\bf This concludes the case} {\sc E-FProp}.
           \end{description}
+        \item[Case {\sc E-Call}:] From rule {\sc E-Call}
+          % TODO fix E-Call definition error in L' def
+          % TODO fix E-Ret definition weirdness
+          \begin{equation}
+            \begin{gathered}
+              FS = \sframe{L, \Let{x}{\Call{y}{m}{z}}{t}} \circ GS \\
+              FS' = \xframe{L', t'}^x \circ \sframe{L, t} \circ GS \\
+              L(y) = o_y \andalso H(o_y) = \Obj{C, FM} \\
+              \mbody(m, C) = w \to t' \\
+              L_{\text{base}} =
+              \begin{cases}
+                \emptyset & \text{ if } a = \ocap \\
+                L_0       & \text{ if } a = \nocap
+              \end{cases} \\
+              L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)] \\
+              H = H'
+            \end{gathered}
+          \end{equation}
+
+          
+
       \end{description}
   \end{description}
 \end{proof}
