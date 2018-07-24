@@ -1139,30 +1139,452 @@ obvious.
 
               {\bf This concludes the case} {\sc E-FProp}.
           \end{description}
+
         \item[Case {\sc E-Call}:] From rule {\sc E-Call}
           % TODO fix E-Call definition error in L' def
           % TODO fix E-Ret definition weirdness
-          \begin{equation}
+          \begin{equation} \label{eq:ecall1}
             \begin{gathered}
-              FS = \sframe{L, \Let{x}{\Call{y}{m}{z}}{t}} \circ GS \\
+              FS = \sframe{L, t} \circ GS \andalso t = \Let{x}{\Call{y}{m}{z}}{t''}\\
               FS' = \xframe{L', t'}^x \circ \sframe{L, t} \circ GS \\
               L(y) = o_y \andalso H(o_y) = \Obj{C, FM} \\
-              \mbody(m, C) = w \to t' \\
+              \mbody(m, C) = u \to t' \\
               L_{\text{base}} =
               \begin{cases}
                 \emptyset & \text{ if } a = \ocap \\
                 L_0       & \text{ if } a = \nocap
               \end{cases} \\
-              L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)] \\
+              L' = L_{\text{base}}[\This \mapsto L(y), u \mapsto L(z)] \\
               H = H'
             \end{gathered}
           \end{equation}
+          Since $H = H'$ 
+          \begin{equation*}
+            \vdash H'.
+          \end{equation*}
+          By propositions~\ref{prop:2.13} and~\ref{prop:2.14}, $H = H'$ and
+          $H \vdash P$ we have
+          \begin{equation}
+            \begin{gathered}
+              H' \vdash Q \andalso H;a \vdash FS
+            \end{gathered}
+          \end{equation}
+          Using the second of these and rule {\sc T-FS1} we have
+          \begin{equation} \label{eq:ecall-hp0}
+            \begin{gathered}
+              H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma} \\
+              H; a \vdash^{s:\sigma} GS
+            \end{gathered}
+          \end{equation}
+          Since $H = H'$
+          \begin{equation} \label{eq:ecall-hp5}
+            H' \vdash \Gamma;L \andalso H'; a \vdash^{s: \sigma} GS.
+          \end{equation}
+          Using $\TypeRel{\Gamma}{a}{t}{\sigma}$ with rules {\sc T-Let, T-Call} and
+          {\sc T-Var} we have that
+          \begin{equation} \label{eq:ecall-hp1}
+            \begin{gathered}
+              \TypeRel{\Gamma}{a}{\Call{y}{m}{z}}{\tau} \andalso \TypeRel{\Gamma,
+              x: \tau}{a}{t''}{\sigma} \\
+              \Gamma(y) = C' \andalso \mtype(m, C') = \gamma \mapsto \tau \\
+              \Gamma(z) = \gamma' \andalso \gamma' \leq \gamma
+            \end{gathered}
+          \end{equation}
+          Using {\sc T-FS2} with \eqref{eq:ecall-hp0}, \eqref{eq:ecall-hp5} and
+          \eqref{eq:ecall-hp1} we get 
+          \begin{equation} \label{eq:ecall-hp6}
+            H';a \vdash^{x: \tau} FS
+          \end{equation}
+          By $H' \vdash \Gamma;L$ we have
+          \begin{equation} \label{eq:ecall-hp2}
+            \typeOf(L'(u), H') = \typeOf(L(z), H') \stof \gamma' \stof \gamma
+          \end{equation}
+          and similarly
+          \begin{equation} \label{eq:ecall-hp3}
+            \typeOf(L'(\This), H') = \typeOf(L(y), H') \stof C \stof C'
+          \end{equation}
 
+          Now, $a$ can be either $\nocap$ or $\ocap$. We first assume that $a =
+          \nocap$.
+
+          By well typedness of classes together with the above we must have a
+          class $C''$ s.t. $C \stof C'' \stof C'$ where such that
+          \begin{equation}
+            C'' \vdash \MethodDef{m}{u}{\gamma}{\tau}{t''}
+          \end{equation}
+          which in turn means that
+          \begin{equation} \label{eq:ecall-hp4}
+            \TypeRel{\Gamma_0,\This: C'', u: \gamma}{\nocap}{t''}{\tau'}
+            \andalso \tau' \stof \tau.
+          \end{equation}
+          We let
+          \begin{equation}
+            \Gamma_{\nocap}' = \Gamma_0, \This: C'', u: \gamma.
+          \end{equation}
+          It is not hard to prove that 
+          \begin{equation} \label{eq:ecall-hp7}
+            H' \vdash \Gamma_{\nocap}'; L'.
+          \end{equation}
+          By \eqref{eq:ecall-hp4} we clearly have
+          \begin{equation}
+            \TypeRel{\Gamma_{\nocap}'}{a}{t'}{\tau'} \andalso \tau' \stof \tau
+          \end{equation}
+          Using this, \eqref{eq:ecall-hp5}, \eqref{eq:ecall-hp6},
+          \eqref{eq:ecall-hp7} and rule {\sc
+          T-FS1} we have
+          \begin{equation}
+            H';a \vdash FS'
+          \end{equation}
+          Combining this with $H' \vdash Q$ and {\sc T-Procs} we get
+          \begin{equation}
+            H' \vdash P'.
+          \end{equation}
+
+          Now assume that $a = \ocap$. By $H \vdash P \tsep \ocr$ we have
+          \begin{equation}
+            \ocr(FS, H)
+          \end{equation}
+          and thus
+          \begin{equation}
+            \begin{aligned}
+              \forall q &\in \reachable(\accRoots(FS, H), \Graph(H)) \\
+              & \ocap(\typeOf(q, H))
+            \end{aligned}
+          \end{equation}
+          Of course this means that $\ocap(\typeOf(L(y), H))$ or equivalently
+          $\ocap(C)$. The rest is similar to the case where $a = \nocap$
+          replacing $\Gamma_{\nocap}'$ with 
+          \begin{equation}
+            \Gamma'_{\ocap} = \This: C'', u: \gamma
+          \end{equation}
+          This can be done because of the OCAP typing rules in
+          Figure~\ref{fig:ocap_typing} which demands that: all parent classes of
+          $C$ must also be OCAP typed which means $\ocap(C'')$, and thus that
+          all $C''$s methods are typed in an environment without $\Gamma_0$.
+          Hence the difference between $\Gamma'_{\nocap}$ and $\Gamma'_{\ocap}$.
+
+
+          % TODO sttate and prove proposition about ocr iff ocr of P-tilde
+          We now prove isolation, OCAP reachability and global object
+          separation. Instead of working with $P$ directly we instead use
+          $\tilde{P}$. It is clear from propositions~\ref{prop:2.8} and % FIXME 
+          that in order to show 
+          \begin{equation}
+            H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
+            \vdash P' \tsep \gsep
+          \end{equation}
+          we can instead show
+          \begin{equation}
+            H' \vdash \tilde{P'} \andalso \isolation(H', \tilde{P'}).
+          \end{equation}
+
+          To show this we start by using propositions~\ref{prop:2.8} and %FIXME 
+          to get
+          \begin{equation}
+            H \vdash \tilde{P} \andalso \isolation(H, \tilde{P})
+          \end{equation}
+          We also note that 
+          \begin{equation}
+            \tilde{P} = \tilde{Q} \cup_D \left\{ FS|_a^d \right\} \text{ and }
+            \tilde{P'} = \tilde{Q} \cup_D \left\{ FS'|_a^d \right\} 
+          \end{equation}
+
+          We first assume that $a = \ocap$. It is very
+          easy to see that
+          \begin{equation}
+            \accRoots(FS', H') \subseteq \accRoots(FS, H)
+          \end{equation}
+          and that
+          \begin{equation}
+            \begin{aligned}
+              \forall HS|b^e &\in \tilde{Q}. \\
+              &\accRoots(FS, H') = \accRoots(HS, H)
+            \end{aligned}
+          \end{equation}
+          Clearly then the preconditions to corollary~\ref{cor:2.11} holds and
+          we have $\isolation(H', \tilde{P'})$ and $H' \vdash \tilde{P'} \tsep
+          \ocr$. Thus we are done.
+
+          Now instead assume $a = \nocap$. Since $\isolation(H, \tilde{P})$ we have
+          $\isolated(H, HS_1, HS_2)$ for any two distinct $HS_1|_b^e, HS_2|_c^f
+          \in \tilde{Q}$ such that $b = \ocap$ or $c = \ocap$. Therefore since $H = H'$
+          \begin{equation}
+            \begin{aligned}
+              \forall &\text{ distinct } HS_1|_b^e, HS_2|_c^f \in \tilde{Q}. \\ 
+              & b = \ocap \lor c = \ocap \implies \isolated(H', HS_1, HS_2)
+            \end{aligned}
+          \end{equation}
+          Thus all we need for $\isolation(H', \tilde{P'})$ is to show that
+          \begin{equation}
+            \begin{aligned}
+              \forall HS|_b^e &\in \tilde{Q} . \\
+              &b = \ocap \implies \isolated(H', FS', HS)
+            \end{aligned}
+          \end{equation}
+          since $a = \nocap$. To prove this implication we take any $HS|_b^e \in
+          \tilde{Q}$ such that $b = \ocap$. Because of $a = \nocap$ and the
+          definition of $L'$ in \eqref{eq:ecall1}
+          \begin{equation} \label{eq:ecall-iso1}
+            \accRoots(FS', H') = \accRoots(FS, H) \cup \left\{ o_g \right\}.
+          \end{equation}
+          Since $\isolation(H, \tilde{P})$ we have
+          \begin{equation} \label{eq:ecall-iso2}
+            \isolation(H, HS, FS_g)
+          \end{equation}
+          By definition
+          \begin{equation} \label{eq:ecall-iso3}
+            \accRoots(FS_g, H) = \left\{o_g \right\}
+          \end{equation}
+          and by $\isolation(H, \tilde{P})$ 
+          \begin{equation} \label{eq:ecall-iso4}
+            \isolated(H, FS, HS)
+          \end{equation}
+          By inspecting \eqref{eq:ecall-iso1}, \eqref{eq:ecall-iso2},
+          \eqref{eq:ecall-iso3} and \eqref{eq:ecall-iso4} and considering
+          proposition~\ref{prop:2.6} it is fairly easy to show
+          \begin{equation}
+            \isolated(H, FS', HS).
+          \end{equation}
+          To show this, assume for a contradiction that we do not have
+          $\isolated(H, FS', HS)$. This would entail that
+          \begin{equation}
+            \begin{aligned}
+              \exists q &\in \dom(H), o \in \accRoots(HS, H), o' \in
+              \accRoots(FS', H) . \\
+              &\typeOf(q, H) \not\stof \CellType \land \reach(H, o, q) \land
+              \reach(H, o', q)
+            \end{aligned}
+          \end{equation}
+          If $o' = o_g$ this immediately contradicts $\isolated(H, HS, FS_g)$ by
+          proposition~\ref{prop:2.6}. If we instead have $o' \neq o_g$ then by
+          \eqref{eq:ecall-iso1} we must have
+          \begin{equation}
+            o' \in \accRoots(FS, H)
+          \end{equation}
+          Similarly this would contradict \eqref{eq:ecall-iso4}.  Since
+          $HS|_b^e$ was arbitrary and $H = H'$ we have $\isolation(H',
+          \tilde{P'})$.
+          % TODO redefine ocr rule for thread sets to be a forall rule
+          % instead
+
+          Since $a = \nocap$ we have that $H'; a \vdash FS' \tsep \ocr$ follows
+          vacuously.  Using rule {\sc OCR-P} in Figure~\ref{fig:def_ocapreach}
+          together with the fact that $H \vdash \tilde{Q}\tsep \ocr$ follows
+          from $H \vdash\tilde{P}\tsep\ocr$ it is easy to show $H' \vdash P'
+          \tsep \ocr$.  Thus we are done with case $a = \nocap$.
           
+        \item[Case {\sc E-Ret}:] Clearly from rule {\sc E-Ret} we have
+          \begin{equation}
+            \begin{gathered}
+              FS = \xframe{L, z}^x \circ \sframe{L', t'} \circ GS \\
+              FS' = \sframe{L'', t'} \circ GS \\
+              L'' = L'[x \mapsto L(z)] \\
+              H = H'
+            \end{gathered}
+          \end{equation}
+          By $H \vdash P$ and proposition~\ref{prop:2.13} we have
+          \begin{equation} \label{eq:eret-hp0}
+            H \vdash Q \andalso H; a \vdash FS.
+          \end{equation}
+          $H = H'$ immediately yields
+          \begin{equation}
+            H' \vdash Q.
+          \end{equation}
+          $H; a \vdash FS$ together with rule {\sc T-FS1} gives us that
+          \begin{equation}
+            \begin{gathered}
+              H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{z}{\tau'} \\
+              \tau' \stof \tau \andalso H; a \vdash^{x: \tau} \sframe{L', t'} \circ GS,
+            \end{gathered}
+          \end{equation}
+          the last of which together with {\sc T-FS2} gives us
+          \begin{equation} \label{eq:eret-hp1}
+            \begin{gathered}
+              H \vdash \Gamma'; L' \andalso \TypeRel{\Gamma', x:
+              \tau}{a}{t'}{\sigma'} \\
+              \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS
+            \end{gathered}
+          \end{equation}
+          We let $\Gamma'' = \Gamma', x : \tau$. By $H = H'$, $H \vdash \Gamma;
+          L$ and $\tau' \stof \tau$ it should be obvious that
+          \begin{equation} \label{eq:eret-hp3}
+            \typeOf(L''(x), H') = \typeOf(L(z), H') \stof \tau.
+          \end{equation}
+          Using $H \vdash \Gamma'; L'$, \eqref{eq:eret-hp3} and rules {\sc WF-EnvVar}, {\sc
+          WF-Env} we get
+          \begin{equation} \label{eq:eret-hp4}
+            H' \vdash \Gamma'', L''.
+          \end{equation}
+          By definition of $\Gamma''$, \eqref{eq:eret-hp1}, \eqref{eq:eret-hp4}
+          and rule {\sc T-FS1} we have that
+          \begin{equation} \label{eq:eret-hp2}
+            H';a \vdash FS'
+          \end{equation}
+          Applying {\sc T-Procs} together with \eqref{eq:eret-hp0} and
+          \eqref{eq:eret-hp2} we finally get
+          \begin{equation}
+            H' \vdash P'
+          \end{equation}
 
+          Similarly to many previous cases we can apply corollarys
+          \ref{cor:2.11} and \ref{cor:2.9} to get
+          \begin{equation*}
+            H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
+            \vdash P' \tsep \gsep
+          \end{equation*}
+          
+          {\bf This concludes the {\sc E-FSProp} case.}
       \end{description}
+
+    \item[Case {\sc E-Spawn}:] By rule {\sc E-Spawn} we have
+      \begin{equation}
+        \begin{gathered} \label{eq:espawn1}
+          o \in \dom(H) \andalso H(o) = \Cell{DEP, l} \\
+          l' \sqsubseteq l \andalso (l', cb)^d \in DEP \andalso cb =
+          (L_{\text{env}}, z \Rightarrow t') \\
+          L' = L_{\text{env}}[z \mapsto l'] \\
+          H' = H[o \mapsto \Cell{DEP - (l', cb)^d, l}] \\
+          P' = P \cup \left\{ FS'|_{\ocap}^d \right\} \\
+          FS' = \xframe{L', t'}^- \circ \varepsilon
+        \end{gathered}
+      \end{equation}
+      
+      % TODO discussion: bring up fact of running callbacks twice does not
+      % affect result
+      By definition of $H'$, $\vdash H$ and equation \eqref{eq:defwth2} from the
+      definition of the well typed heap it should be fairly obvious that
+      \begin{equation}
+        \vdash H'
+      \end{equation}
+      since we have only removed an element from $DEP$. 
+
+
+      We note that
+      \begin{equation} \label{eq:espawn-hp0}
+        \begin{aligned}
+          \forall o &\in \dom(H) = \dom(H'). \\
+            &\typeOf(o, H) = \typeOf(o, H')
+        \end{aligned}
+      \end{equation}
+      and 
+      By propositions \ref{prop:2.13} and \ref{prop:2.14} we have
+      \begin{equation} \label{eq:espawn-hp4}
+        H' \vdash P
+      \end{equation}
+      From $\vdash H$ we can see that
+      \begin{equation} \label{eq:espawn-hp1}
+        \begin{aligned}
+          \forall (x \mapsto k) &\in L_{\text{env}}. \\
+            &\typeOf(k, H) \stof \CellType
+        \end{aligned}
+      \end{equation}
+      and
+      \begin{equation} \label{eq:espawn-hp2}
+        \TypeRel{\Gamma_{\CellType}(L_{\text{env}}), z:
+        \LatType}{\ocap}{t'}{\gamma}.
+      \end{equation}
+      Letting
+      \begin{equation}
+        \Gamma' = \Gamma_{\CellType}(L_{\text{env}}), z: \LatType
+      \end{equation}
+      we can use \eqref{eq:espawn-hp0},\eqref{eq:espawn-hp1} and rules {\sc
+      WF-EnvVar, WF-Env} to get
+      \begin{equation} \label{eq:espawn-hp3}
+        H' \vdash \Gamma', L'
+      \end{equation}
+      By rules {\sc T-FSEmpty2, T-FS1} and \eqref{eq:espawn-hp2},
+      \eqref{eq:espawn-hp3} we get
+      \begin{equation}
+        H'; \ocap \vdash FS'
+      \end{equation}
+      which combined with \eqref{eq:espawn-hp4} and {\sc T-Procs} yields
+      \begin{equation}
+        H' \vdash P'.
+      \end{equation}
+      
+
+      % TODO state proposition that reachable sets are the same as long as the
+      % graph is the same
+      % TODO state proposition that stack is ocr iff all reachables are ocap
+      % TODO change ocr-p to refer to all threads in set instead of recursive
+      Moving on to proving $\ocr$ we note proposition %FIXME
+      which implies
+      \begin{equation}
+        H' \vdash P \tsep \ocr
+      \end{equation}
+      by proposition %FIXME
+      This leaves only to prove
+      \begin{equation}
+        H'; \ocap \vdash FS' \tsep \ocr.
+      \end{equation}
+      in order to get $H' \vdash P' \tsep \ocr$.
+      Inspecting {\sc OCR-FS} we note that we are done if we can prove
+      \begin{equation} \label{eq:ocr1}
+        \ocrloc(FS', H')
+      \end{equation}
+      we are done. But this is easy. By definition of $FS'$
+      \begin{equation}
+        \forall o \in \accRoots(FS', H'). \typeOf(o, H') \stof \CellType
+      \end{equation}
+      which implies
+      \begin{equation} \label{eq:espawn-ocr2}
+        \begin{aligned}
+          \forall o &\in \reachable(\accRoots(FS', H'), \Graph(H')). \\
+            &\typeOf(o, H') \stof \CellType
+        \end{aligned}
+      \end{equation}
+      The only objects of type \CellType{} on the heap are cell objects 
+      whose exact type are \CellType{}, which is $\ocap$ by {\sc OCAP-Cell}.
+      Thus
+      \begin{equation}
+        \begin{aligned}
+          \forall o &\in \reachable(\accRoots(FS', H'), \Graph(H')). \\
+            &\ocap(\typeOf(o, H')).
+        \end{aligned}
+      \end{equation}
+      By prop %FIXME
+      we have shown \eqref{eq:ocr1}.
+
+      Continuing with showing isolation we note that 
+      by propositions %FIXME
+      and \ref{prop:2.6} we have that
+      \begin{equation}
+        \isolation(H', P).
+      \end{equation}
+      Thus we have shown
+      \begin{equation} \label{eq:espawn-iso1}
+        \isolation(H', P')
+      \end{equation}
+      if we can prove
+      \begin{equation}
+        \isolated(H', FS', HS)
+      \end{equation}
+      for all $HS|_b^e \in P$. By proposition~\ref{prop:2.6} we are done if we
+      have
+      \begin{equation}
+        \begin{aligned}
+          \forall q \in \: &\reachable(\accRoots(FS', H'), \Graph(H')) \cap \\
+            &\reachable(\accRoots(HS, H'), \Graph(H')) . \\
+            &\typeOf(q, H') \stof \CellType.
+        \end{aligned}
+      \end{equation}
+      But this follows immediately from \eqref{eq:espawn-ocr2} and we have
+      proven \eqref{eq:espawn-iso1}. Furthermore we
+      never rely on the fact that $H \vdash P \tsep \gsep$ to prove this and
+      thus can get
+      \begin{equation}
+        H' \vdash P' \tsep \gsep 
+      \end{equation}
+      for free using corollary~\ref{cor:2.9}.
+
+    \item[Case {\sc E-Term}:] Trivial.
   \end{description}
 \end{proof}
+
+
+\section{Proof of Progress}
+\label{sec:proof_of_progress}
+
 
 
 
