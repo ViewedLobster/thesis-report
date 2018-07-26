@@ -415,6 +415,17 @@ to show.
   \end{equation*}
 \end{proposition}
 
+\begin{proposition} \label{prop:ocrtilde_eq}
+  For any $H, P$ we have
+  \begin{equation*}
+    H \vdash P \tsep \ocr \iff H \vdash \tilde{P} \tsep \ocr
+  \end{equation*}
+\end{proposition}
+\begin{proof}
+  Follows immediately from proposition~\ref{prop:ocr_eq} and the definition of
+  $\tilde{P}$.
+\end{proof}
+
 \begin{definition}
   The set of object references is denoted $\ObjRefs$. The set of lattice values
   is denoted $\LatVals$. 
@@ -482,19 +493,26 @@ to show.
               Trivially $H' \vdash Q$. 
               By~\eqref{eq:enull1} and rule {\sc T-FS1} we have
               \begin{equation} \label{eq:enull2}
-                H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
-                \andalso H; a \vdash^{s: \sigma} GS.
+                \begin{gathered}
+                  H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
+                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS.
+                \end{gathered}
               \end{equation}
               Let $\Gamma' = \Gamma, x: \NullType$. By {\sc T-Let}, {\sc
               T-Null} and \eqref{eq:enull2} we have
               \begin{equation} \label{eq:enull3}
-                \TypeRel{\Gamma'}{a}{t'}{\sigma}.
+                \TypeRel{\Gamma'}{a}{t'}{\sigma'}.
               \end{equation}
-              By {\sc T-FS1}, \eqref{eq:enull3} and \eqref{eq:enull2}
-              \begin{equation}\label{eq:enull4}
+              Since $\typeOf(L(x), H') \stof \NullType$, by inspection of rules
+              {\sc WF-EnvVar} and {\sc WF-Env} we can see that
+              \begin{equation} \label{eq:enull4}
+                H' \vdash \Gamma';L'
+              \end{equation}
+              By {\sc T-FS1}, \eqref{eq:enull2}, \eqref{eq:enull3} and \eqref{eq:enull4}
+              \begin{equation}\label{eq:enull5}
                 H;a \vdash FS'
               \end{equation}
-              By \eqref{eq:enull4}, {\sc T-Procs} and $H = H'$ we get  
+              By \eqref{eq:enull5}, {\sc T-Procs} and $H = H'$ we get  
               \begin{equation}
                 H' \vdash P'
               \end{equation}
@@ -520,18 +538,20 @@ to show.
               so $\vdash H'$.
               By $H \vdash P$, {\sc T-FS1} and proposition \ref{prop:2.13}
               \begin{equation} \label{eq:evar3}
-                H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
-                \andalso H; a \vdash^{s: \sigma} GS
+                \begin{gathered}
+                  H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
+                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS
+                \end{gathered}
               \end{equation}
-              By {\sc T-Let, T-Var} and $\TypeRel{\Gamma}{a}{t}{\sigma}$
+              By {\sc T-Let, T-Var} and $\TypeRel{\Gamma}{a}{t}{\sigma'}$
               \begin{equation} \label{eq:evar4}
-                \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma} \andalso \Gamma(y) =
+                \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma'} \andalso \Gamma(y) =
                 \gamma
               \end{equation}
               Let $\Gamma' = \Gamma, x: \gamma$.
               Then by \eqref{eq:evar4}
               \begin{equation} \label{eq:evar5}
-                \TypeRel{\Gamma'}{a}{t'}{\sigma}.
+                \TypeRel{\Gamma'}{a}{t'}{\sigma'}.
               \end{equation}
               By $H \vdash \Gamma; L$, \eqref{eq:evar1}, \eqref{eq:evar5}, and
               rules {\sc WF-EnvVar}, {\sc WF-Env}
@@ -601,14 +621,16 @@ to show.
               \end{equation}
               which under inspection of rule {\sc T-FS1} immediately gives
               \begin{equation} \label{eq:eselect4}
-                H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
-                \andalso H; a \vdash^{s: \sigma} GS.
+                \begin{gathered}
+                  H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
+                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS.
+                \end{gathered}
               \end{equation}
               $\TypeRel{\Gamma}{a}{t}{\sigma}$ together with rule {\sc T-Let}
               gives
               \begin{equation} \label{eq:eselect5}
                 \TypeRel{\Gamma}{a}{\FSel{y}{f}}{\gamma} \andalso
-                \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma}.
+                \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma'}.
               \end{equation}
               which combined with {\sc T-Select} and {\sc T-Var} gives us
               \begin{equation} \label{eq:eselect6}
@@ -638,7 +660,7 @@ to show.
               \begin{equation}
                 H';a \vdash FS'
               \end{equation}
-              which with the help of {\sc T-Procs} gives us 
+              which with the help of {\sc T-Procs} and $H' \vdash Q$ gives us 
               \begin{equation*}
                 H'\vdash P'.
               \end{equation*}
@@ -700,18 +722,20 @@ to show.
               \end{equation}
               This and {\sc T-FS1} yields
               \begin{equation}\label{eq:eassign6}
-                H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma}
-                \andalso H; a \vdash^{s: \sigma} GS
+                \begin{gathered}
+                  H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
+                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS
+                \end{gathered}
               \end{equation}
               By $H;a \vdash^{s: \sigma} GS$, \eqref{eq:eassign2} and prop.
               \ref{prop:2.14} we have 
               \begin{equation} \label{eq:eassign7} 
                 H'; a \vdash^{s: \sigma} GS
               \end{equation}
-              $\TypeRel{\Gamma}{a}{t}{\sigma}$ and {\sc T-Let} gives
+              $\TypeRel{\Gamma}{a}{t}{\sigma'}$ and {\sc T-Let} gives
               \begin{equation} \label{eq:eassign8}
                 \TypeRel{\Gamma}{a}{\FAss{y}{f}{z}}{\gamma} \andalso
-                \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma}
+                \TypeRel{\Gamma, x: \gamma}{a}{t'}{\sigma'}
               \end{equation}
               which whith {\sc T-Assign} gives us
               \begin{equation} \label{eq:eassign9}
@@ -955,17 +979,22 @@ to show.
                 \Graph(H') = ( V_H \cup \left\{ o_x \right\}, E_H )
               \end{equation}
               By definition of $\default$
-              \begin{equation}
+              \begin{equation} \label{eq:enew-h1}
                 \begin{aligned}
                   \forall f &\in \fields(C).\\
-                  &f \in \dom(FM) \land \typeOf(FM(f), H') \stof \ftype(f, C)
+                  &f \in \dom(FM) \land \typeOf(FM(f), H') \stof \ftype(f, C).
                 \end{aligned}
               \end{equation}
-              Also $\forall o \in \dom(H'), o \neq o_x. H(o) = H'(o)$.
-              Combined this implies $\vdash H'$.
+              Also
+              \begin{gather}
+                \forall o \in \dom(H). \: H(o) = H'(o) \label{eq:enew-h2}\\
+                \forall o \in \dom(H). \: \typeOf(o, H) = \typeOf(o, H').
+                \label{eq:enew-h3}
+              \end{gather}
+              Using the definition of a well typed heap together with
+              \eqref{eq:enew-h1}, \eqref{eq:enew-h2} and \eqref{eq:enew-h3} we
+              can easily show that $\vdash H'$.
 
-              % TODO change all cases to include the subtype part of T-FS1 and
-              % T-FS2
               By proposition~\ref{prop:2.13}
               \begin{equation} 
                 H \vdash Q \andalso H; a \vdash FS.
@@ -979,36 +1008,36 @@ to show.
                 \begin{gathered}
                   H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'}
                   \\
-                  \sigma' \stof \sigma \andalso H;a \vdash^{s: \sigma} GS
+                  \sigma' \stof \sigma \andalso H;a \vdash^{s: \sigma} GS.
                 \end{gathered} 
               \end{equation}
               Applying {\sc T-Let} and {\sc T-New} we get
               \begin{equation} \label{eq:enew-typing5}
                 \TypeRel{\Gamma, x: C}{a}{t'}{\sigma'} \andalso a = \ocap
-                \implies \ocap(C)
+                \implies \ocap(C).
               \end{equation}
               Letting $\Gamma' = \Gamma, x: C$ we have
               \begin{equation} \label{eq:enew-typing2}
-                \TypeRel{\Gamma'}{a}{t'}{\sigma'}
+                \TypeRel{\Gamma'}{a}{t'}{\sigma'}.
               \end{equation}
               We have that $H' \vdash \Gamma';L';x$ since $\typeOf(L'(x), H')
               \stof \Gamma'(x)$. Thus we have
               \begin{equation} \label{eq:enew-typing3}
-                H' \vdash \Gamma'; L'
+                H' \vdash \Gamma'; L'.
               \end{equation}
               By proposition \ref{prop:2.14}
               \begin{equation} \label{eq:enew-typing4}
-                H';a \vdash^{s: \sigma} GS
+                H';a \vdash^{s: \sigma} GS.
               \end{equation}
-              Using {\sc T-FS1} together with \eqref{eq:enew-typing2},
+              Using {\sc T-FS1} together with $\sigma' \stof \sigma$, \eqref{eq:enew-typing2},
               \eqref{eq:enew-typing3} and \eqref{eq:enew-typing4} we get
               \begin{equation}
-                H';a \vdash FS'
+                H';a \vdash FS',
               \end{equation}
               and combined with \eqref{eq:enew-typing1} and {\sc T-Procs} we finally
               get
               \begin{equation}
-                H' \vdash P'
+                H' \vdash P'.
               \end{equation}
 
               Moving on to OCAP reachability. It is easy to prove that
@@ -1027,8 +1056,9 @@ to show.
                 \end{aligned}
               \end{equation}
               Clearly $\typeOf(o_x, H') = C$. Using this fact together with
-              \eqref{eq:enew-typing5}, \eqref{eq:enew-ocr1} and
-              \eqref{eq:enew-ocr2} it is easily shown that
+              \eqref{eq:enew-h3}, \eqref{eq:enew-typing5}, \eqref{eq:enew-ocr1},
+              \eqref{eq:enew-ocr2} and propositions \ref{prop:ocr_eq} and
+              \ref{prop:ocrloc_eq} it is easily shown that
               \begin{equation}
                 H' \vdash P' \tsep \ocr.
               \end{equation}
@@ -1044,13 +1074,13 @@ to show.
 
             \item[Case {\sc E-NewCell}:] We have
               \begin{equation}
-                H' = H[o \mapsto \Cell{DEP, l}] \andalso DEP = \emptyset
+                H' = H[o \mapsto \Cell{DEP, \bot_{\LatVals}}] \andalso DEP = \emptyset
               \end{equation}
               for some fresh object reference $o$. 
               Since $DEP$ is empty \eqref{eq:defwth2} holds vacuously and since
               all other heap elements are the same as in $H$ we have
               \begin{equation}
-                \vdash H'
+                \vdash H'.
               \end{equation}
               Proving the rest is similar to case {\sc E-New}.
 
@@ -1060,12 +1090,13 @@ to show.
                   F = \sframe{L, t} \andalso t = \Let{x}{\Put{y}{z}}{t'} \\
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(y)] \\
                   L(y) = o_y \andalso H(o_y) = \Cell{DEP, l} \\
-                  L(z) = l' \andalso H' = H[o_y \mapsto \Cell{DEP, l \sqcup l'}]
+                  L(z) = l' \andalso H' = H[o_y \mapsto \Cell{DEP, l \sqcup
+                  l'}].
                 \end{gathered}
               \end{equation}
               Since the only change is $l$ being updated to $l \sqcup l'$, by
-              studying the definition for a well typed heap it is easy to
-              conclude that
+              studying the definition for a well typed heap and using $\vdash H$
+              it is easy to conclude that
               \begin{equation}
                 \vdash H'.
               \end{equation}
@@ -1076,6 +1107,7 @@ to show.
                 H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
                 \vdash P' \tsep \gsep
               \end{equation}
+
             \item[Case {\sc E-When}:] From rule {\sc E-When} we know
               \begin{equation}
                 \begin{gathered}
@@ -1088,45 +1120,48 @@ to show.
                   t'') \\
                   d \text{ fresh thread id} \andalso DEP' = DEP \cup (l', cb)^d
                   \\
-                  H' = H[o \mapsto \Cell{DEP', l}]
+                  H' = H[o \mapsto \Cell{DEP', l}].
                 \end{gathered}
               \end{equation}
               Since only object on heap changed is $H(o_y)$ we have shown
               $\vdash H'$ if we can show that
               \begin{equation}
                 \begin{aligned}
-                  \forall (l''&, (L'_{\text{env}}, z' \Rightarrow t'''))^{d'} \in
+                  \forall (l^{\text{cb}}&, (L^{\text{cb}}_{\text{env}}, z^{\text{cb}} \Rightarrow t^{\text{cb}}))^{d^{\text{cb}}} \in
                   DEP'. \\
-                  &\forall (x \mapsto k) \in L'_{\text{env}}.\: \typeOf{(k, H')} \stof
+                  &\forall (x \mapsto k) \in L^{\text{cb}}_{\text{env}}.\: \typeOf{(k, H')} \stof
                   \CellType \: \land \\
-                  &\TypeRel{\Gamma_{\CellType{}}(L'_{\text{env}}), z':
-                  \LatType}{\ocap}{t'''}{\gamma} 
+                  &\TypeRel{\Gamma_{\CellType{}}(L^{\text{cb}}_{\text{env}}), z^{\text{cb}}:
+                  \LatType}{\ocap}{t^{\text{cb}}}{\gamma} .
                 \end{aligned}
               \end{equation}
               We note that $\dom(H) = \dom(H')$ and that
               \begin{equation}
                 \begin{aligned}
                   \forall o &\in \dom(H).  \\
-                    &\typeOf(o, H) = \typeOf(o, H')
+                    &\typeOf(o, H) = \typeOf(o, H'),
                 \end{aligned}
               \end{equation}
               and thus
               \begin{equation}
                 \begin{aligned}
-                  \forall k \in \Values h. \\
-                    &\typeOf(k, H) = \typeOf(k, H')
+                  \forall k \in \Values . \\
+                    &\typeOf(k, H) = \typeOf(k, H').
                 \end{aligned}
               \end{equation}
               Because of this
               \begin{equation}
                 \begin{aligned}
-                  \forall (l''&, (L'_{\text{env}}, z' \Rightarrow t'''))^{d'} \in
-                  DEP' \text{ s.t. } (l'', (L'_{\text{env}}, z' \Rightarrow t'''))^{d'} \neq
+                  \forall (l^{\text{cb}}&, (L^{\text{cb}}_{\text{env}},
+                  z^{\text{cb}} \Rightarrow t^{\text{cb}}))^{d^{\text{cb}}} \in
+                  DEP' \text{ s.t. }  \\
+                  &(l^{\text{cb}}, (L^{\text{cb}}_{\text{env}}, z^{\text{cb}}
+                  \Rightarrow t^{\text{cb}}))^{d^{\text{cb}}} \neq
                   (l', cb)^d. \\
-                  &\forall (x \mapsto k) \in L'_{\text{env}}.\: \typeOf{(k, H')} \stof
+                  &\forall (x \mapsto k) \in L^{\text{cb}}_{\text{env}}.\: \typeOf{(k, H')} \stof
                   \CellType \: \land \\
-                  &\TypeRel{\Gamma_{\CellType{}}(L'_{\text{env}}), z':
-                  \LatType}{\ocap}{t'''}{\gamma} 
+                  &\TypeRel{\Gamma_{\CellType{}}(L^{\text{cb}}_{\text{env}}), z^{\text{cb}}:
+                  \LatType}{\ocap}{t^{\text{cb}}}{\gamma}.
                 \end{aligned}
               \end{equation}
               Thus what remains to prove $\vdash H'$ is to show that
@@ -1174,8 +1209,6 @@ to show.
           \end{description}
 
         \item[Case {\sc E-Call}:] From rule {\sc E-Call}
-          % TODO fix E-Call definition error in L' def
-          % TODO fix E-Ret definition weirdness
           \begin{equation} \label{eq:ecall1}
             \begin{gathered}
               FS = \sframe{L, t} \circ GS \andalso t = \Let{x}{\Call{y}{m}{z}}{t''}\\
@@ -1188,7 +1221,7 @@ to show.
                 L_0       & \text{ if } a = \nocap
               \end{cases} \\
               L' = L_{\text{base}}[\This \mapsto L(y), u \mapsto L(z)] \\
-              H = H'
+              H = H'.
             \end{gathered}
           \end{equation}
           Since $H = H'$ 
@@ -1199,14 +1232,14 @@ to show.
           $H \vdash P$ we have
           \begin{equation}
             \begin{gathered}
-              H' \vdash Q \andalso H;a \vdash FS
+              H' \vdash Q \andalso H;a \vdash FS.
             \end{gathered}
           \end{equation}
           Using the second of these and rule {\sc T-FS1} we have
           \begin{equation} \label{eq:ecall-hp0}
             \begin{gathered}
-              H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma} \\
-              H; a \vdash^{s:\sigma} GS
+              H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
+              \sigma' \stof \sigma \andalso H; a \vdash^{s:\sigma} GS.
             \end{gathered}
           \end{equation}
           Since $H = H'$
@@ -1218,36 +1251,35 @@ to show.
           \begin{equation} \label{eq:ecall-hp1}
             \begin{gathered}
               \TypeRel{\Gamma}{a}{\Call{y}{m}{z}}{\tau} \andalso \TypeRel{\Gamma,
-              x: \tau}{a}{t''}{\sigma} \\
+              x: \tau}{a}{t''}{\sigma'} \\
               \Gamma(y) = C' \andalso \mtype(m, C') = \gamma \mapsto \tau \\
-              \Gamma(z) = \gamma' \andalso \gamma' \leq \gamma
+              \Gamma(z) = \gamma' \andalso \gamma' \leq \gamma.
             \end{gathered}
           \end{equation}
           Using {\sc T-FS2} with \eqref{eq:ecall-hp0}, \eqref{eq:ecall-hp5} and
           \eqref{eq:ecall-hp1} we get 
           \begin{equation} \label{eq:ecall-hp6}
-            H';a \vdash^{x: \tau} FS
+            H';a \vdash^{x: \tau} FS.
           \end{equation}
           By $H' \vdash \Gamma;L$ we have
           \begin{equation} \label{eq:ecall-hp2}
-            \typeOf(L'(u), H') = \typeOf(L(z), H') \stof \gamma' \stof \gamma
+            \typeOf(L'(u), H') = \typeOf(L(z), H') \stof \gamma' \stof \gamma,
           \end{equation}
           and similarly
           \begin{equation} \label{eq:ecall-hp3}
-            \typeOf(L'(\This), H') = \typeOf(L(y), H') \stof C \stof C'
+            \typeOf(L'(\This), H') = \typeOf(L(y), H') \stof C \stof C'.
           \end{equation}
 
           Now, $a$ can be either $\nocap$ or $\ocap$. We first assume that $a =
           \nocap$.
-
           By well typedness of classes together with the above we must have a
           class $C''$ s.t. $C \stof C'' \stof C'$ where such that
           \begin{equation}
-            C'' \vdash \MethodDef{m}{u}{\gamma}{\tau}{t''}
+            C'' \vdash \MethodDef{m}{u}{\gamma}{\tau}{t'}
           \end{equation}
-          which in turn means that
+          which by $C''$ being well typed in turn means that
           \begin{equation} \label{eq:ecall-hp4}
-            \TypeRel{\Gamma_0,\This: C'', u: \gamma}{\nocap}{t''}{\tau'}
+            \TypeRel{\Gamma_0,\This: C'', u: \gamma}{\nocap}{t'}{\tau'}
             \andalso \tau' \stof \tau.
           \end{equation}
           We let
@@ -1259,14 +1291,13 @@ to show.
             H' \vdash \Gamma_{\nocap}'; L'.
           \end{equation}
           By \eqref{eq:ecall-hp4} we clearly have
-          \begin{equation}
-            \TypeRel{\Gamma_{\nocap}'}{a}{t'}{\tau'} \andalso \tau' \stof \tau
+          \begin{equation} \label{eq:ecall-hp8}
+            \TypeRel{\Gamma_{\nocap}'}{a}{t'}{\tau'} \andalso \tau' \stof \tau.
           \end{equation}
-          Using this, \eqref{eq:ecall-hp5}, \eqref{eq:ecall-hp6},
-          \eqref{eq:ecall-hp7} and rule {\sc
-          T-FS1} we have
+          Using  \eqref{eq:ecall-hp6}, \eqref{eq:ecall-hp7},
+          \eqref{eq:ecall-hp8} and rule {\sc T-FS1} we have
           \begin{equation}
-            H';a \vdash FS'
+            H';a \vdash FS'.
           \end{equation}
           Combining this with $H' \vdash Q$ and {\sc T-Procs} we get
           \begin{equation}
@@ -1275,20 +1306,21 @@ to show.
 
           Now assume that $a = \ocap$. By $H \vdash P \tsep \ocr$ we have
           \begin{equation}
-            \ocr(FS, H)
+            \ocrloc(FS, H)
           \end{equation}
-          and thus
+          and thus by proposition~\ref{prop:ocrloc_eq}
           \begin{equation}
             \begin{aligned}
               \forall q &\in \reachable(\accRoots(FS, H), \Graph(H)) \\
-              & \ocap(\typeOf(q, H))
+              & \ocap(\typeOf(q, H)).
             \end{aligned}
           \end{equation}
+          
           Of course this means that $\ocap(\typeOf(L(y), H))$ or equivalently
           $\ocap(C)$. The rest is similar to the case where $a = \nocap$
           replacing $\Gamma_{\nocap}'$ with 
           \begin{equation}
-            \Gamma'_{\ocap} = \This: C'', u: \gamma
+            \Gamma'_{\ocap} = \This: C'', u: \gamma.
           \end{equation}
           This can be done because of the OCAP typing rules in
           Figure~\ref{fig:ocap_typing} which demands that: all parent classes of
@@ -1296,30 +1328,28 @@ to show.
           all $C''$s methods are typed in an environment without $\Gamma_0$.
           Hence the difference between $\Gamma'_{\nocap}$ and $\Gamma'_{\ocap}$.
 
-
-          % TODO sttate and prove proposition about ocr iff ocr of P-tilde
           We now prove isolation, OCAP reachability and global object
           separation. Instead of working with $P$ directly we instead use
-          $\tilde{P}$. It is clear from propositions~\ref{prop:2.8} and % FIXME 
-          that in order to show 
+          $\tilde{P}$. It is clear from propositions~\ref{prop:2.8} and
+          \ref{prop:ocrtilde_eq} that in order to show 
           \begin{equation}
             H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
             \vdash P' \tsep \gsep
           \end{equation}
           we can instead show
           \begin{equation}
-            H' \vdash \tilde{P'} \andalso \isolation(H', \tilde{P'}).
+            H' \vdash \tilde{P'} \tsep \ocr \andalso \isolation(H', \tilde{P'}).
           \end{equation}
 
-          To show this we start by using propositions~\ref{prop:2.8} and %FIXME 
-          to get
+          To show this we start by using propositions~\ref{prop:2.8} and
+          \ref{prop:ocrtilde_eq} to get
           \begin{equation}
-            H \vdash \tilde{P} \andalso \isolation(H, \tilde{P})
+            H \vdash \tilde{P} \tsep \ocr \andalso \isolation(H, \tilde{P}).
           \end{equation}
           We also note that 
           \begin{equation}
             \tilde{P} = \tilde{Q} \cup_D \left\{ FS|_a^d \right\} \text{ and }
-            \tilde{P'} = \tilde{Q} \cup_D \left\{ FS'|_a^d \right\} 
+            \tilde{P'} = \tilde{Q} \cup_D \left\{ FS'|_a^d \right\}.
           \end{equation}
 
           We first assume that $a = \ocap$. It is very
@@ -1330,8 +1360,8 @@ to show.
           and that
           \begin{equation}
             \begin{aligned}
-              \forall HS|b^e &\in \tilde{Q}. \\
-              &\accRoots(FS, H') = \accRoots(HS, H)
+              \forall HS|_b^e &\in \tilde{Q}. \\
+              &\accRoots(HS, H') = \accRoots(HS, H).
             \end{aligned}
           \end{equation}
           Clearly then the preconditions to corollary~\ref{cor:2.11} holds and
@@ -1344,7 +1374,7 @@ to show.
           \begin{equation}
             \begin{aligned}
               \forall &\text{ distinct } HS_1|_b^e, HS_2|_c^f \in \tilde{Q}. \\ 
-              & b = \ocap \lor c = \ocap \implies \isolated(H', HS_1, HS_2)
+              & b = \ocap \lor c = \ocap \implies \isolated(H', HS_1, HS_2).
             \end{aligned}
           \end{equation}
           Thus all we need for $\isolation(H', \tilde{P'})$ is to show that
@@ -1362,15 +1392,15 @@ to show.
           \end{equation}
           Since $\isolation(H, \tilde{P})$ we have
           \begin{equation} \label{eq:ecall-iso2}
-            \isolation(H, HS, FS_g)
+            \isolation(H, HS, FS_g).
           \end{equation}
           By definition
           \begin{equation} \label{eq:ecall-iso3}
-            \accRoots(FS_g, H) = \left\{o_g \right\}
+            \accRoots(FS_g, H) = \left\{o_g \right\}.
           \end{equation}
-          and by $\isolation(H, \tilde{P})$ 
+          By $\isolation(H, \tilde{P})$ 
           \begin{equation} \label{eq:ecall-iso4}
-            \isolated(H, FS, HS)
+            \isolated(H, FS, HS).
           \end{equation}
           By inspecting \eqref{eq:ecall-iso1}, \eqref{eq:ecall-iso2},
           \eqref{eq:ecall-iso3} and \eqref{eq:ecall-iso4} and considering
@@ -1385,26 +1415,37 @@ to show.
               \exists q &\in \dom(H), o \in \accRoots(HS, H), o' \in
               \accRoots(FS', H) . \\
               &\typeOf(q, H) \not\stof \CellType \land \reach(H, o, q) \land
-              \reach(H, o', q)
+              \reach(H, o', q).
             \end{aligned}
           \end{equation}
           If $o' = o_g$ this immediately contradicts $\isolated(H, HS, FS_g)$ by
           proposition~\ref{prop:2.6}. If we instead have $o' \neq o_g$ then by
           \eqref{eq:ecall-iso1} we must have
           \begin{equation}
-            o' \in \accRoots(FS, H)
+            o' \in \accRoots(FS, H).
           \end{equation}
           Similarly this would contradict \eqref{eq:ecall-iso4}.  Since
-          $HS|_b^e$ was arbitrary and $H = H'$ we have $\isolation(H',
-          \tilde{P'})$.
-          % TODO redefine ocr rule for thread sets to be a forall rule
-          % instead
+          $HS|_b^e$ was arbitrary and $H = H'$ we have 
+          \begin{equation}
+            \isolation(H', \tilde{P'}).
+          \end{equation}
 
-          Since $a = \nocap$ we have that $H'; a \vdash FS' \tsep \ocr$ follows
-          vacuously.  Using rule {\sc OCR-P} in Figure~\ref{fig:def_ocapreach}
-          together with the fact that $H \vdash \tilde{Q}\tsep \ocr$ follows
-          from $H \vdash\tilde{P}\tsep\ocr$ it is easy to show $H' \vdash P'
-          \tsep \ocr$.  Thus we are done with case $a = \nocap$.
+          By $H \vdash \tilde{P} \tsep \ocr$ and
+          proposition~\ref{prop:ocrtilde_eq} we get
+          \begin{equation} \label{eq:ecall-ocr1}
+            H \vdash \tilde{Q} \tsep \ocr.
+          \end{equation}
+          Since $a = \nocap$ we have that 
+          \begin{equation} \label{eq:ecall-ocr2}
+            H'; a \vdash FS' \tsep \ocr 
+          \end{equation} 
+          follows vacuously. Using rule {\sc OCR-P} in
+          Figure~\ref{fig:def_ocapreach} together with \eqref{eq:ecall-ocr1} and
+          \eqref{eq:ecall-ocr2} we get
+          \begin{equation}
+            H' \vdash \tilde{P'} \tsep \ocr.
+          \end{equation}  
+          Thus we are done with case $a = \nocap$.
           
         \item[Case {\sc E-Ret}:] Clearly from rule {\sc E-Ret} we have
           \begin{equation}
@@ -1412,7 +1453,7 @@ to show.
               FS = \xframe{L, z}^x \circ \sframe{L', t'} \circ GS \\
               FS' = \sframe{L'', t'} \circ GS \\
               L'' = L'[x \mapsto L(z)] \\
-              H = H'
+              H = H'.
             \end{gathered}
           \end{equation}
           By $H \vdash P$ and proposition~\ref{prop:2.13} we have

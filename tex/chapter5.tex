@@ -359,7 +359,7 @@ Figure~\ref{fig:expr_typing}.
       \emptyset & \text{if } a = \ocap \\
       L_0 & \text{if } a = \nocap
     \end{cases} \\
-    L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(y)] 
+    L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)] 
   }
   {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^\alpha \; \FSRedTo \\
   H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^\alpha }
@@ -367,7 +367,7 @@ Figure~\ref{fig:expr_typing}.
   \RuleSpace{}
 
   \scax{E-Ret}
-  {H, \Frame{L'}{x}{y} \circ \sFrame{L, t} \circ FS |_a^\alpha \; \FSRedTo \\
+  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ FS |_a^\alpha \; \FSRedTo \\
   H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^\alpha }
 
   \RuleSpace{}
