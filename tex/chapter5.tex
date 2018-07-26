@@ -425,8 +425,7 @@ Figure~\ref{fig:expr_typing}.
 \label{sec:properties}
 
 \begin{definition}
-  The function typeOf is defined as follows:
-
+  The function $\typeOf$ is defined as follows:
   \begin{equation}
     \typeOf{(k, H)} =
     \begin{cases}
@@ -436,6 +435,10 @@ Figure~\ref{fig:expr_typing}.
       C, &\text{ if }k \in \dom{(H)}\text{ and } H(k) = \Obj{C, ...} \\
       \ErrType, &\text{ otherwise.}
     \end{cases}
+  \end{equation}
+  The typing environment $\Gamma_{\CellType}(L)$ is defined as follows:
+  \begin{equation}
+    \Gamma_{\CellType}(L) = \left[(x: \CellType) : x \in \dom(L)\right]
   \end{equation}
 \end{definition}
 
@@ -447,16 +450,17 @@ Figure~\ref{fig:expr_typing}.
   If $H(o) = \Obj{C, FM}$ then
   \begin{equation} \label{eq:defwth1}
     \begin{aligned}
-      \forall f &\in \fields{(C)}. \notag\\ 
-      &f \in \dom{(FM)} \: \land \notag\\ &\typeOf{(FM(f), H)} \stof \ftype{(f, C)}
+      \forall f &\in \fields{(C)}. \\ 
+      &f \in \dom{(FM)} \: \land \\ 
+      &\typeOf{(FM(f), H)} \stof \ftype{(f, C)}
     \end{aligned}
   \end{equation}
   and if $H(o) = \Cell{DEP, l}$ then
   \begin{equation} \label{eq:defwth2}
     \begin{aligned}
-      \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^d \in DEP. \notag\\
+      \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^d \in DEP. \\
       &\forall (x \mapsto k) \in L_{\text{env}}.\: \typeOf{(k, H)} \stof
-      \CellType \: \land \notag\\
+      \CellType \: \land \\
       &\TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), z:
       \LatType}{\ocap}{t}{\gamma} 
     \end{aligned}
@@ -490,6 +494,17 @@ Figure~\ref{fig:expr_typing}.
     \forall o \in \: &\accRoots(FS,H), o' \in \dom(H). \notag\\
     &\reach{(H, o, o')} \implies \ocap{(\typeOf{(o', H)})}
   \end{align}
+\end{definition}
+
+\begin{definition}{(No Spawn)}
+  For any heap $H$ we have $\noSpawn(H)$ if and only if
+  \begin{equation}
+    \begin{aligned}
+      \forall o &\in \dom(H). \\
+        & H(o) = \Cell{DEP, l} \implies 
+        \forall (l', cb)^d \in DEP. \: \lnot (l' \sqsubseteq l).
+    \end{aligned}
+  \end{equation}
 \end{definition}
 
 \begin{definition}{(Well Typed States)}
