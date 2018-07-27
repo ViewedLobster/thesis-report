@@ -1669,28 +1669,28 @@ to show.
   We begin with the case where $S = H, \emptyset$ and $\noSpawn(H)$ does not
   hold. Looking at the definition of $\noSpawn$ this means that there is at
   least one $o \in \dom(H)$ such that, for $H(o) = \Cell{DEP, l}$
-  \begin{equation}
+  \begin{equation*}
     \exists (l', cb)^d \in DEP. \: l' \sqsubseteq l.
-  \end{equation}
+  \end{equation*}
   This clearly satisfies the preconditions of execution rule {\sc E-Spawn} to
   find another state $S' = H', P'$ such that $S \Rrightarrow S'$. But this
   contradicts statement 1 above.
 
   We proceed with the case where $S = H, P$ and $P \neq \emptyset$. This means
   that
-  \begin{equation}
+  \begin{equation*}
     P = Q \cup_D \left\{ FS|_a^d \right\} \andalso FS = \sframe{L, t} \circ GS
-  \end{equation}
+  \end{equation*}
   By $\vdash S \tsep \stateok$ we must have
-  \begin{equation}
+  \begin{equation*}
     H \vdash P.
-  \end{equation}
+  \end{equation*}
   By proposition \ref{prop:2.13} this means that 
-  \begin{equation}
+  \begin{equation*}
     H;a \vdash FS.
-  \end{equation}
+  \end{equation*}
   Inspecting rule {\sc T-FS1} we see that
-  \begin{equation}
+  \begin{equation} \label{eq:prog_tbase}
     \begin{gathered}
       H \vdash \Gamma;L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
       \sigma' \stof \sigma \andalso H;a \vdash^{s: \sigma} GS.
@@ -1712,22 +1712,310 @@ to show.
 
       Otherwise we have that $GS = \xframe{L', t'}^{s'} \circ HS$. This means we
       can step to $S' = H, P'$ where
-      \begin{equation}
+      \begin{equation*}
         \begin{gathered}
           P' = Q \cup_D \left\{ FS'|_a^d \right\} \andalso FS' = \xframe{L'',
           t'}^{s'} \circ HS \\ 
           L'' = L'[s \mapsto L(x)],
         \end{gathered}
-      \end{equation}
-      by base rule {\sc E-Ret}.
+      \end{equation*}
+      by base rule {\sc E-Ret}. \contradiction
     
-    \item[Case \mbox{$t = \Let{x}{e}{t'}$}:]
-      We proceed on cases of the form of $e$
+    \item[Case $t = \Let{x}{e}{t'}$:]
+      We proceed on cases of $e$.
       \begin{description}
         \item[Case $e = \NullVal$:] 
+          We can step to $S' = H, P'$ where
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto \NullVal]
+            \end{gathered}
+          \end{equation*}
+          by base rule {\sc E-Null}. \contradiction
+
+        \item[Case $e = l$:]
+          We can step to $S' = H, P'$ where 
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto l]
+            \end{gathered}
+          \end{equation*}
+          by rule {\sc E-LVal}. \contradiction
+
+        \item[Case $e = y$:]
+          We can step to $S' = H, P'$ where
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto L(y)]
+            \end{gathered}
+          \end{equation*}
+          by rule {\sc E-Var}. \contradiction
+
+        \item[Case $e = \FSel{y}{f}$:]
+          By \eqref{eq:prog_tbase}, {\sc T-Let}, {\sc T-Select} and {\sc T-Var}
+          \begin{equation*}
+            \Gamma(y) = C \andalso \ftype(f, C) = \tau.
+          \end{equation*}
+          By $H \vdash \Gamma;L$
+          \begin{equation*}
+            \typeOf(L(y), H) \stof C
+          \end{equation*}
+          which means that either $\typeOf(L(y), H) = C' \stof C$ or \\
+          $\typeOf(L(y), H) = \NullType$. 
           
+          If $\typeOf(L(y), H) = \NullType$ by definition of $\typeOf$
+          \begin{equation*}
+            L(y) = \NullVal
+          \end{equation*}
+          Then we can step to $S' = \Error$ by {\sc E-NullSelect}.
+          \contradiction
+
+          If $\typeOf(L(y), H) = C'$ then
+          \begin{equation*}
+            L(y) = o_y \andalso H(o_y) = \Obj{C', FM}
+          \end{equation*}
+          Since $C' \stof C$ and $\ftype(f, C) = \tau$
+          \begin{equation*}
+            f \in \fields(C') \andalso \ftype(f, C') = \tau.
+          \end{equation*}
+          Then $\vdash H$ implies
+          \begin{equation*}
+            f \in \dom(FM).
+          \end{equation*}
+          But then by rule {\sc E-Select} we can step to $S' = H, P'$ where
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto FM(f)].
+            \end{gathered}
+          \end{equation*}
+          \contradiction
+
+        \item[Case $e = \FAss{y}{f}{z}$:]
+          By \eqref{eq:prog_tbase}, {\sc T-Let}, {\sc T-Assign} and {\sc T-Var}
+          \begin{equation*}
+            \begin{gathered}
+              \Gamma(y) = C \andalso \ftype(f,C) = \tau  \\
+              \Gamma(z) = \tau' \andalso \tau' \stof \tau.
+            \end{gathered}
+          \end{equation*}
+          By $H \vdash \Gamma;L$
+          \begin{equation*}
+            \typeOf(L(y), H) \stof C,
+          \end{equation*}
+          which means that either $\typeOf(L(y), H) = C' \stof C$ or \\
+          $\typeOf(L(y), H) = \NullType$.
+
+          If $\typeOf(L(y), H) = \NullType$ we get
+          \begin{equation*}
+            L(y) = \NullVal.
+          \end{equation*}
+          We can then step to $\Error$ by rule {\sc E-NullAssign}.
+          \contradiction
+
+          If $\typeOf(L(y), H) = C'$ then
+          \begin{equation*}
+            L(y) = o_y \andalso H(o_y) = \Obj{C', FM}.
+          \end{equation*}
+          By $C' \stof C$ and $\ftype(f, C) = \tau$
+          \begin{equation*}
+            f \in \fields(C') \andalso \ftype(f, C') = \tau.
+          \end{equation*}
+          Then by $\vdash H$ we have 
+          \begin{equation*}
+            f \in \dom(FM).
+          \end{equation*}
+          We can then by {\sc E-Assign} step to $S' = H', P'$ where
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto L(z)] \andalso FM' = FM[f \mapsto L(z)] \\
+              H' = H[o_y \mapsto \Obj{C', FM'}]
+            \end{gathered}
+          \end{equation*}
+          \contradiction
+
+        \item[Case $e = \New{C}$:]
+          By \eqref{eq:prog_tbase}, {\sc T-Let} and {\sc T-New}
+          \begin{equation*}
+            \TypeRel{\Gamma}{a}{\New{C}}{C}.
+          \end{equation*}
+          Since the program is well formed the class $C$ exists. 
+          \begin{equation*}
+            FM = [f \mapsto \default(\tau): (\VarDecl{f}{\tau}) \in \fdecls(C)]
+          \end{equation*}
+          is therefore well defined. By {\sc E-New} we can therefore step to $S'
+          = H', P'$ where
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto o] \andalso o \text{ fresh object reference } \\
+              H' = H[o \mapsto \Obj{C, FM}].
+            \end{gathered}
+          \end{equation*}
+          \contradiction
+
+        \item[Case $e = \NewCell$:]
+          We can immediately step to $S' = H', P'$ where
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto o] \andalso o \text{ fresh object reference } \\
+              H' = H[o \mapsto \Cell{\emptyset, \bot_{\LatVals}}]
+            \end{gathered}
+          \end{equation*}
+          by rule {\sc E-NewCell}. \contradiction
+      
+        \item[Case $e = \Call{y}{m}{z}$:]
+          By \eqref{eq:prog_tbase}, {\sc T-Let}, {\sc T-Call} and {\sc T-Var}
+          \begin{equation*}
+            \Gamma(y) = C \andalso \mtype(m, C) = \gamma \to \tau \\
+            \Gamma(z) = \gamma' \andalso \gamma' \stof \gamma.
+          \end{equation*}
+          By $H \vdash \Gamma;L$ 
+          \begin{equation*}
+            \typeOf(L(y), H) \stof C.
+          \end{equation*}
+          Then either $\typeOf(L(y), H) = C' \stof C$ or $\typeOf(L(y)) =
+          \NullType$.
+
+          If $\typeOf(L(y), H) = \NullType$ then
+          \begin{equation*}
+            L(y) = \NullVal
+          \end{equation*}
+          and we can apply rule {\sc E-NullCall} to step to \Error.
+          \contradiction
+
+          If $\typeOf(L(y), H) = C'$
+          \begin{equation*}
+            L(y) = o_y \andalso H(o_y) = \Obj{C', FM}.
+          \end{equation*}
+          $C' \stof C$ and classes being well typed means that if $\mtype(m, C)$
+          is defined then $\mbody(m, C')$ is defined aswell. Thus let
+          \begin{equation*}
+            \mbody(m, C) = w \to t''.
+          \end{equation*}
+          By rule {\sc E-Call} we can then step to $S' = H, P'$ where
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \xframe{L'',
+              t''}^x \circ \sframe{L, t'} \\
+              L_{\text{base}} =
+              \begin{cases}
+                \emptyset & \text{ if } a = \ocap \\
+                L_0       & \text{ if } a = \nocap
+              \end{cases} \\
+              L'' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)].
+            \end{gathered}
+          \end{equation*}
+          \contradiction
+
+        \item[Case $e = \Put{y}{z}$:]
+          By \eqref{eq:prog_tbase}, {\sc T-Let}, {\sc T-Put} and {\sc T-Var}
+          \begin{equation*}
+            \Gamma(y) = \CellType \andalso \Gamma(z) = \LatType.
+          \end{equation*}
+          Thus by $H \vdash \Gamma; L$
+          \begin{equation*}
+            \typeOf(L(y), H) \stof \CellType \andalso \typeOf(L(z), H) \stof
+            \LatType.
+          \end{equation*}
+          By definition of $\typeOf$ and the structure of the type lattice this
+          means that $\typeOf(L(z), H) = \LatType$ and that either
+          $\typeOf(L(y), H) = \CellType$ or $\typeOf(L(y), H) = \NullType$. \\
+          $\typeOf(L(z), H) = \LatType$ implies
+          \begin{equation*}
+            L(z) = l' \andalso l' \in \LatVals.
+          \end{equation*}
+
+          If $\typeOf(L(y), H) = \NullType$
+          \begin{equation*}
+            L(y) = \NullVal
+          \end{equation*}
+          and we can apply {\sc E-NullPut} to step to $\Error$. \contradiction
+
+          If $\typeOf(L(y), H) = \CellType$ then 
+          \begin{equation*}
+            L(y) = o_y \andalso H(o_y) = \Cell{DEP, l}
+          \end{equation*}
+          Then we can use rule {\sc E-Put} to step to $S' = H', P'$ where 
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto L(y)] \andalso c' = \Cell{DEP, l \sqcup l'} \\
+              H' = H[o_y \mapsto c']
+            \end{gathered}
+          \end{equation*}
+          \contradiction
+
+        \item[Case $e = \When{y}{z}{(\overline{cap}, w \Rightarrow t'')}$:]
+          From \eqref{eq:prog_tbase}, {\sc T-Let}, {\sc T-When} and {\sc T-Var}
+          \begin{equation*}
+            \begin{gathered}
+              \Gamma(y) = \CellType \andalso \Gamma(z) = \LatType \\
+              \forall(\Capt{u}{u'}) \in \overline{cap}. \: \Gamma(u') = \CellType \\
+              \Gamma_{\text{cells}} = [(u: \CellType): (\Capt{u}{u'}) \in
+              \overline{cap}] \\
+              \TypeRel{\Gamma_{\text{cells}}, w: \LatType}{\ocap}{t}{\gamma}.
+            \end{gathered}
+          \end{equation*}
+          Combinig the first two with $H \vdash \Gamma;L$
+          \begin{gather*}
+            \typeOf(L(y), H) \stof \CellType \\
+            \typeOf(L(z), H) \stof \LatType.
+          \end{gather*}
+          Similarly to the previous case we have
+          \begin{equation*}
+            L(z) = l' \andalso l' \in \LatVals.
+          \end{equation*}
+          Also
+          \begin{equation*}
+            \typeOf(L(y), H) = \CellType
+          \end{equation*}
+          or
+          \begin{equation*}
+            \typeOf(L(z), H) = \NullType.
+          \end{equation*}
+
+          If $\typeOf(L(y), H) = \NullType$ then
+          \begin{equation*}
+            L(y) = \NullVal.
+          \end{equation*}
+          By {\sc E-NullWhen} we can step to $\Error$. \contradiction
+
+          If $\typeOf(L(y), H) = \CellType$
+          \begin{equation*}
+            L(y) = o_y  \andalso H(o_y) = \Cell{DEP, l}
+          \end{equation*}
+          By {\sc E-When} we can step to $S' = H', P'$ where
+          \begin{equation*}
+            \begin{gathered}
+              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              t'} \\
+              L' = L[x \mapsto L(y)] \andalso L_{\text{env}} = [u \mapsto L(u'):
+              (\Capt{u}{u'}) \in \overline{cap}] \\
+              cb = ( L_{\text{env}}, w \Rightarrow t'' ) \andalso DEP' = DEP
+              \cup (l', cb)^d \\
+              d \text{ fresh thread id } \andalso H' = H[o_y \mapsto \Cell{DEP',
+              l}].
+            \end{gathered}
+          \end{equation*}
+          \contradiction
       \end{description}
+      {\bf This concludes the case $t = \Let{x}{e}{t'}$.}
   \end{description}
+  Clearly all cases for $t$ leads to a contradiction and therefore we are done.
 \end{proof}
 
 
