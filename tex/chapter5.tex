@@ -133,25 +133,25 @@ Figure~\ref{fig:expr_typing}.
     
     \vspace{0.5em}
 
-    \scrule{T-Var}{x \in dom(\Gamma)}{\TypeRel{\Gamma}{a}{x}{\Gamma(x)}}
+    \scrule{T-Var}{x \in \dom(\Gamma)}{\TypeRel{\Gamma}{a}{x}{\Gamma(x)}}
 
     \vspace{0.5em}
 
     \scrule{T-Select}
-    {\TypeRel{\Gamma}{a}{x}{C} \andalso ftype(f, C) = \tau }
+    {\TypeRel{\Gamma}{a}{x}{C} \andalso \ftype(f, C) = \tau }
     {\TypeRel{\Gamma}{a}{\FSel{x}{f}}{\tau}}
     
     \vspace{0.5em}
 
     \scrule{T-Assign}
-    {\TypeRel{\Gamma}{a}{x}{C} \andalso ftype(f, C) = \tau \\
+    {\TypeRel{\Gamma}{a}{x}{C} \andalso \ftype(f, C) = \tau \\
     \TypeRel{\Gamma}{a}{y}{\tau'} \andalso \tau' \stof \tau }
     {\TypeRel{\Gamma}{a}{\FAss{x}{f}{y}}{\tau}}
 
     \vspace{0.5em}
 
     \scrule{T-New}
-    {a = \ocap \Longrightarrow ocap(C)}
+    {a = \ocap \Longrightarrow \ocap(C)}
     {\TypeRel{\Gamma}{a}{\New{C}}{C}}
 
     \vspace{0.5em}
@@ -161,7 +161,7 @@ Figure~\ref{fig:expr_typing}.
     \vspace{0.5em}
 
     \scrule{T-Call}
-    {\TypeRel{\Gamma}{a}{x}{C} \andalso mtype(C,m) = \sigma \to \tau \\
+    {\TypeRel{\Gamma}{a}{x}{C} \andalso \mtype(C,m) = \sigma \to \tau \\
     \TypeRel{\Gamma}{a}{y}{\sigma'} \andalso \sigma' \stof \sigma }
     {\TypeRel{\Gamma}{a}{\Call{x}{m}{y}}{\tau}}
     
@@ -176,8 +176,8 @@ Figure~\ref{fig:expr_typing}.
     \scrule{T-When}
     {\TypeRel{\Gamma}{a}{x}{\CellType} \andalso \TypeRel{\Gamma}{a}{y}{\LatType} \\
     \forall \Capt{u}{u'} \in \overline{cap}. \; \TypeRel{\Gamma}{a}{u'}{\CellType}\\
-    \Gamma_{cells} = [u \mapsto \CellType : \Capt{u}{u'} \in \overline{cap}]\\
-    \TypeRel{\Gamma_{cells}, z : \LatType}{\ocap}{t}{\sigma}}
+    \Gamma_{\text{cells}} = [u \mapsto \CellType : \Capt{u}{u'} \in \overline{cap}]\\
+    \TypeRel{\Gamma_{\text{cells}}, z : \LatType}{\ocap}{t}{\sigma}}
     { \TypeRel{\Gamma}{a}{\When{x}{y}{ \CB{\overline{cap}}{z}{t}}}{\CellType} }
 
   %\end{multicols}
@@ -196,16 +196,16 @@ Figure~\ref{fig:expr_typing}.
   \scrule{WF-Class}
   {C \vdash \overline{md} \\ D = \AnyRefType{} \lor
   p \vdash \ClassDef{D}{...}{...}{...} \\
-  \forall (\MethodDef{m}{...}{...}{...}{...}) \in \overline{md} . \: override(m,
+  \forall (\MethodDef{m}{...}{...}{...}{...}) \in \overline{md} . \: \override(m,
   C, D) \\
-  \forall (\VarDecl{f}{\tau}) \in \overline{vd} . \: f \notin fields(D) }
+  \forall (\VarDecl{f}{\tau}) \in \overline{vd} . \: f \notin \fields(D) }
   {p \vdash \ClassDef{C}{D}{\overline{vd}}{\overline{md}}}
 
   \RuleSpace{}
 
   \scrule{WF-Override}
-  {mtype(m, D)\text{ not def. } \lor mtype(m, C) = mtype(m, D)}
-  {override(m, C, D)}
+  {\mtype(m, D)\text{ not def. } \lor \mtype(m, C) = \mtype(m, D)}
+  {\override(m, C, D)}
   
   \RuleSpace{}
 
@@ -268,14 +268,14 @@ Figure~\ref{fig:expr_typing}.
   \RuleSpace{}
 
   \scrule{E-Select}
-  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in dom(FM)}
+  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)}
   {H, \sFrame{L}{\Let{x}{ \FSel{y}{f} }{t}} \; \FRedTo  \\ 
   H, \sFrame{L[x \mapsto FM(f)]}{t}}
 
   \RuleSpace{}
 
   \scrule{E-Assign}
-  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in dom(FM) \\
+  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM) \\
   FM' = FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, FM'}]}
   {H, \sFrame{L}{\Let{x}{\FAss{y}{f}{z}}{t}} \; \FRedTo \\
    H', \sFrame{L[x \mapsto L(z)]}{t}}
@@ -283,16 +283,16 @@ Figure~\ref{fig:expr_typing}.
   \RuleSpace{}
 
   \scrule{E-New}
-  {o\text{ fresh} \\
-  FM = [f \mapsto bot(\sigma): (\VarDecl{f}{\sigma}) \in fields(C)] \\
+  {o\text{ fresh object reference } \\
+  FM = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in \fdecls(C)] \\
   H' = H[o \mapsto \Obj{C, FM}]}
   {H, \sFrame{L}{ \Let{x}{\New{C}}{t} } \; \FRedTo \\
   H', \sFrame{L[x \mapsto o]}{t}}
   
   \RuleSpace{}
 
-  \scrule{E-New}
-  {o\text{ fresh} \andalso
+  \scrule{E-NewCell}
+  {o\text{ fresh object reference } \andalso
   H' = H[o \mapsto \Cell{\emptyset, \bot_{\LatVals{}}}]}
   {H, \sFrame{L}{ \Let{x}{\NewCell}{t} } \; \FRedTo \\
   H', \sFrame{L[x \mapsto o]}{t}}
@@ -308,7 +308,6 @@ Figure~\ref{fig:expr_typing}.
 
   \RuleSpace{}
 
-  % TODO fix the variable names
   \scrule{E-When}
   {L(y) = o \andalso H(o) = \Cell{DEP, l} \andalso L(z) = l' \\
   L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
@@ -322,7 +321,6 @@ Figure~\ref{fig:expr_typing}.
 \end{figure}
 
 \begin{figure}
-  % TODO add these rules (null pointer exception rules)
   \scrule{E-NullSelect}
   {L(y) = \NullVal}
   {H, \sFrame{L, \Let{x}{\FSel{y}{f}}{t} } \; \FRedTo \; \Error}
@@ -341,6 +339,12 @@ Figure~\ref{fig:expr_typing}.
 
   \RuleSpace{}
 
+  \scrule{E-NullPut}
+  {L(y) = \NullVal}
+  {H, \sFrame{L, \Let{x}{\Put{y}{z}}{t} } \; \FRedTo \; \Error}
+
+  \RuleSpace{}
+
   \scrule{E-NullWhen}
   {L(y) = \NullVal}
   {H, \sFrame{L}{\Let{x}{  \When{y}{z}{ (\overline{cap}, w \Rightarrow t')}}{t}
@@ -353,7 +357,7 @@ Figure~\ref{fig:expr_typing}.
   \scrule{E-Call}
   {
     L(y) = o \andalso H(o) = \Obj{C, FM} \\
-    methodBody(m, C) = w \to t' \\
+    \mbody(m, C) = w \to t' \\
     L_{\text{base}} =
     \begin{cases}
       \emptyset & \text{if } a = \ocap \\
@@ -361,26 +365,26 @@ Figure~\ref{fig:expr_typing}.
     \end{cases} \\
     L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)] 
   }
-  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^\alpha \; \FSRedTo \\
-  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^\alpha }
+  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^d\; \FSRedTo \\
+  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^d}
 
   \RuleSpace{}
 
   \scax{E-Ret}
-  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ FS |_a^\alpha \; \FSRedTo \\
-  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^\alpha }
+  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ FS |_a^d \; \FSRedTo \\
+  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^d }
 
   \RuleSpace{}
 
   \scrule{E-FProp}
   {H, F \; \FRedTo \; H', F'}
-  {H, F \circ FS |_a^\alpha \; \FSRedTo \; H', F' \circ FS |_a^\alpha }
+  {H, F \circ FS |_a^d \; \FSRedTo \; H', F' \circ FS |_a^d }
 
   \RuleSpace{}
   
   \scrule{E-ErrorFS}
   {H, F \; \FRedTo \; \Error }
-  {H, F \circ FS |_a^\alpha \; \FSRedTo \; \Error}
+  {H, F \circ FS |_a^d \; \FSRedTo \; \Error}
 
   \caption{\RACL{} frame stack reduction rules.}
   \label{fig:fs_red_rules}
@@ -389,11 +393,11 @@ Figure~\ref{fig:expr_typing}.
 \begin{figure}
   \scrule{E-Spawn}
   {
-    o \in dom(H) \andalso H(o) = \Cell{DEP, l} \\ 
+    o \in \dom(H) \andalso H(o) = \Cell{DEP, l} \\ 
     l' \sqsubseteq l \andalso (l', cb)^d \in DEP \andalso cb = (L_{\text{env}}, z
     \Rightarrow t) \\
     L = L_{\text{env}}[z \mapsto l'] \\
-    H' = H[o \mapsto \Cell{DEP - (l', cb), l}]
+    H' = H[o \mapsto \Cell{DEP - (l', cb)^d, l}]
   }
   {
     H,P \Rrightarrow H', P \cup \left\{ \Frame{L}{t}{-} \circ \varepsilon
@@ -403,20 +407,20 @@ Figure~\ref{fig:expr_typing}.
   \RuleSpace{}
 
   \scrule{E-Term}
-  {P = P' \cup_d \left\{ \sFrame{L}{x} \circ \varepsilon |_a^d \right\} }
+  {P = P' \cup_D \left\{ \sFrame{L}{x} \circ \varepsilon |_a^d \right\} }
   {H,P \Rrightarrow H, P'}
 
   \RuleSpace{}
 
   \scrule{E-FSProp}
   {H, FS \twoheadrightarrow H', FS'}
-  {H, P \cup_d \left\{ FS \right\} \Rrightarrow H', P \cup \left\{ FS' \right\} }
+  {H, P \cup_D \left\{ FS \right\} \Rrightarrow H', P \cup \left\{ FS' \right\} }
 
   \RuleSpace{}
 
   \scrule{E-ErrorP}
   {H, FS \twoheadrightarrow \Error}
-  {H, P \cup_d \left\{ FS \right\} \Rrightarrow \Error }
+  {H, P \cup_D \left\{ FS \right\} \Rrightarrow \Error }
   \caption{\RACL{} thread set reduction rules.}
   \label{fig:threads_red_rules}
 \end{figure}
