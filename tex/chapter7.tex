@@ -1,0 +1,53 @@
+\chapter{Quasi Determinism}
+\label{cha:determinism}
+
+% Describe:
+% Theorem of determinism
+% Lemmas leading up to the proof of this
+
+\begin{definition}
+  For each state $S = H, P$ there are two related sets of currently used object
+  identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$. These contain
+  all object and thread identifiers occuring in $H$ and $P$. We call an object
+  identifier $o$ (reference identifier $d$) \emph{fresh} if $o \not\in \mathcal{O}(S)$ ($d \not\in
+  \mathcal{D}(S)$).
+\end{definition}
+
+\begin{definition} \label{def:eqrel}
+  Let $\simeq$ be a binary relation on the set of states $\States$.
+  We let $S \simeq S'$ if
+  \begin{equation*}
+    S = S' = \Error
+  \end{equation*}
+  or if
+  \begin{equation}
+    S = H, P \andalso S' = H', P'
+  \end{equation}
+  and there exists bijections $g: \OIDs(S) \to \OIDs(S'), h: \TIDs(S) \to \TIDs(S')$
+  such that
+  \begin{equation}
+    H' = \pi(H, g) \andalso P' = \rho(P, g, h)
+  \end{equation}
+  
+  The functions $\pi$ and $\rho$ are defined in definition~\ref{def:pirho}.
+\end{definition}
+
+% TODO define \pi and \rho
+
+
+\begin{proposition} \label{prop:eqrel}
+  $\simeq$ is an equivalence relation.
+\end{proposition}
+
+\begin{proposition} \label{prop:eqrel_stateok}
+  For any $S, S' \in \States$ such that $S \simeq S'$
+  \begin{equation}
+    \vdash S \tsep \stateok \iff \vdash S' \tsep \stateok
+  \end{equation}
+\end{proposition}
+
+
+\begin{theorem}
+  % state final QD theorem here
+\end{theorem}
+
