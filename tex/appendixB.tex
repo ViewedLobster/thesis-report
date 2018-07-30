@@ -84,5 +84,206 @@
 \end{definition}
 
 
-\begin{proof}{(Proposition~\ref{prop:eqrel})} \\
+\begin{proof}{(Proposition~\ref{prop:eqrel}, sketch)} 
+  To prove that $\simeq$ is an equivalence relation we need to prove
+  reflexivity, symmetry and transitivity.
+  \begin{description}
+    \item[Reflexivity:] Let $S$ be a state. If $S = \Error$ then reflexivity
+      follows trivially. Thus let $S = H, P$. We need to prove that there are $g: 
+      \OIDs(S) \hookrightarrow \OIDs(S), h: \TIDs(S) \hookrightarrow \TIDs(S)$
+      such that $H = \pi(H, g, h)$ and $P = \rho(P, g, h)$. This is easy since
+      \begin{equation*}
+        g = \Id_{\OIDs(S)} \andalso h = \Id_{\TIDs(S)}
+      \end{equation*}
+      can be easily seen to fulfill this.
+    \item[Symmetry:] Let $S \simeq S'$. If $S = \Error$ then $S' = \Error$ and
+      we have $S' \simeq S$. If $S = H, P; S' = H', P'$ we must have
+      \begin{equation*}
+        g: \OIDs(S) \hookrightarrow \OIDs(S') \andalso h: \TIDs(S)
+        \hookrightarrow \TIDs(S')
+      \end{equation*}
+      such that
+      \begin{equation*}
+        H' = \pi(H, g, h) \andalso P' = \rho(P, g, h).
+      \end{equation*}
+      It can easily be shown that $g^{-1}$ and $h^{-1}$ are bijections such that
+      \begin{equation*}
+        H = \pi(H', g^{-1}, h^{-1}) \andalso P = \rho(P', g^{-1}, h^{-1}).
+      \end{equation*}
+      We thus get that $S' \simeq S$.
+
+    \item[Transitivity:] Let $S \simeq S'$ and $S' \simeq S''$. The case where
+      $S = \Error$ is trivial. Thus let $S = H,P; S' = H',P'; S'' = H'', P''$.
+      We must have
+      \begin{equation*}
+        \begin{gathered}
+          g: \OIDs(S) \hookrightarrow \OIDs(S') \andalso h: \TIDs(S)
+          \hookrightarrow \TIDs(S') \\
+          g': \OIDs(S') \hookrightarrow \OIDs(S'') \andalso h': \TIDs(S')
+          \hookrightarrow \TIDs(S'')
+        \end{gathered}
+      \end{equation*}
+      such that
+      \begin{equation*}
+        \begin{gathered}
+          H' = \pi(H, g, h) \andalso P' = \rho(P, g, h)  \\
+          H'' = \pi(H', g', h') \andalso P'' = \rho(P', g', h').
+        \end{gathered}
+      \end{equation*}
+      It is easily shown that $g \circ g'$ and $h \circ h'$ are bijections such
+      that 
+      \begin{equation*}
+        H'' = \pi(H', g \circ g', h \circ h') \andalso P'' = \rho(P', g \circ
+        g', h \circ h').
+      \end{equation*}
+      Thus $S \simeq S''$.
+  \end{description}
 \end{proof}
+
+\begin{proof}{(Proposition~\ref{prop:eqrel_stateok}, sketch)}
+  Since $\simeq$ is an equivalence relation we only need to prove one direction.
+  Thus assume
+  \begin{equation}
+    \vdash S \tsep \stateok.
+  \end{equation}
+  Letting $S = H, P; S' = H', P'$ we need to show
+  \begin{equation} 
+    \begin{gathered}
+      \vdash H' \andalso H' \vdash P' \andalso H' \vdash P' \tsep \ocr \\
+      \isolation(H', P') \andalso H' \vdash P \tsep \gsep.
+    \end{gathered}
+  \end{equation}
+  Since the application of $\pi$ to $H$ amounts only to a renaming of the object
+  and thread identifiers we have that $\Graph(H)$ is the same as $\Graph(H')$ up to a
+  renaming of vertices. It does not change any types i.e. 
+  \begin{equation} \label{eq:eqrel_stateok1}
+    \typeOf(o, H) = \typeOf(g(o), H').
+  \end{equation}
+  Thus it is not hard to prove $\vdash H'$. 
+  
+  The application of $\rho$ similarly does the same kind of operation to $P$.
+  Thus it is not hard proving $H' \vdash P'$ either.
+  $H' \vdash P' \tsep \ocr$ follows from the graph equivalence mentioned above
+  and \eqref{eq:eqrel_stateok1}. Using the same properties we can show
+  $\isolation(H', P')$ and $H' \vdash P' \tsep \gsep$.
+\end{proof}
+
+We make the following observation
+\begin{claim}
+  A transition between two states can be uniquely identified by
+  \begin{itemize}
+    \item Start state $S$
+    \item Base rule name $R$ e.g. $R = \ENew$
+    \item Thread identifier $\alpha$
+    \item A fresh object or thread identifier $\beta$ which could be of value
+      \begin{itemize}
+        \item Object identifier $o' \in \OIDs$,
+        \item Thread id $\alpha' \in \TIDs$ or
+        \item $-$, representing the case where no fresh value is referenced in
+          the rule definition.
+      \end{itemize}
+  \end{itemize}
+\end{claim}
+
+Because of this claim we can make the following definition
+
+\begin{definition}
+  We write a \emph{transition identifier} as $R^{\alpha, \beta}$. The
+  \emph{application} of $R^{\alpha, \beta}$ to state $S$ (if possible) is the
+  use of a rule as specified by $R$, $\alpha$ and $\beta$ to step from $S$ to
+  some state $S'$. We write this as
+  \begin{equation*}
+    S \Rrightarrow^{R^{\alpha, \beta}} S'
+  \end{equation*}
+\end{definition}
+
+\begin{definition}
+  A \emph{transition sequence} $\bar{R}$ is a finite length sequence of
+  transition identifiers
+  \begin{equation*}
+    R_1^{\alpha_1, \beta_1}, R_2^{\alpha_2, \beta_2}, \dots, R_n^{\alpha_n,
+    \beta_n}.
+  \end{equation*}
+  The application of this sequence to a state $S$ is the consecutive application
+  of
+  \begin{equation*}
+    R_i^{\alpha_i, \beta_i} \andalso i = 1, \dots, n
+  \end{equation*}
+  beginning with state $S$. I.e.
+  \begin{equation*}
+    S \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_1 \Rrightarrow^{R^{\alpha_2,
+    \beta_2}} S_2  \: \dots \: S_{n-1} \Rrightarrow^{R_n^{\alpha_n, \beta_n}} S_n
+  \end{equation*}
+  We shorten this to
+  \begin{equation*}
+    S \Rrightarrow^{\bar{R}} S_n.
+  \end{equation*}
+\end{definition}
+
+
+\section{Proof of Quasi Determinism}
+\label{sec:proof_of_quasi_determinism}
+
+\begin{lemma}
+  Let $S$ be a state where the two transitions
+  \begin{equation*}
+    \begin{gathered}
+      R_1^{\alpha_1, \beta_1} \neq R_2^{\alpha_2, \beta_2} \\
+      \alpha_1 \neq \alpha_2 \andalso \beta_1 \neq \beta_2 \text{ or } \beta_1 =
+      \beta_2 = - 
+    \end{gathered}
+  \end{equation*}
+  are applicable.
+  Let
+  \begin{equation*}
+    \bar{R}_1  = R_1^{\alpha_1, \beta_1}, R_2^{\alpha_2, \beta_2} \andalso
+    \bar{R}_2 = R_2^{\alpha_2, \beta_2}, R_1^{\alpha_1, \beta_1}
+  \end{equation*}
+  Then both $\bar{R}_1, \bar{R}_2$ applicable to $S$ and
+  \begin{equation*}
+    \begin{gathered}
+      S \Rrightarrow^{\bar{R}_1} S'_1 \andalso S \Rrightarrow^{\bar{R}_2} S'_2
+      \\
+      S'_1 = S'_2
+    \end{gathered}
+  \end{equation*}
+\end{lemma}
+
+\begin{lemma}
+  Let $S$ be a state. Let
+  \begin{equation*}
+    \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_n^{\alpha_n, \beta_n} \andalso
+    S \Rrightarrow^{\bar{R}} S_{\bar{R}}
+  \end{equation*}
+  Let $R^{\alpha, \beta}$ be a transition such that
+  \begin{equation*}
+    \alpha \neq \alpha_i \andalso \forall i \in \left\{ 1, \dots, n \right\},
+  \end{equation*}
+  and
+  \begin{equation*}
+    S \Rrightarrow^{R^{\alpha, \beta}} S_{R^{\alpha, \beta}} \andalso
+    S_{\bar{R}} \Rrightarrow^{R^{\alpha, \beta}} S'.
+  \end{equation*}
+  Then
+  \begin{equation*}
+    S_{R^{\alpha, \beta}} \Rrightarrow^{\bar{R}} S'.
+  \end{equation*}
+\end{lemma}
+
+\begin{lemma}
+  Let $S, S', T$ be states and $\bar{R}$ a transition sequence such that
+  \begin{equation*}
+    S \Rrightarrow^{\bar{R}} T \andalso S \simeq S'.
+  \end{equation*}
+  Then there is a state $T'$ and a transition sequence $\bar{R'}$ of the same
+  length as $\bar{R}$ such that
+  \begin{equation*}
+    S' \Rrightarrow^{\bar{R'}} T' \andalso T \simeq T'.
+  \end{equation*}
+\end{lemma}
+
+
+
+
+
+

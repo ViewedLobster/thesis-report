@@ -47,7 +47,18 @@
 \end{proposition}
 
 
-\begin{theorem}
-  % state final QD theorem here
+\begin{theorem}{(Quasi Determinism)}
+  Let $S_0, S'_0, S_1, S'_1$ be states not equal to $\Error$ such that
+  \begin{equation*}
+    \begin{gathered}
+      S_0 \simeq S'_0 \\
+      S_0 \Rrightarrow^{\bar{R}} S_1 \andalso S'_0 \Rrightarrow^{\bar{R'}} S'_1.
+    \end{gathered}
+  \end{equation*}
+  Furthermore neither $S_1$ or $S'_1$ can make a step.
+  Then
+  \begin{equation*}
+    S_1 \simeq S'_1.
+  \end{equation*}
 \end{theorem}
 

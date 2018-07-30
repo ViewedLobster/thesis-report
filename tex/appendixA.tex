@@ -467,16 +467,25 @@ to show.
   First of all we have that $S \neq \Error$ since no step can be made from this
   state. Thus $S = H, P$ and
   \begin{equation*}
-    \vdash H \andalso H \vdash P \andalso H \vdash P \tsep \ocr \andalso
-    \isolated{(H, P)} \andalso H \vdash P \tsep \gsep
+    \begin{gathered}
+      \vdash H \andalso H \vdash P \andalso H \vdash P \tsep \ocr \\
+      \isolated{(H, P)} \andalso H \vdash P \tsep \gsep \andalso \uniqMain(P).
+    \end{gathered}
   \end{equation*}
   We also assume we have $S' = H', P'$ since otherwise $S' = \Error$ and the
   theorem holds trivially. What remains is to prove
   \begin{equation*}
-    \vdash H' \andalso H' \vdash P' \andalso H' \vdash P' \tsep \ocr \andalso
-    \isolated{(H', P')} \andalso H' \vdash P' \tsep \gsep.
+    \begin{gathered}
+      \vdash H' \andalso H' \vdash P' \andalso H' \vdash P' \tsep \ocr \\
+      \isolated{(H', P')} \andalso H' \vdash P' \tsep \gsep \andalso
+      \uniqMain(P).
+    \end{gathered}
   \end{equation*}
-  We proceed by cases.
+  We easily see that $\uniqMain(P')$ must hold since no rule changes the OCAP
+  status of threads, and the only rule which spawns new threads is {\sc E-Spawn}
+  which spawns an OCAP thread.
+
+  To prove everything else we proceed by cases.
   \begin{description}
     \item[Case {\sc E-FSProp}:] According to this rule $P = Q \cup_D \left\{
         FS|_a^d \right\}$ and $P' = Q \cup \left\{ FS'|_a^d \right\}$. We proceed by cases.

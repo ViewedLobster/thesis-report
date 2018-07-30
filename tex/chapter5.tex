@@ -511,6 +511,25 @@ Figure~\ref{fig:expr_typing}.
   \end{equation}
 \end{definition}
 
+\begin{definition}{(Unique main thread)}
+  For a thread $FS|_a^d$ let
+  \begin{equation*}
+    \chi_{\nocap}(a) =
+    \begin{cases}
+      1 & \text{ if } a = \nocap \\
+      0 & \text{ o.w. }
+    \end{cases}
+  \end{equation*}
+  For a thread set $P$ let
+  \begin{equation*}
+    \chi(P) = \sum_{FS|_a^d \in P} \chi_{\nocap}(a).
+  \end{equation*}
+  This is the number of non OCAP protected threads in $P$. Finally we define
+  \begin{equation*}
+    \uniqMain(P) \iff \chi(P) \leq 1
+  \end{equation*}
+\end{definition}
+
 \begin{definition}{(Well Typed States)}
   A state $S$ is a value of either $\Error$ or a pair $H, P$ where $H$ is a heap
   and $P$ is a set of threads. For a state $S$ we say that it is well typed,
@@ -519,10 +538,12 @@ Figure~\ref{fig:expr_typing}.
     \vdash S \tsep \stateok
   \end{equation}
   if $S = \Error$ or $S = H, P$ and
-  \begin{align}
-    \vdash H \andalso H \vdash P \andalso H \vdash P \tsep \ocr \andalso \isolation{(H, P)}
-    \andalso H \vdash P \tsep \gsep
-  \end{align}
+  \begin{equation*}
+    \begin{gathered}
+      \vdash H \andalso H \vdash P \andalso H \vdash P \tsep \ocr \\
+      \isolation{(H, P)} \andalso H \vdash P \tsep \gsep \andalso \uniqMain(P)
+    \end{gathered}
+  \end{equation*}
   
 \end{definition}
 
