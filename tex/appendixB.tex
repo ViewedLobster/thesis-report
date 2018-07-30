@@ -1,14 +1,25 @@
 \chapter{Proof of Quasi Determinism}
 
-\begin{definition} \label{def:pi}
+\begin{notation}
+  We denote a partial function/map $f$ from $A$ to $B$ as
+  \begin{equation*}
+    f: A \rightharpoonup B.
+  \end{equation*}
+  If a map $g: A \to B$ is a bijection we write
+  \begin{equation*}
+    g: A \hookrightarrow B.
+  \end{equation*}
+\end{notation}
+
+\begin{definition} \label{def:pirho}
   Let $S = H, P$ and let 
   \begin{equation*}
-    g: \OIDs(S) \to \OIDs' \andalso h: \TIDs(S) \to \TIDs' 
+    g: \OIDs(S) \hookrightarrow \OIDs' \andalso h: \TIDs(S) \hookrightarrow \TIDs' 
   \end{equation*}
-  be bijections where $\OIDs'$ ($\TIDs'$)is some subset of $\OIDs$ ($\TIDs$).
+  where $\OIDs'$ ($\TIDs'$)is some subset of $\OIDs$ ($\TIDs$).
   Then 
   \begin{equation}
-    \pi(H, g, h) = H^*
+    \pi(H, g, h) = H^* \in \Heaps
   \end{equation}
   where
   \begin{equation}
@@ -18,20 +29,60 @@
         \Obj{C, FM^*}   & \text{ if } H(g^{-1}(o)) = \Obj{C, FM} \\
         \Cell{DEP^*, l} & \text{ if } H(g^{-1}(o)) = \Cell{DEP, l}
       \end{cases} \\
-      FM^* = \delta(FM, g) \andalso DEP^* = \eta(DEP, g, h)
+      FM^* = \delta(FM, g) \andalso DEP^* = \eta(DEP, g, h).
     \end{gathered}
   \end{equation}
+
+  Furthermore writing
+  \begin{equation}
+    P = \left\{ FS_i|_{a_i}^{d_i} \right\}_{i = 1}^n
+  \end{equation}
+  we let
+  \begin{equation*}
+    \rho(P, g, h) = P^*
+  \end{equation*}
+  where
+  \begin{equation*}
+    \begin{gathered}
+      FS_i = \xframe{L_{m_i}, t_{m_i}}^{s_{m_i}} \circ \dots \circ \xframe{L_1,
+      t_1}^{s_1} \circ \varepsilon \\
+      FS_i^* = \xframe{\delta(L_{m_i}, g), t_{m_i}}^{s_{m_i}} \circ \dots \circ
+      \xframe{\delta(L_1,g), t_1}^{s_1} \circ \varepsilon \\
+      P^* = \left\{ FS_i^*|_{a_i}^{h(d_i)} \right\}_{i = 1}^n.
+    \end{gathered}
+  \end{equation*}
 \end{definition}
 
-\begin{notation}
-  % TODO define notation thm env
-  % Put the notation of partial map here
-\end{notation}
+\begin{note}
+  The $\pi$ and $\rho$ functions more or less just replaces object and thread
+  identifiers as specified by $g$ and $h$.
+\end{note}
 
-\begin{definition} \label{def:rho}
-  Let 
+\begin{definition}
+  Let $M: A \rightharpoonup B, g: C \hookrightarrow D, C \subseteq B, D
+  \subseteq B$. Then $\delta(M, g): A \rightharpoonup B$ and is defined as
+  follows for any element $a \in A$.
+  \begin{equation*}
+    \delta(M, g)(a) = 
+    \begin{cases}
+      g(c) & \text{ if } M(a) = c \in C \\
+      M(a) & \text{o.w.}
+    \end{cases}
+  \end{equation*}
 \end{definition}
+
+\begin{definition}
+  Let $g, h$ be as in definition \ref{def:pirho}. 
+  \begin{equation*}
+    \eta(DEP, g, h) = \left\{ (l, (\delta(L_{\text{env}}, g), z \Rightarrow
+    t))^{h(d)}: (l,
+    (L_{\text{env}}, z \Rightarrow t))^d \in DEP \right\}
+  \end{equation*}
+  I.e. we replace all object identifiers occuring in callback environments
+  according to the replacement map $g$, and change the corresponding thread
+  identifier $d$ to $h(d)$.
+\end{definition}
+
 
 \begin{proof}{(Proposition~\ref{prop:eqrel})} \\
-  This is a proof
 \end{proof}
