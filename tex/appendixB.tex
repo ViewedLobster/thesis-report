@@ -545,7 +545,8 @@ Because of this claim we can make the following definition
           FS_1 = \xframe{L_1, \Let{x_1}{\When{y_1}{z_1}{\dots}}{t'_1}}^{s_1} \circ GS_1
           \\ 
           L_1(y_1) = o_1 \andalso L_1(z_1) = l_1 \\
-          o_2 \in \dom(H)
+          o_2 \in \dom(H) \andalso H(o_2) = \Cell{DEP, l} \\
+          (l_2, (L_{\text{env}}, z_2 \Rightarrow t''))^{\alpha_2} \in DEP
         \end{gathered}
       \end{equation}
       Similarly to previous cases we have the case where $o_1 \neq o_2$ which
@@ -557,18 +558,65 @@ Because of this claim we can make the following definition
         H(o) = \Cell{DEP, l}.
       \end{equation}
       We have that 
-      \begin{equation}
+      \begin{equation} \label{eq:lem1_ewhen_espawn_1}
         \begin{gathered}    %            TODO  FIX this         ----v
-          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\alpha_1, \smiley}} S_1
+          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_1
           \\
           P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1} \right\} \\
           FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[x_1 \mapsto
           L_1(y_1)] \\
-          H_1 = H[o \mapsto \Cell{DEP, l \sqcup l_1}]
+          H_1 = H[o \mapsto \Cell{DEP_1, l}] \andalso DEP_1 = DEP \cup \{ (l_1,
+          \dots)^{\alpha'_1} \}
         \end{gathered}
       \end{equation}
-      
+      Stepping accoriding to $R_2^{\alpha_2, \smiley}$ from $S$ gives
+      \begin{equation} \label{eq:lem1_ewhen_espawn_2}
+        \begin{gathered}
+          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\alpha_2, \smiley}} S_2
+          \\
+          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
+          FS_2|_{\ocap}^{\alpha_2} \right\} \\
+          FS_2 = \xframe{L_{\text{env}}[z \mapsto l_2], t''}^{-} \circ
+          \varepsilon \\
+          H_2 = \Cell{DEP_2, l} \andalso DEP_2 = DEP \setminus \{ (l_2,
+          \dots)^{\alpha_2} \}
+        \end{gathered}
+      \end{equation}
+      Given \eqref{eq:lem1_ewhen_espawn_1} and \eqref{eq:lem1_ewhen_espawn_2} it
+      is not hard to verify that
+      \begin{equation} 
+        \begin{gathered}
+          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\alpha_2,
+          \smiley}} S_{12}
+          \\
+          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
+          FS_2|_{\ocap}^{\alpha_2} \right\} \\
+          H_{12} = H[o \mapsto \Cell{DEP_{12}, l}] \\ 
+          DEP_{12} = DEP \cup \{ (l_1, \dots)^{\alpha'_1} \} \setminus \{ (l_2,
+          \dots)^{\alpha_2} \}
+        \end{gathered}
+      \end{equation}
+      \begin{equation} 
+        \begin{gathered}
+          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\alpha_1,
+          \alpha'_1}} S_{21}
+          \\
+          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
+          FS_2|_{\ocap}^{\alpha_2} \right\} \\
+          H_{21} = H[o \mapsto \Cell{DEP_{12}, l}] \\ 
+          DEP_{21} = DEP \setminus \{ (l_2, \dots)^{\alpha_2} \} \cup \{ (l_1,
+          \dots)^{\alpha'_1} \} 
+        \end{gathered}
+      \end{equation}
+      Since $\alpha'_1$ is fresh it is clear that $DEP_{12} = DEP_{21}$ and
+      therefore we have $S_{12} = S_{21}$.
+      \begin{remark}
+        The main point here is that $\alpha'_1$ being a fresh thread identifier
+        makes the removal and addition to the dependency set $DEP$ commute.
+      \end{remark}
   \end{description}
+  All other cases follows similarly to these and it should not be hard to verify
+  them.
 \end{proof}
 
 \begin{lemma}
