@@ -7,10 +7,17 @@
 
 \begin{definition}
   For each state $S = H, P$ there are two related sets of currently used object
-  identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$. These contain
-  all object and thread identifiers occuring in $H$ and $P$. We call an object
-  identifier $o$ (reference identifier $d$) \emph{fresh} if $o \not\in \mathcal{O}(S)$ ($d \not\in
-  \mathcal{D}(S)$).
+  identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$.
+  Respectively these contain all object and thread identifiers occuring in $H$
+  and $P$. 
+  %We call an object
+  %identifier $o$ (reference identifier $d$) \emph{fresh} if $o \not\in \mathcal{O}(S)$ ($d \not\in
+  %\mathcal{D}(S)$).
+\end{definition}
+
+\begin{definition}
+  We say that an object (thread) identifier $o$ ($d$) is \emph{fresh} at a state $S$ if
+  $o \not\in \OIDs(S)$ ($d \not\in \TIDs(S)$).
 \end{definition}
 
 \begin{definition} \label{def:eqrel}
@@ -23,7 +30,7 @@
   \begin{equation}
     S = H, P \andalso S' = H', P'
   \end{equation}
-  and there exists bijections $g: \OIDs(S) \to \OIDs(S'), h: \TIDs(S) \to \TIDs(S')$
+  and there exists bijections $g: \OIDs \to \OIDs, h: \TIDs \to \TIDs$
   such that
   \begin{equation}
     H' = \pi(H, g) \andalso P' = \rho(P, g, h)

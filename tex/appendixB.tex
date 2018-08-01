@@ -17,9 +17,8 @@
 \begin{definition} \label{def:pirho}
   Let $S = H, P$ and let 
   \begin{equation*}
-    g: \OIDs(S) \hookrightarrow \OIDs' \andalso h: \TIDs(S) \hookrightarrow \TIDs' 
+    g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs \hookrightarrow \TIDs .
   \end{equation*}
-  where $\OIDs'$ ($\TIDs'$)is some subset of $\OIDs$ ($\TIDs$).
   Then 
   \begin{equation}
     \pi(H, g, h) = H^* \in \Heaps
@@ -62,15 +61,10 @@
 \end{note}
 
 \begin{definition}
-  Let $M: A \rightharpoonup B, g: C \hookrightarrow D, C \subseteq B, D
-  \subseteq B$. Then $\delta(M, g): A \rightharpoonup B$ and is defined as
-  follows for any element $a \in A$.
+  Let $M: A \rightharpoonup B, g: B \hookrightarrow B$. Then $\delta(M, g): A
+  \rightharpoonup B$ and is defined as follows for any element $a \in A$.
   \begin{equation*}
-    \delta(M, g)(a) = 
-    \begin{cases}
-      g(c) & \text{ if } M(a) = c \in C \\
-      M(a) & \text{o.w.}
-    \end{cases}
+    \delta(M, g)(a) = g(M(a))
   \end{equation*}
 \end{definition}
 
@@ -93,23 +87,24 @@
   \begin{description}
     \item[Reflexivity:] Let $S$ be a state. If $S = \Error$ then reflexivity
       follows trivially. Thus let $S = H, P$. We need to prove that there are $g: 
-      \OIDs(S) \hookrightarrow \OIDs(S), h: \TIDs(S) \hookrightarrow \TIDs(S)$
+      \OIDs \hookrightarrow \OIDs, h: \TIDs \hookrightarrow \TIDs$
       such that $H = \pi(H, g, h)$ and $P = \rho(P, g, h)$. This is easy since
       \begin{equation*}
-        g = \Id_{\OIDs(S)} \andalso h = \Id_{\TIDs(S)}
+        g = \Id_{\OIDs} \andalso h = \Id_{\TIDs}
       \end{equation*}
-      can be easily seen to fulfill this.
+      can be seen to fulfill this.
+
     \item[Symmetry:] Let $S \simeq S'$. If $S = \Error$ then $S' = \Error$ and
       we have $S' \simeq S$. If $S = H, P; S' = H', P'$ we must have
       \begin{equation*}
-        g: \OIDs(S) \hookrightarrow \OIDs(S') \andalso h: \TIDs(S)
-        \hookrightarrow \TIDs(S')
+        g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs
+        \hookrightarrow \TIDs
       \end{equation*}
       such that
       \begin{equation*}
         H' = \pi(H, g, h) \andalso P' = \rho(P, g, h).
       \end{equation*}
-      It can easily be shown that $g^{-1}$ and $h^{-1}$ are bijections such that
+      It can easily be verified that $g^{-1}$ and $h^{-1}$ are bijections such that
       \begin{equation*}
         H = \pi(H', g^{-1}, h^{-1}) \andalso P = \rho(P', g^{-1}, h^{-1}).
       \end{equation*}
@@ -120,10 +115,10 @@
       We must have
       \begin{equation*}
         \begin{gathered}
-          g: \OIDs(S) \hookrightarrow \OIDs(S') \andalso h: \TIDs(S)
-          \hookrightarrow \TIDs(S') \\
-          g': \OIDs(S') \hookrightarrow \OIDs(S'') \andalso h': \TIDs(S')
-          \hookrightarrow \TIDs(S'')
+          g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs
+          \hookrightarrow \TIDs \\
+          g': \OIDs \hookrightarrow \OIDs \andalso h': \TIDs
+          \hookrightarrow \TIDs
         \end{gathered}
       \end{equation*}
       such that
@@ -237,7 +232,7 @@ Because of this claim we can make the following definition
 \section{Proof of Quasi Determinism}
 \label{sec:proof_of_quasi_determinism}
 
-\begin{lemma}
+\begin{lemma} \label{lem:lemma1}
   Let $S$ be a state s.t. $\vdash S \tsep \stateok$ where the two transitions
   \begin{equation*}
     \begin{gathered}
@@ -619,28 +614,161 @@ Because of this claim we can make the following definition
   them.
 \end{proof}
 
-\begin{lemma}
+\begin{definition} \label{def:betacompat}
+  Let $R^{\alpha, \beta}$ be a transition
+  identifier. We call $\beta$ \emph{compatible} to a state $S$ if either
+  \begin{equation*}
+    \beta = \smiley \text{ or } \beta \text{ fresh at } S
+  \end{equation*}
+\end{definition}
+\begin{remark}
+  Note that $\beta$ being compatible to $S$ is a necessary condition of
+  $R^{\alpha, \beta}$ being applicable at $S$. Furthermore if a $\beta$ is
+  compatible to $S$ it will be compatible to all states preceeding $S$ in the
+  computation.
+\end{remark}
+
+\begin{definition}
+  Let $R_1^{\alpha_1, \beta_1}, R_2^{\alpha_2, \beta_2}$ be two transition
+  identifiers. We call $\beta_1$ and $\beta_2$ compatible if
+  \begin{equation*}
+    \beta_1 \neq \beta_2 \text{ of } \beta_1 = \beta_2 = \smiley.
+  \end{equation*}
+\end{definition}
+
+
+\begin{lemma} \label{lem:lemma2}
   Let $S$ be a state. Let
   \begin{equation*}
     \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_n^{\alpha_n, \beta_n} \andalso
     S \Rrightarrow^{\bar{R}} S_{\bar{R}}
   \end{equation*}
   Let $R^{\alpha, \beta}$ be a transition such that
-  \begin{equation*}
+  \begin{equation} \label{eq:lemma2_1}
     \alpha \neq \alpha_i \andalso \forall i \in \left\{ 1, \dots, n \right\},
-  \end{equation*}
+  \end{equation}
   and
   \begin{equation*}
     S \Rrightarrow^{R^{\alpha, \beta}} S_{R^{\alpha, \beta}} \andalso
     S_{\bar{R}} \Rrightarrow^{R^{\alpha, \beta}} S'.
   \end{equation*}
+  Furthermore let $\beta$ be compatible with $\beta_i$ for all $i = 1, \dots,
+  n$.
   Then
   \begin{equation*}
     S_{R^{\alpha, \beta}} \Rrightarrow^{\bar{R}} S'.
   \end{equation*}
 \end{lemma}
 
-\begin{lemma}
+% TODO make figure explaining the proof
+\begin{proof}
+  By induction on $n$, the length of $\bar{R}$.
+  \begin{description}
+    \item[Case $n = 1$:] Follows immediately from lemma~\ref{lem:lemma1}.
+    \item[Case $n = i+1, i \geq 1$:] Let
+      \begin{equation*}
+        \bar{R_2} = R_2^{\alpha_2, \beta_2}, \dots, R_n^{\alpha_n, \beta_n}.
+      \end{equation*}
+      Since $\bar{R}$ applicable to $S$ we have 
+      \begin{equation}
+        S \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_1.
+      \end{equation}
+      Then clearly
+      \begin{equation}
+        S_1 \Rrightarrow^{\bar{R_2}} S_{\bar{R}}.
+      \end{equation}
+      
+      Since $R^{\alpha, \beta}$ is applicable at $S$, \eqref{eq:lemma2_1} and
+      the compatibility of $\beta$ it is not hard to see that
+      $R^{\alpha, \beta}$ is applicable at $S_1$, i.e.
+      \begin{equation}
+        S_1 \Rrightarrow^{R^{\alpha, \beta}} S_{1,R^{\alpha, \beta}}.
+      \end{equation}
+      Then, by induction hypothesis
+      \begin{equation} \label{eq:lemma2_2}
+        S_{1,R^{\alpha, \beta}} \Rrightarrow^{\bar{R_2}} S'.
+      \end{equation}
+      By lemma~\ref{lem:lemma1} 
+      \begin{equation} \label{eq:lemma2_3}
+        S \Rrightarrow^{R^{\alpha, \beta}} S_{R^{\alpha, \beta}}
+        \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_{1, R^{\alpha, \beta}}.
+      \end{equation}
+      But then combining \eqref{eq:lemma2_2} and \eqref{eq:lemma2_3} we have
+      \begin{equation}
+        S_{R^{\alpha, \beta}} \Rrightarrow^{\bar{R}} S'.
+      \end{equation}
+  \end{description}
+\end{proof}
+
+\begin{proposition}
+  Let $S = H, P \simeq H', P' = S'$ and let $g, h$ be the bijections such that
+  \begin{equation} \label{eq:propnewgh1}
+    H' = \pi(H, g, h) \andalso P' = \eta(P, g, h).
+  \end{equation}
+  Let $o, o' \in \OIDs$ be fresh at $S, S'$ respectively.
+  Let $\alpha, \alpha' \in \TIDs$ be fresh at $S, S'$ respectively.
+  Then there are bijections
+  \begin{equation*}
+    g': \OIDs \hookrightarrow \OIDs \andalso h': \TIDs \hookrightarrow \TIDs
+  \end{equation*}
+  such that 
+  \begin{equation} \label{eq:propnewgh2}
+    g'(o) = o', h'(\alpha) = \alpha'
+  \end{equation} 
+  and
+  \begin{equation} \label{eq:propnewgh3}
+    H' = \pi(H, g', h') \andalso P' = \eta(P, g', h').
+  \end{equation}
+\end{proposition}
+
+\begin{proof}
+  By the definition of the identifiers being fresh
+  \begin{equation*}
+    o, o' \not\in \OIDs \andalso \alpha, \alpha' \not\in \TIDs.
+  \end{equation*}
+  The role of $g$ and $h$ is merely to define a renaming of references in
+  $\OIDs(S)$ and $\TIDs(S)$ respectively. Thus it should be clear that whether
+  \eqref{eq:propnewgh1} holds or not only depends on what what values
+  $g$ ($h$) takes for the identifiers in $\OIDs(S)$ ($\TIDs(S)$). Since clearly
+  our fresh references are in these sets it should be clear that the following
+  bijections are well defined and satisfies the result of our proposition.
+  \begin{equation*}
+    \begin{gathered}
+      g'(o_{0}) =
+      \begin{cases}
+        g(o_{0}) & \text{ if } o_0 \in \OIDs(S) \\
+        o' & \text{ if } o_0 = o \\
+        g(o) &\text{ if } g(o_0) = o'
+      \end{cases} \\
+      h'(\alpha_0) =
+      \begin{cases}
+        h(\alpha_0) & \text{ if } \alpha_0 \in \TIDs(S) \\
+        \alpha' & \text{ if } \alpha_0 = \alpha \\
+        g(\alpha) & \text{ if } g(\alpha_0) = \alpha'
+      \end{cases}
+    \end{gathered}
+  \end{equation*}
+\end{proof}
+
+Because of this proposition the following is well defined.
+
+\begin{definition}
+  Let $S = H, P \simeq H', P' = S'$ and let $g, h$ be the bijections such that
+  \begin{equation} \label{eq:propnewgh1}
+    H' = \pi(H, g, h) \andalso P' = \eta(P, g, h).
+  \end{equation}
+  Let $o, o' \in \OIDs$ be fresh at $S, S'$ respectively.
+  Let $\alpha, \alpha' \in \TIDs$ be fresh at $S, S'$ respectively.
+  Then define
+  \begin{equation}
+    g[o \mapsto o']: \OIDs \hookrightarrow \OIDs 
+    \andalso h[\alpha \mapsto \alpha']: \TIDs \hookrightarrow \TIDs
+  \end{equation}
+  as any bijections satisfying \eqref{eq:propnewgh2} and \eqref{eq:propnewgh3}
+  with $g' = g[o \mapsto o'], h' = h[\alpha \mapsto \alpha']$.
+\end{definition}
+
+\begin{lemma} \label{lem:lemma3}
   Let $S, S', T$ be states and $\bar{R}$ a transition sequence such that
   \begin{equation*}
     S \Rrightarrow^{\bar{R}} T \andalso S \simeq S'.
@@ -651,6 +779,101 @@ Because of this claim we can make the following definition
     S' \Rrightarrow^{\bar{R'}} T' \andalso T \simeq T'.
   \end{equation*}
 \end{lemma}
+
+
+\begin{proof}
+  By induction on the length $n$ of $\bar{R}$.
+  \begin{description}
+    \item[Case $n = 0$:] $\bar{R}$ is the empty sequence and thus $S = T$. Take
+      $T' = S', \bar{R'} = \bar{R}$ and we are done.
+    \item[Case $n = i + 1, i \geq 0$:] Let
+      \begin{equation*}
+        \begin{gathered}
+          \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_{i+1}^{\alpha_{i+1},
+          \beta_{i+1}} \\
+          \bar{R_i} = R_1^{\alpha_1, \beta_1}, \dots, R_{i}^{\alpha_{i},
+          \beta_{i}}
+        \end{gathered}
+      \end{equation*}
+      By assumption
+      \begin{equation*}
+        S \Rrightarrow^{\bar{R_i}} S_i \Rrightarrow^{R_{i+1}^{\alpha_{i+1},
+        \beta_{i+1}}} T
+      \end{equation*}
+      for some state $S_i$. By induction hypothesis there is $\bar{R'_i}, S'_i$
+      such that
+      \begin{equation}
+        S' \Rrightarrow^{\bar{R'_i}} S'_i \andalso S_i \simeq S'_i.
+      \end{equation}
+      Since $S_i$ can take another step
+      \begin{equation*}
+        S_i = H, P \andalso S'_i = H', P'.
+      \end{equation*}
+      
+      Now consider $R_{i+1}^{\alpha_{i+1}, \beta_{i+1}}$. Since $S_i \simeq
+      S'_i$ there are
+      \begin{equation*}
+        g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs \hookrightarrow \TIDs
+      \end{equation*}
+      such that
+      \begin{equation*}
+        H' = \pi(H, g, h)  \andalso P' = \eta(P, g, h).
+      \end{equation*}
+      Now let 
+      \begin{equation*}
+        \begin{gathered}
+          R = R_{i+1} \andalso \alpha = h(\alpha_{i+1}) \\
+          \beta = 
+          \begin{cases}
+            \smiley         & \text{ if } \beta_{i+1} = \smiley \\
+            o'_{\text{new}} & 
+            \begin{aligned}[t]
+              \text{ if }&\beta_{i+1} = o_{\text{new}} \in \OIDs \\
+              &o_{\text{new}} \text{ is fresh at } S_i \\
+              &o'_{\text{new}} \text{ is fresh at } S'_i 
+            \end{aligned} \\
+            \alpha'_{\text{new}} & \begin{aligned}[t]
+              \text{ if }&\beta_{i+1} = \alpha_{\text{new}} \in \TIDs \\
+              &\alpha_{\text{new}} \text{ is fresh at } S_i \\
+              &\alpha'_{\text{new}} \text{ is fresh at } S'_i
+            \end{aligned}
+          \end{cases} \\
+          g_{\text{new}} = 
+          \begin{cases}
+            g & \text{ if } \beta_{i+1} = \smiley \text{ or } \beta_{i+1} = 
+            \alpha_{\text{new}} \\
+            g[o_{\text{new}} \mapsto o'_{\text{new}}] & \text{ if } \beta_{i+1}
+            = o_{\text{new}}
+          \end{cases} \\
+          h_{\text{new}} = 
+          \begin{cases}
+            h & \text{ if } \beta_{i+1} = \smiley \text{ or } \beta_{i+1} = 
+            o_{\text{new}} \\
+            h[\alpha_{\text{new}} \mapsto \alpha'_{\text{new}}] & \text{ if } \beta_{i+1}
+            = \alpha_{\text{new}}
+          \end{cases}
+        \end{gathered}
+      \end{equation*}
+
+      Since
+      \begin{equation}
+        S_i \Rrightarrow^{R_{i+1}^{\alpha_{i+1}, \beta_{i+1}}} T,
+      \end{equation}
+      by rule inspection it is easy to verify that
+      \begin{equation}
+        S'_i \Rrightarrow^{R^{\alpha, \beta}} T'
+      \end{equation}
+      for some $T'$. If $T = \Error$ then by rule inspection we must have $T' =
+      \Error$ and trivially that $T \simeq T'$. Furthermore, if $T = H_{T},
+      P_{T}$ then by rule inspection $T' = H_{T'}, P_{T'}$. It is not hard to verify that
+      we must have
+      \begin{equation*}
+        H_{T'} = \pi(H_T, g_{\text{new}}, h_{\text{new}}) \andalso P_{T'} =
+        \eta(P_T, g_{\text{new}}, h_{\text{new}}).
+      \end{equation*}
+      Thus $T \simeq T'$.
+  \end{description}
+\end{proof}
 
 
 
