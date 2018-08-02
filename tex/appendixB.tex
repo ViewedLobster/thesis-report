@@ -195,7 +195,7 @@ We make the following observation
 
 Because of this claim we can make the following definition
 
-\begin{definition}
+\begin{definition} \label{def:trans_id}
   We write a \emph{transition identifier} as $R^{\alpha, \beta}$. The
   \emph{application} of $R^{\alpha, \beta}$ to state $S$ (if possible) is the
   use of a rule as specified by $R$, $\alpha$ and $\beta$ to step from $S$ to
@@ -204,6 +204,11 @@ Because of this claim we can make the following definition
     S \Rrightarrow^{R^{\alpha, \beta}} S'
   \end{equation*}
 \end{definition}
+
+\begin{remark}
+  Actually the rule name $R$ in the above definition is redundant since this is
+  completely decided by the state $S$ and thread identifier $\alpha$.
+\end{remark}
 
 \begin{definition}
   A \emph{transition sequence} $\bar{R}$ is a finite length sequence of
@@ -752,9 +757,9 @@ Because of this claim we can make the following definition
 
 Because of this proposition the following is well defined.
 
-\begin{definition}
+\begin{definition} \label{def:bijectionmod}
   Let $S = H, P \simeq H', P' = S'$ and let $g, h$ be the bijections such that
-  \begin{equation} \label{eq:propnewgh1}
+  \begin{equation} 
     H' = \pi(H, g, h) \andalso P' = \eta(P, g, h).
   \end{equation}
   Let $o, o' \in \OIDs$ be fresh at $S, S'$ respectively.
@@ -865,13 +870,115 @@ Because of this proposition the following is well defined.
       \end{equation}
       for some $T'$. If $T = \Error$ then by rule inspection we must have $T' =
       \Error$ and trivially that $T \simeq T'$. Furthermore, if $T = H_{T},
-      P_{T}$ then by rule inspection $T' = H_{T'}, P_{T'}$. It is not hard to verify that
-      we must have
+      P_{T}$ then by rule inspection $T' = H_{T'}, P_{T'}$. By considering
+      definition~\ref{def:bijectionmod} it is not hard to verify that
+      we have
       \begin{equation*}
         H_{T'} = \pi(H_T, g_{\text{new}}, h_{\text{new}}) \andalso P_{T'} =
         \eta(P_T, g_{\text{new}}, h_{\text{new}}).
       \end{equation*}
       Thus $T \simeq T'$.
+  \end{description}
+\end{proof}
+
+Finally we prove quasi determinism.
+\begin{proof}{Theorem~\ref{thm:qd}}
+  If $S \neq S'$ by lemma~\ref{lem:lemma3} there is a state $T''$ and a
+  transition sequence $\bar{R''}$ such that
+  \begin{equation}
+    S \Rrightarrow^{\bar{R''}} T'' \andalso T' \simeq T''.
+  \end{equation}
+  Because of this and transistiveness of $\simeq$ WLOG we can assume that $S =
+  S'$.
+
+  We proceed by induction on $n$ and $n'$, the lengths of $\bar{R}$ and
+  $\bar{R'}$ respectively.
+  \begin{description}
+    \item[Case $n \leq 1, n' \leq 1$:] Clearly $n = n'$ since otherwise we would
+      have a contradiction with the assumption that neither $T$ or $T'$ can take
+      another step when considering lemma~\ref{lem:lemma3}.
+      If $n = n' = 0$ we are done since $T = S \simeq S' = T'$. Thus we assume
+      that $n = n' = 1$. We let
+      \begin{equation*}
+        \bar{R} = R^{\alpha, \beta} \andalso \bar{R'} = R'^{\alpha', \beta'}.
+      \end{equation*}
+      We must have 
+      \begin{equation} \label{eq:qd_1}
+        R = R' \andalso \alpha = \alpha'
+      \end{equation} 
+      since otherwise $T$ and $T'$ can take another step.  If $\beta = \beta'$
+      then we are done since this implies $T = T'$.  Otherwise let $g, h$ be the
+      bijections that witnesses the relation $S \simeq S$. Because of
+      \eqref{eq:qd_1} we must have that either $\beta, \beta' \in \OIDs$ or
+      $\beta, \beta' \in \TIDs$. In the first case 
+      \begin{equation}
+        g[\beta \mapsto \beta'] \andalso h
+      \end{equation}
+      witnesses the relation $T \simeq T'$. In the second case it is witnessed
+      by
+      \begin{equation*}
+        g \andalso h[\beta \mapsto \beta'].
+      \end{equation*}
+      Thus $T \simeq T'$.
+    \item[Case $1 < n, n' \leq i+1$ and $i \geq 1$:] We let 
+      \begin{equation*}
+        \begin{gathered}
+          \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_n^{\alpha_n, \beta_n} \\
+          \bar{R'} = {R'_1}^{\alpha'_1, \beta'_1}, \dots, {R'_{n'}}^{\alpha'_{n'},
+          \beta'_{n'}}.
+        \end{gathered}
+      \end{equation*}
+      Furthermore let
+      \begin{equation*}
+        \bar{R_{>1}} = R_2^{\alpha_2, \beta_2}, \dots, R_n^{\alpha_n, \beta_n} \\
+      \end{equation*}
+      Consider the first tranisition identifier of $\bar{R}$. We let
+      Let $k$ be such
+      that ${R'_k}^{\alpha'_k, \beta'_k}$ is the first transition identifier in
+      $\bar{R'}$ for which 
+      \begin{equation*}
+        \alpha_1 = \alpha'_k = \alpha.
+      \end{equation*} 
+      This $k$ must exist since
+      otherwise $T'$ can take another step. By the remark following
+      definition~\ref{def:trans_id} we have 
+      \begin{equation*}
+        R_1 = R'_k = R.
+      \end{equation*} 
+      We let
+      \begin{equation*}
+        \begin{gathered}
+          \bar{R'}_{<k} = {R'_1}^{\alpha'_1, \beta'_1}, \dots,
+          {R'_{k-1}}^{\alpha'_{k-1}, \beta'_{k-1}}  \\
+          \bar{R'}_{>k} = {R'_{k+1}}^{\alpha'_{k+1}, \beta'_{k+1}}, \dots,
+          {R'_{n'}}^{\alpha'_{n'}, \beta'_{n'}}.
+        \end{gathered}
+      \end{equation*}
+      By lemma~\ref{lem:lemma3} we can (using similar reasoning as before) WLOG
+      assume that $\beta'_k$ is compatible with $\beta'_i$ for all $i = 1,
+      \dots, k-1$.
+
+      Now either $\beta'_k = \beta_1 = \smiley$, $\beta'_k, \beta_1 \in \OIDs$
+      or $\beta'_k, \beta_1 \in \TIDs$. In the first case it is immediately
+      clear that ${R'_k}^{\alpha'_k, \beta'_k}$ is applicable at $S$. In the
+      other two cases WLOG we can assume that $\beta'_k$ is fresh at $S$ due to
+      lemma~\ref{lem:lemma3}. This makes $R^{\alpha, \beta'_k}$
+      applicable at $S$.
+
+      By lemma~\ref{lem:lemma2} we have
+      \begin{equation*}
+        S \Rrightarrow^{{R'_k}^{\alpha'_k, \beta'_k}} S'_1 \Rrightarrow^{\bar{R'}_{<k}}
+        S'_2 \Rrightarrow^{\bar{R'}_{>k}} T'
+      \end{equation*}
+      Furthermore, by $\bar{R}$ being applicable at $S$ we have
+      \begin{equation*}
+        S \Rrightarrow^{R_1^{\alpha_1, \beta_2}} S_1 \Rrightarrow^{\bar{R}_{>1}}
+        T.
+      \end{equation*}
+      Since the only possible difference between $R_1^{\alpha_1, \beta_1}$ and
+      ${R'_k}^{\alpha'_k, \beta'_k}$ is the value of $\beta_1$ and $\beta'_k$ it
+      should be obvious that $S_1 \simeq S'_1$. But then by the induction hypothesis 
+      $T \simeq T'$.
   \end{description}
 \end{proof}
 
