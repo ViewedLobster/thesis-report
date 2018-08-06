@@ -115,7 +115,7 @@ or expression is typed under OCAP constraints. This is exactly like the type
 system of \LaCasa{}. All typing rules for terms and expressions can be found in
 Figure~\ref{fig:expr_typing}.
 
-\begin{figure}[t]
+\begin{figure}[h!]
   \centering
   %\begin{multicols}{2}
     \scrule{T-Let}
@@ -185,7 +185,22 @@ Figure~\ref{fig:expr_typing}.
   \label{fig:expr_typing}
 \end{figure}
 
-\begin{figure}
+Many of the typing rules are both intuitive and standard. For example the
+resulting type of a field selection from a class object is the type of the
+field as in {\sc T-Select}, and creating a new object of class $C$ results in
+type $C$ as in {\sc T-New}. A little more interesting are the rules typing the
+non-standard \emph{put} and \emph{when} expressions. 
+
+The rule {\sc T-Put} says that in order to update $x$ with $y$, $x$ and $y$ must
+be typeable as $\CellType$ and $\LatType$ respectively. The rule {\sc T-When}
+describes typing of the dependency creation expression. It says that in order to
+register a callback for lattice value $y$ in cell $x$, firstly $x$ and $y$ must
+be typeable as $\CellType$ and $\LatType$ respectively, secondly that all
+captured variables in $\overline{cap}$ are typeable as $\CellType$ and that the
+callback expression is typeable in an environment consisting of the captured
+variables and the lattice variable on which the callback triggers.
+
+\begin{figure}[h]
   \scrule{WF-Prog}
   {p \vdash \overline{cd} \andalso p \vdash \Gamma_0 \andalso
   \TypeRel{\Gamma_0}{\nocap}{t}{\tau}}
@@ -217,6 +232,7 @@ Figure~\ref{fig:expr_typing}.
   \label{fig:wf_typing}
 \end{figure}
 
+The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 
 \begin{figure}
   \scax{OCAP-AnyRef}
