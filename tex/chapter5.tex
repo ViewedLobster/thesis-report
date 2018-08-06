@@ -71,10 +71,286 @@ As with LaCasa the terms of RACL are written in ANF (i.e.\ every expression is
 named). Most of the expressions should be self explanatory, but note for example
 that we have a separate instance creation expression for cells, an expression
 for updating the value of a cell aswell as an expression for creating
-dependencies between cells. The semantics of these will be explained in
-Section~\ref{sec:semantics}.
+dependencies between cells. The semantics of these will be explained next.
 
 % TODO note something about the language being parameterized on the lattice
+
+\section{Semantics}
+\label{sec:semantics}
+
+In this section the semantics of \RACL{} will be introduced. First a brief
+overview is made and then a few of the more interesting or non-standard
+execution rules will be explained.
+
+In short the next few definitions says that the state of the execution of a
+\RACL{} program consists of a \emph{heap} and a \emph{thread set}. The heap is
+represented by a partial map from object identifiers $\OIDs$ to objects
+$\Objects$. The thread set is a set of threads each of which consists of call
+stacks. Each call stack consists of frames, each of which holds a local variable
+environment and a term to be executed. Steps between states can be made accoring
+to rules on either frame, frame stack or thread set level. All steps taken on
+lower levels are propagated to thread set level using auxilliary rules. After
+the following definitions we describe the execution rules in more detail.
+
+\begin{definition}{(Sets)}
+  \begin{itemize}
+    \item We let $\VarNames$ be the set of all allowed variable names.
+    \item We let $\FieldNames$ be the set of all allowed field names.
+    \item We let $\LatVals$ be the set of all lattice elements.
+    \item We let $\OIDs$ be the set of all object identifiers.
+    \item We let $\TIDs$ be the set of all thread identifiers.
+    \item We let $\NullVal$ be the special null value.
+    \item We let $\Values$ be the set of all possible runtime values
+      \begin{equation*}
+        \Values = \LatVals \cup \OIDs \cup \left\{ \NullVal \right\}.
+      \end{equation*}
+    \item We let $\ocapstats$ be the set of OCAP statuses
+      \begin{equation*}
+        \ocapstats = \left\{ \ocap, \nocap \right\}.
+      \end{equation*}
+  \end{itemize}
+\end{definition}
+
+\begin{definition}
+  A \emph{local environment} $L$ is a partial map
+  \begin{equation*}
+    L: \VarNames \rightharpoonup \Values.
+  \end{equation*}
+\end{definition}
+
+\begin{definition}{(Heap Objects)}
+  We let $\Objects$ be the set of all \emph{heap objects}, i.e. objects of the
+  form
+  \begin{equation*}
+    \Obj{C, FM} \text{ or } \Cell{DEP, l}.
+  \end{equation*}
+  In $\Obj{C, FM}$, $FM$ is a partial map
+  \begin{equation*}
+    FM: \FieldNames \rightharpoonup \Values.
+  \end{equation*}
+  In $\Cell{DEP, l}$, $l \in \LatVals$ and $DEP$ is a set of elements of the
+  form
+  \begin{equation*}
+    (l' , (L_{\text{env}}, z \Rightarrow t))^d
+  \end{equation*}
+  where $l' \in \LatVals$, $L_{\text{env}}$ is a local environment, $z \in
+  \VarNames$, $t$ is a term and $d \in \TIDs$ is a unique thread identifier. The
+  uniqueness of $d$ is global to the state of a program.
+\end{definition}
+
+\begin{definition}{(Heap)}
+  A \emph{heap} $H$ is a partial map
+  \begin{equation*}
+    H: \OIDs \rightharpoonup \Objects.
+  \end{equation*}
+\end{definition}
+
+\begin{definition}{Thread Sets}
+  A \emph{frame} $F$ is an object of the form
+  \begin{equation*}
+    \sframe{L, t}
+  \end{equation*}
+  where $L$ is a local environment, $t$ is a term and $s \in \VarNames$ is a
+  return tag.
+
+  A \emph{frame stack} $FS$ is a finitely large stack of frames. We can write
+  all of these as either the empty stack $FS = \varepsilon$, or as $FS = F \circ
+  GS$ where $GS$ is also a frame stack.
+
+  A \emph{thread set} $P$ is a finite set 
+  \begin{equation*}
+    P = \left\{ FS_i|_{a_i}^{d_i} \right\}_{i = 1}^{n}
+  \end{equation*}
+  of frame stacks $FS_i$ tagged with a unique thread id $d_i \in \TIDs$ and an
+  OCAP status $a_i \in \ocapstats$. Note that $P$ can be the empty set.
+\end{definition}
+
+\begin{definition}{(States)}
+  We define a \emph{state} to be either the error state $\Error$ or a pair $H,
+  P$ where $H$ is a heap and $P$ is a thread set.
+\end{definition}
+
+\begin{figure}[]
+  \scax{E-Null}
+  {H, \sFrame{L}{\Let{x}{\NullVal}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
+  \NullVal]}{t}}
+
+  \RuleSpace{}
+
+  \scax{E-LVal}
+  {H, \sFrame{L}{\Let{x}{l}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
+  l]}{t}}
+
+  \RuleSpace{}
+
+  \scax{E-Var}
+  {H, \sFrame{L}{\Let{x}{y}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
+  L(y)]}{t}}
+
+  \RuleSpace{}
+
+  \scrule{E-Select}
+  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)}
+  {H, \sFrame{L}{\Let{x}{ \FSel{y}{f} }{t}} \; \FRedTo  \\ 
+  H, \sFrame{L[x \mapsto FM(f)]}{t}}
+
+  \RuleSpace{}
+
+  \scrule{E-Assign}
+  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM) \\
+  FM' = FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, FM'}]}
+  {H, \sFrame{L}{\Let{x}{\FAss{y}{f}{z}}{t}} \; \FRedTo \\
+   H', \sFrame{L[x \mapsto L(z)]}{t}}
+
+  \RuleSpace{}
+
+  \scrule{E-New}
+  {o\text{ fresh object reference } \\
+  FM = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in \fdecls(C)] \\
+  H' = H[o \mapsto \Obj{C, FM}]}
+  {H, \sFrame{L}{ \Let{x}{\New{C}}{t} } \; \FRedTo \\
+  H', \sFrame{L[x \mapsto o]}{t}}
+  
+  \RuleSpace{}
+
+  \scrule{E-NewCell}
+  {o\text{ fresh object reference } \andalso
+  H' = H[o \mapsto \Cell{\emptyset, \bot_{\LatVals{}}}]}
+  {H, \sFrame{L}{ \Let{x}{\NewCell}{t} } \; \FRedTo \\
+  H', \sFrame{L[x \mapsto o]}{t}}
+
+  \RuleSpace{}
+  
+  \scrule{E-Put}
+  {L(y) = o \andalso H(o) = \Cell{DEP, l} \\
+  L(z) = l' \andalso c' = \Cell{DEP, l \sqcup l'} \\
+  H' = H[o \mapsto c']}
+  {H, \sFrame{L}{\Let{x}{\Put{y}{z}}{t}} \; \FRedTo \\
+  H', \sFrame{L[x \mapsto L(y)]}{t}}
+
+  \RuleSpace{}
+
+  \scrule{E-When}
+  {L(y) = o \andalso H(o) = \Cell{DEP, l} \andalso L(z) = l' \\
+  L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
+  \andalso cb = (L_{\text{env}}, w \Rightarrow t') \\
+  d\text{ fresh thread id } \andalso DEP' = DEP \cup (l', cb)^d \\
+  H' = H[o \mapsto \Cell{DEP', l}] }
+  { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, w \Rightarrow t') }}{t} } \\ \FRedTo \;
+  H', \sFrame{L[x \mapsto L(y)]}{t} }
+  \caption{\RACL{} single frame reduction rules.}
+  \label{fig:frame_red_rules}
+\end{figure}
+
+In figures~\ref{fig:frame_red_rules} and \ref{fig:error_red_rules} all reduction
+rules for single frames are defined. 
+% FIXME this is where to continue
+
+\begin{figure}
+  \scrule{E-NullSelect}
+  {L(y) = \NullVal}
+  {H, \sFrame{L, \Let{x}{\FSel{y}{f}}{t} } \; \FRedTo \; \Error}
+
+  \RuleSpace{}
+
+  \scrule{E-NullAssign}
+  {L(y) = \NullVal}
+  {H, \sFrame{L, \Let{x}{\FAss{y}{f}{z}}{t} } \; \FRedTo \; \Error}
+
+  \RuleSpace{}
+
+  \scrule{E-NullCall}
+  {L(y) = \NullVal}
+  {H, \sFrame{L, \Let{x}{\Call{y}{m}{z}}{t} } \; \FRedTo \; \Error}
+
+  \RuleSpace{}
+
+  \scrule{E-NullPut}
+  {L(y) = \NullVal}
+  {H, \sFrame{L, \Let{x}{\Put{y}{z}}{t} } \; \FRedTo \; \Error}
+
+  \RuleSpace{}
+
+  \scrule{E-NullWhen}
+  {L(y) = \NullVal}
+  {H, \sFrame{L}{\Let{x}{  \When{y}{z}{ (\overline{cap}, w \Rightarrow t')}}{t}
+  }  \\ \FRedTo \; \Error}
+  \caption{\RACL{} error spawning rules.}
+  \label{fig:error_red_rules}
+\end{figure}
+
+\begin{figure}
+  \scrule{E-Call}
+  {
+    L(y) = o \andalso H(o) = \Obj{C, FM} \\
+    \mbody(m, C) = w \to t' \\
+    L_{\text{base}} =
+    \begin{cases}
+      \emptyset & \text{if } a = \ocap \\
+      L_0 & \text{if } a = \nocap
+    \end{cases} \\
+    L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)] 
+  }
+  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^d\; \FSRedTo \\
+  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^d}
+
+  \RuleSpace{}
+
+  \scax{E-Ret}
+  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ FS |_a^d \; \FSRedTo \\
+  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^d }
+
+  \RuleSpace{}
+
+  \scrule{E-FProp}
+  {H, F \; \FRedTo \; H', F'}
+  {H, F \circ FS |_a^d \; \FSRedTo \; H', F' \circ FS |_a^d }
+
+  \RuleSpace{}
+  
+  \scrule{E-ErrorFS}
+  {H, F \; \FRedTo \; \Error }
+  {H, F \circ FS |_a^d \; \FSRedTo \; \Error}
+
+  \caption{\RACL{} frame stack reduction rules.}
+  \label{fig:fs_red_rules}
+\end{figure}
+
+\begin{figure}
+  \scrule{E-Spawn}
+  {
+    o \in \dom(H) \andalso H(o) = \Cell{DEP, l} \\ 
+    l' \sqsubseteq l \andalso (l', cb)^d \in DEP \andalso cb = (L_{\text{env}}, z
+    \Rightarrow t) \\
+    L = L_{\text{env}}[z \mapsto l'] \\
+    H' = H[o \mapsto \Cell{DEP - (l', cb)^d, l}]
+  }
+  {
+    H,P \Rrightarrow H', P \cup \left\{ \Frame{L}{t}{-} \circ \varepsilon
+    |_{\ocap}^{d} \right\}
+  }
+
+  \RuleSpace{}
+
+  \scrule{E-Term}
+  {P = P' \cup_D \left\{ \sFrame{L}{x} \circ \varepsilon |_a^d \right\} }
+  {H,P \Rrightarrow H, P'}
+
+  \RuleSpace{}
+
+  \scrule{E-FSProp}
+  {H, FS \twoheadrightarrow H', FS'}
+  {H, P \cup_D \left\{ FS \right\} \Rrightarrow H', P \cup \left\{ FS' \right\} }
+
+  \RuleSpace{}
+
+  \scrule{E-ErrorP}
+  {H, FS \twoheadrightarrow \Error}
+  {H, P \cup_D \left\{ FS \right\} \Rrightarrow \Error }
+  \caption{\RACL{} thread set reduction rules.}
+  \label{fig:threads_red_rules}
+\end{figure}
+
 
 \section{Type System}
 \label{sec:type_system}
@@ -233,6 +509,7 @@ variables and the lattice variable on which the callback triggers.
 \end{figure}
 
 The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
+{\sc WF-Prog} says that 
 
 \begin{figure}
   \scax{OCAP-AnyRef}
@@ -260,186 +537,6 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \label{fig:ocap_typing}
 \end{figure}
 
-
-\section{Semantics}
-\label{sec:semantics}
-
-\begin{figure}
-  \scax{E-Null}
-  {H, \sFrame{L}{\Let{x}{\NullVal}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
-  \NullVal]}{t}}
-
-  \RuleSpace{}
-
-  \scax{E-LVal}
-  {H, \sFrame{L}{\Let{x}{l}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
-  l]}{t}}
-
-  \RuleSpace{}
-
-  \scax{E-Var}
-  {H, \sFrame{L}{\Let{x}{y}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
-  L(y)]}{t}}
-
-  \RuleSpace{}
-
-  \scrule{E-Select}
-  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)}
-  {H, \sFrame{L}{\Let{x}{ \FSel{y}{f} }{t}} \; \FRedTo  \\ 
-  H, \sFrame{L[x \mapsto FM(f)]}{t}}
-
-  \RuleSpace{}
-
-  \scrule{E-Assign}
-  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM) \\
-  FM' = FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, FM'}]}
-  {H, \sFrame{L}{\Let{x}{\FAss{y}{f}{z}}{t}} \; \FRedTo \\
-   H', \sFrame{L[x \mapsto L(z)]}{t}}
-
-  \RuleSpace{}
-
-  \scrule{E-New}
-  {o\text{ fresh object reference } \\
-  FM = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in \fdecls(C)] \\
-  H' = H[o \mapsto \Obj{C, FM}]}
-  {H, \sFrame{L}{ \Let{x}{\New{C}}{t} } \; \FRedTo \\
-  H', \sFrame{L[x \mapsto o]}{t}}
-  
-  \RuleSpace{}
-
-  \scrule{E-NewCell}
-  {o\text{ fresh object reference } \andalso
-  H' = H[o \mapsto \Cell{\emptyset, \bot_{\LatVals{}}}]}
-  {H, \sFrame{L}{ \Let{x}{\NewCell}{t} } \; \FRedTo \\
-  H', \sFrame{L[x \mapsto o]}{t}}
-
-  \RuleSpace{}
-  
-  \scrule{E-Put}
-  {L(y) = o \andalso H(o) = \Cell{DEP, l} \\
-  L(z) = l' \andalso c' = \Cell{DEP, l \sqcup l'} \\
-  H' = H[o \mapsto c']}
-  {H, \sFrame{L}{\Let{x}{\Put{y}{z}}{t}} \; \FRedTo \\
-  H', \sFrame{L[x \mapsto L(y)]}{t}}
-
-  \RuleSpace{}
-
-  \scrule{E-When}
-  {L(y) = o \andalso H(o) = \Cell{DEP, l} \andalso L(z) = l' \\
-  L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
-  \andalso cb = (L_{\text{env}}, w \Rightarrow t') \\
-  d\text{ fresh thread id } \andalso DEP' = DEP \cup (l', cb)^d \\
-  H' = H[o \mapsto \Cell{DEP', l}] }
-  { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, w \Rightarrow t') }}{t} } \\ \FRedTo \;
-  H', \sFrame{L[x \mapsto L(y)]}{t} }
-  \caption{\RACL{} single frame reduction rules.}
-  \label{fig:frame_red_rules}
-\end{figure}
-
-\begin{figure}
-  \scrule{E-NullSelect}
-  {L(y) = \NullVal}
-  {H, \sFrame{L, \Let{x}{\FSel{y}{f}}{t} } \; \FRedTo \; \Error}
-
-  \RuleSpace{}
-
-  \scrule{E-NullAssign}
-  {L(y) = \NullVal}
-  {H, \sFrame{L, \Let{x}{\FAss{y}{f}{z}}{t} } \; \FRedTo \; \Error}
-
-  \RuleSpace{}
-
-  \scrule{E-NullCall}
-  {L(y) = \NullVal}
-  {H, \sFrame{L, \Let{x}{\Call{y}{m}{z}}{t} } \; \FRedTo \; \Error}
-
-  \RuleSpace{}
-
-  \scrule{E-NullPut}
-  {L(y) = \NullVal}
-  {H, \sFrame{L, \Let{x}{\Put{y}{z}}{t} } \; \FRedTo \; \Error}
-
-  \RuleSpace{}
-
-  \scrule{E-NullWhen}
-  {L(y) = \NullVal}
-  {H, \sFrame{L}{\Let{x}{  \When{y}{z}{ (\overline{cap}, w \Rightarrow t')}}{t}
-  }  \\ \FRedTo \; \Error}
-  \caption{\RACL{} error spawning rules.}
-  \label{fig:error_red_rules}
-\end{figure}
-
-\begin{figure}
-  \scrule{E-Call}
-  {
-    L(y) = o \andalso H(o) = \Obj{C, FM} \\
-    \mbody(m, C) = w \to t' \\
-    L_{\text{base}} =
-    \begin{cases}
-      \emptyset & \text{if } a = \ocap \\
-      L_0 & \text{if } a = \nocap
-    \end{cases} \\
-    L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)] 
-  }
-  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^d\; \FSRedTo \\
-  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^d}
-
-  \RuleSpace{}
-
-  \scax{E-Ret}
-  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ FS |_a^d \; \FSRedTo \\
-  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^d }
-
-  \RuleSpace{}
-
-  \scrule{E-FProp}
-  {H, F \; \FRedTo \; H', F'}
-  {H, F \circ FS |_a^d \; \FSRedTo \; H', F' \circ FS |_a^d }
-
-  \RuleSpace{}
-  
-  \scrule{E-ErrorFS}
-  {H, F \; \FRedTo \; \Error }
-  {H, F \circ FS |_a^d \; \FSRedTo \; \Error}
-
-  \caption{\RACL{} frame stack reduction rules.}
-  \label{fig:fs_red_rules}
-\end{figure}
-
-\begin{figure}
-  \scrule{E-Spawn}
-  {
-    o \in \dom(H) \andalso H(o) = \Cell{DEP, l} \\ 
-    l' \sqsubseteq l \andalso (l', cb)^d \in DEP \andalso cb = (L_{\text{env}}, z
-    \Rightarrow t) \\
-    L = L_{\text{env}}[z \mapsto l'] \\
-    H' = H[o \mapsto \Cell{DEP - (l', cb)^d, l}]
-  }
-  {
-    H,P \Rrightarrow H', P \cup \left\{ \Frame{L}{t}{-} \circ \varepsilon
-    |_{\ocap}^{d} \right\}
-  }
-
-  \RuleSpace{}
-
-  \scrule{E-Term}
-  {P = P' \cup_D \left\{ \sFrame{L}{x} \circ \varepsilon |_a^d \right\} }
-  {H,P \Rrightarrow H, P'}
-
-  \RuleSpace{}
-
-  \scrule{E-FSProp}
-  {H, FS \twoheadrightarrow H', FS'}
-  {H, P \cup_D \left\{ FS \right\} \Rrightarrow H', P \cup \left\{ FS' \right\} }
-
-  \RuleSpace{}
-
-  \scrule{E-ErrorP}
-  {H, FS \twoheadrightarrow \Error}
-  {H, P \cup_D \left\{ FS \right\} \Rrightarrow \Error }
-  \caption{\RACL{} thread set reduction rules.}
-  \label{fig:threads_red_rules}
-\end{figure}
 
 \section{Properties}
 \label{sec:properties}
