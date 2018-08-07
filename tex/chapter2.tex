@@ -1,0 +1,211 @@
+\chapter{Background} \label{cha:background}
+
+This chapter is a brief introduction to language and type system theory. In
+section~\ref{sec:language_syntax} some basics of language syntax will be
+explained. Section~\ref{sec:language_semantics} gives a brief introduction to
+programming language semantics. Finally section~\ref{sec:type_systems} explains
+some basics of programming language type systems.
+
+% TODO give a reference
+As a basis the well known While language will be used as an example language.
+
+\section{Language Syntax} \label{sec:language_syntax}
+
+% Describe the foundations of syntaxes for languages: BNF, ANF
+A language syntax is a formal way to describe the structure of programs written
+in a programming language. It gives us a basis on which to build the language
+semantics and type systems as will be clear later. In this section the
+Backus-Naur-form (BNF) will be introduced. Then a version of A-normal form (ANF) will be
+introduced since it will be heavily used later.
+
+\subsection{The Backus-Naur-form} \label{sub:the_backus_naur_form} 
+
+Backus-Naur-form (BNF) is a very common way to describe the syntax of
+programming languages. BNF describes a syntax using rules of the form
+\begin{equation*}
+  s ::= \text{<expression>}.
+\end{equation*}
+The the left side symbol $s$ is refered to as a non-terminal. <expression> could
+also be a list of the
+possible forms of $s$, separated by $|$, i.e. 
+\begin{equation*}
+  s ::= \text{<expression1>} \: | \dots | \: \text{<expressionN>}
+\end{equation*}
+The expressions can themselves contain non-terminals and terminals.
+Terminals are symbols which does not occur on the left side of any rule.
+
+The While language can be written in BNF as described in % FIXME add reference
+For reference we give a similar description here with the addition of a very
+simple type system.
+
+Furthermore we let $\WhVar$ be the set of all variable names and $\WhVal$ the
+set of all values.
+
+\begin{figure}[h]
+  \centering
+  $\begin{array}{lll@{\hspace{4mm}}l}
+    s &::= & & \mbox{Program statement} \\
+    &  & \WhDecl{x}{\tau} & \mbox{Variable declaration} \\
+    &| & \WhAssign{x}{e} & \mbox{Assignment} \\
+    &| & \WhSkip & \mbox{Skip} \\
+    &| & \WhConc{s_1}{s_2} & \mbox{Concatenation} \\
+    &| & \WhIf{e}{s_1}{s_2} & \mbox{If branch} \\
+    &| & \WhWhile{e}{s} & \mbox{While loop} \\
+    &&&\\
+    e & ::= & & \mbox{Expressions} \\
+    & & x & \mbox{Variable} \\
+    &| & v & \mbox{Value literal} \\
+    &| & \WhAdd{e_1}{e_2} & \mbox{Addition} \\
+    &| & \WhTimes{e_1}{e_2} & \mbox{Multiplication} \\
+    &| & \WhMinus{e_1}{e_2} & \mbox{Subtraction} \\
+    &| & \WhEq{e_1}{e_2} & \mbox{Equality comparison} \\
+    &| & \WhLeq{e_1}{e_2} & \mbox{$\leq$ comparison} \\
+    &| & \WhLnot{e} & \mbox{Logical not} \\
+    &| & \WhLand{e_1}{e_2} & \mbox{Logical and} \\
+    &&&\\
+    \tau & ::= & & \mbox{Types} \\
+    & & \WhBool & \mbox{Boolean type} \\
+    &| & \WhInt & \mbox{Integer type} \\
+    &&&\\
+    v & ::= & & \mbox{Values} \\
+    &  & n & \mbox{Integer} \\
+    &| & \WhTrue & \mbox{Boolean true} \\
+    &| & \WhFalse & \mbox{Boolean false} \\
+  \end{array}$
+  \caption{Grammar of While}
+  \label{fig:while_grammar}
+\end{figure}
+
+\section{Small-step Operational Semantics} \label{sec:language_semantics}
+
+% Describe small step operational semantics and give example with while lang
+In order to prove properties of a program you must be able to formally describe
+the "meaning" of the program, i.e. to describe how programs statements modify
+state and what execution steps can be taken. A common approach to this is
+small-step operational semantics, also called structural operational semantics
+(SOS). Other approaches includes big-step operational semantics or natural
+semantics, and denotational semantics. Since SOS models concurrency well this is
+the only one described here.
+
+A small-step operational semantics defines rules which can be used to derive
+single execution steps (or transitions) between program states. We exemplify
+this with the While language defined in the above section. In order to define
+rules for state transitions a state must be defined. Therefore we make the
+following definition for the While language.
+
+\begin{definition}
+  A \emph{state} $S$ for the While language is a value of the form
+  \begin{equation*}
+    \WhState{V, s} \text{ or } V
+  \end{equation*}
+  where $s$ is a statement and $V$ is a partial map
+  \begin{equation*}
+    V: \WhVar \rightharpoonup \WhVal
+  \end{equation*}
+\end{definition}
+
+We can now define rules for state transitions (see Figure~\ref{fig:while_sos}).
+All rules are of the form
+\infrule[Rule name]
+{\text{precondition}}
+{\WhState{V, s} \rightarrow S}
+If there are no preconditions we just write
+\infax[Rule name]
+{\WhState{V, s} \rightarrow S}
+
+\begin{figure}
+  \centering
+  \infax[WhE-Decl1]
+  {\WhState{V, \WhDecl{x}{\WhInt}} \: \rightarrow \: V[ x \mapsto 0]}
+  
+  \RuleSpace
+
+  \infax[WhE-Decl2]
+  {\WhState{V, \WhDecl{x}{\WhBool}} \: \rightarrow \: V[ x \mapsto \WhFalse]}
+  
+  \RuleSpace
+
+  \infax[WhE-Assign]
+  {\WhState{V, \WhAssign{x}{e}} \: \rightarrow \: V[ x \mapsto \WhEval{V}(e)]}
+
+  \RuleSpace
+
+  \infax[WhE-Skip]
+  {\WhState{V, \WhSkip} \: \rightarrow \: V}
+
+  \RuleSpace
+
+  \infrule[WhE-Comp1]
+  {\WhState{V, s_1} \: \rightarrow \: \WhState{V', s'_1}}
+  {\WhState{V, \WhConc{s_1}{s_2}} \: \rightarrow \: \WhState{V',
+  \WhConc{s'_1}{s_2}}}
+  
+  \RuleSpace
+
+  \infrule[WhE-Comp2]
+  {\WhState{V, s_1} \: \rightarrow \: V'}
+  {\WhState{V, \WhConc{s_1}{s_2}} \: \rightarrow \: \WhState{V',
+  s_2}}
+
+  \RuleSpace
+
+  \infrule[WhE-IfTrue]
+  {\WhEval{V}(e) = \WhTrue}
+  {\WhState{V, \WhIf{e}{s_1}{s_2}} \: \rightarrow \: \WhState{V, s_1}}
+
+  \RuleSpace 
+
+  \infrule[WhE-IfFalse]
+  {\WhEval{V}(e) = \WhTrue}
+  {\WhState{V, \WhIf{e}{s_1}{s_2}} \: \rightarrow \: \WhState{V, s_2}}
+  
+  \RuleSpace
+
+  \infax[WhE-While]
+  {\WhState{V, \WhWhile{e}{s}} \: \rightarrow \: \WhState{V,
+  \WhIf{e}{(\WhConc{s}{\WhWhile{e}{s}})}{\WhSkip}}}
+
+  \caption{Small-step operational semantics for While}
+  \label{fig:while_sos}
+\end{figure}
+
+The SOS rules of While heavily relies on the expression evaluation function
+$\WhEval{\cdot}(\cdot)$. This is a function which takes a state map $V$ and an
+expression $e$ and returns a value in $\WhVal$. We define this recursively as follows
+\begin{equation*}
+  \begin{array}{lll}
+    \WhEval{V}(v) &=& v \\
+    \WhEval{V}(x) &=& V(x) \\
+    \WhEval{V}(e_1 + e_2) &=& \WhEval{V}(e_1) + \WhEval{V}(e_2) \\
+    \WhEval{V}(e_1 * e_2) &=& \WhEval{V}(e_1) * \WhEval{V}(e_2) \\
+    \WhEval{V}(e_1 - e_2) &=& \WhEval{V}(e_1) - \WhEval{V}(e_2) \\
+    \WhEval{V}(e_1 = e_2) &=& \WhEval{V}(e_1) = \WhEval{V}(e_2) \\
+    \WhEval{V}(e_1 \leq e_2) &=& \WhEval{V}(e_1) \leq \WhEval{V}(e_2) \\
+    \WhEval{V}(e_1 \land e_2) &=& \WhEval{V}(e_1) \land \WhEval{V}(e_2) \\
+    \WhEval{V}(\lnot e_1) &=& \lnot \WhEval{V}(e_1) \\
+  \end{array}
+\end{equation*}
+Here we implicitly rely on that the operations $+, -, *, =, \leq$ are only
+defined for integer values, and that $\lnot, \land$ are only defined for boolean
+values.  If we encounter values where an operation is undefined the value for
+$\WhEval{V}(e)$ is undefined for the corresponding state map $V$ and expression
+$e$. Since the definition is recursive, the occurrence of an undefined value
+should also propagate upwards, e.g. if $\WhEval{V}(e_1)$ is undefined
+then $\WhEval{V}(e_1 + e_2)$ is undefined aswell. This is implicit in our
+definition.
+
+The evaluation function $\WhEval{\cdot}(\cdot)$ together with the derivation
+rules in Figure~\ref{fig:while_sos} gives us a complete description of what
+steps are allowed. It is implicit in the description that if the evaluation
+function is undefined at some point in the derivation of a step, execution
+cannot progress and we get stuck.
+
+%TODO remove promise of introducing ANF
+
+\section{Type Systems} \label{sec:type_systems}
+
+% Describe basic type systems and properties that should hold e.g. 
+% TODO Preservation and Progress
+
+
+
