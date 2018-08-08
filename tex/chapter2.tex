@@ -36,22 +36,20 @@ possible forms of $s$, separated by $|$, i.e.
 The expressions can themselves contain non-terminals and terminals.
 Terminals are symbols which does not occur on the left side of any rule.
 
-% TODO add reference to Semantics with Applications An Appetizer
-The While language can be written in BNF as described in~\cite{} % FIXME reference
-For reference we give a similar description here with the addition of a very
-simple type system.
+The While language can be written in BNF as described
+in~\parencite{nielson2007semantics} For reference we give a similar description
+here with the addition of a very simple type system.
 
-% TODO add reference to Semantics with Applications An Appetizer
 Furthermore we let $\WhVar$ be the set of all variable names and $\WhVal$ the
 set of all values which for the While language will be the integers $\integers$,
 and the boolean values $\WhTrue$ and $\WhFalse$. 
 \begin{equation*}
   \WhVal = \integers \cup \left\{ \WhTrue, \WhFalse \right\}
 \end{equation*}
-Note that in~\cite{} % FIXME reference
+Note that in~\parencite{nielson2007semantics} 
 the conversion between the syntactical (numerals\slash boolean literals) and semantic
-(integers\slash boolean values) versions of values are explicit whereas here we will
-make this conversion implicit.
+(integers\slash boolean values) versions of values are explicit whereas here 
+this conversion is implicit.
 
 \begin{figure}[h]
   \centering
@@ -201,12 +199,12 @@ expression $e$ and returns a value in $\WhVal$. We define this recursively as fo
 \end{equation*}
 Here we implicitly rely on that the operations $+, -, *, =, \leq$ are only
 defined for integer values, and that $\lnot, \land$ are only defined for boolean
-values.  If we encounter values where an operation is undefined the value for
-$\WhEval{V}(e)$ is undefined for the corresponding state map $V$ and expression
-$e$. Since the definition is recursive, the occurrence of an undefined value
-should also propagate upwards, e.g. if $\WhEval{V}(e_1)$ is undefined
-then $\WhEval{V}(e_1 + e_2)$ is undefined aswell. This is implicit in our
-definition.
+values.  If we encounter a state map $V$ and an expression $e$ where the
+corresponding integer or boolean operation above is undefined, the value for
+$\WhEval{V}(e)$ is undefined. Since the definition of $\WhEval{\cdot}(\cdot)$ is
+recursive, the occurrence of an undefined value should also propagate upwards.
+E.g. if $\WhEval{V}(e_1)$ is undefined then $\WhEval{V}(e_1 + e_2)$ is undefined
+aswell. This is implicit in our definition.
 
 The evaluation function $\WhEval{\cdot}(\cdot)$ together with the derivation
 rules in Figure~\ref{fig:while_sos} gives us a complete description of what
