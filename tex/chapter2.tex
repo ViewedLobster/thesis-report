@@ -15,8 +15,7 @@ As a basis the well known While language will be used as an example language.
 A language syntax is a formal way to describe the structure of programs written
 in a programming language. It gives us a basis on which to build the language
 semantics and type systems as will be clear later. In this section the
-Backus-Naur-form (BNF) will be introduced. Then a version of A-normal form (ANF) will be
-introduced since it will be heavily used later.
+Backus-Naur-form (BNF) will be introduced. 
 
 \subsection{The Backus-Naur-form} \label{sub:the_backus_naur_form} 
 
@@ -34,12 +33,22 @@ possible forms of $s$, separated by $|$, i.e.
 The expressions can themselves contain non-terminals and terminals.
 Terminals are symbols which does not occur on the left side of any rule.
 
-The While language can be written in BNF as described in % FIXME add reference
+% TODO add reference to Semantics with Applications An Appetizer
+The While language can be written in BNF as described in~\cite{} % FIXME reference
 For reference we give a similar description here with the addition of a very
 simple type system.
 
+% TODO add reference to Semantics with Applications An Appetizer
 Furthermore we let $\WhVar$ be the set of all variable names and $\WhVal$ the
-set of all values.
+set of all values which for the While language will be the integers $\integers$,
+and the boolean values $\WhTrue$ and $\WhFalse$. 
+\begin{equation*}
+  \WhVal = \integers \cup \left\{ \WhTrue, \WhFalse \right\}
+\end{equation*}
+Note that in~\cite{} % FIXME reference
+the conversion between the syntactical (numerals\slash boolean literals) and semantic
+(integers\slash boolean values) versions of values are explicit whereas here we will
+make this conversion implicit.
 
 \begin{figure}[h]
   \centering
@@ -109,7 +118,8 @@ All rules are of the form
 \infrule[Rule name]
 {\text{precondition}}
 {\WhState{V, s} \rightarrow S}
-If there are no preconditions we just write
+Which basically says "if precondition holds then we can step from \WhState{V, s}
+to $S$".  If there are no preconditions we just write
 \infax[Rule name]
 {\WhState{V, s} \rightarrow S}
 
@@ -194,18 +204,29 @@ should also propagate upwards, e.g. if $\WhEval{V}(e_1)$ is undefined
 then $\WhEval{V}(e_1 + e_2)$ is undefined aswell. This is implicit in our
 definition.
 
+% TODO explain some of the rules in more detail.
+
 The evaluation function $\WhEval{\cdot}(\cdot)$ together with the derivation
 rules in Figure~\ref{fig:while_sos} gives us a complete description of what
 steps are allowed. It is implicit in the description that if the evaluation
 function is undefined at some point in the derivation of a step, execution
 cannot progress and we get stuck.
 
-%TODO remove promise of introducing ANF
-
 \section{Type Systems} \label{sec:type_systems}
 
 % Describe basic type systems and properties that should hold e.g. 
 % TODO Preservation and Progress
+
+A type system is a mathematical construct that consists of elements called types
+and a set of rules that assign types to parts of a programming language, e.g.
+statements, variables and expressions. Type systems are most commonly used to
+prevent programming errors such as feeding a data structure to a function for
+which it was not made, and this can be enforced both using static checking at
+compile time or dynamic checking at runtime. Type systems are found in many
+modern programming languages such as Java, Scala, Haskell, Python and C++.
+
+The focus here will be on static type systems. We will explain the basics using
+our previous 
 
 
 
