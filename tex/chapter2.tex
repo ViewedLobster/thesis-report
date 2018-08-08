@@ -446,13 +446,16 @@ to the simplicity of the language itself, more complicated languages have more
 complicated type systems and a type system is oftenmost designed in together 
 with the language itself. 
 
-One common construct in type systems is \emph{subtyping}. This introduces a
-relation, oftenmost denoted $\stof$ between types and it oftenmost is used to
-say that "if $\sigma \stof \tau$ then values of $\sigma$ can be used in the same
-way as values of type $\tau$". This is the case for Java where a class $C$ can
-extend a class $D$. This for simply stated means that the fields and methods of $D$
-are also availible in $C$. We will see an example of how subtyping can be used
-in chapter~\ref{cha:core_language}. There the typing relation will also include
-an effect $a$. This basically has the meaning that the typing rules are more or less
-strict depending on the value of $a$.
+One common construct in type systems is \emph{subtyping}. This introduces a a
+(semi)-lattice with based on a partial order relation denoted $\stof$ between
+types and it oftenmost is used to say that "if $\sigma \stof \tau$ then values
+of type $\sigma$ can be used in the same way as values of type $\tau$". This is
+the case for Java where a class $C$ can extend a class $D$. This for simply
+stated means that the fields and methods of $D$ are also availible in $C$. We
+will see an example of how subtyping can be used in
+chapter~\ref{cha:core_language}. 
+
+In chapter~\ref{cha:core_language} the typing relation will also include an
+effect $a$. This basically has the meaning that the typing rules are more or
+less strict depending on the value of $a$.
 
