@@ -53,13 +53,15 @@ make this conversion implicit.
 \begin{figure}[h]
   \centering
   $\begin{array}{lll@{\hspace{4mm}}l}
+    c &::= &  & \mbox{Program code} \\
+    &  & \varepsilon & \mbox{Empty code} \\
+    &| & s; c' & \mbox{Statement concatenation} \\
     s &::= & & \mbox{Program statement} \\
     &  & \WhDecl{x}{\tau} & \mbox{Variable declaration} \\
     &| & \WhAssign{x}{e} & \mbox{Assignment} \\
     &| & \WhSkip & \mbox{Skip} \\
-    &| & \WhConc{s_1}{s_2} & \mbox{Concatenation} \\
-    &| & \WhIf{e}{s_1}{s_2} & \mbox{If branch} \\
-    &| & \WhWhile{e}{s} & \mbox{While loop} \\
+    &| & \WhIf{e}{c_1}{c_2} & \mbox{If branch} \\
+    &| & \WhWhile{e}{c} & \mbox{While loop} \\
     &&&\\
     e & ::= & & \mbox{Expressions} \\
     & & x & \mbox{Variable} \\
@@ -96,7 +98,7 @@ small-step operational semantics, also called structural operational semantics
 semantics, and denotational semantics. Since SOS models concurrency well this is
 the only one described here.
 
-A small-step operational semantics defines rules which can be used to derive
+Small-step operational semantics defines rules which can be used to derive
 single execution steps (or transitions) between program states. We exemplify
 this with the While language defined in the above section. In order to define
 rules for state transitions a state must be defined. Therefore we make the
@@ -105,9 +107,9 @@ following definition for the While language.
 \begin{definition}
   A \emph{state} $S$ for the While language is a value of the form
   \begin{equation*}
-    \WhState{V, s} \text{ or } V
+    \WhState{V, c}  
   \end{equation*}
-  where $s$ is a statement and $V$ is a partial map
+  where $c$ is a statement and $V$ is a partial map
   \begin{equation*}
     V: \WhVar \rightharpoonup \WhVal
   \end{equation*}
@@ -117,67 +119,66 @@ We can now define rules for state transitions (see Figure~\ref{fig:while_sos}).
 All rules are of the form
 \infrule[Rule name]
 {\text{precondition}}
-{\WhState{V, s} \rightarrow S}
-Which basically says "if precondition holds then we can step from \WhState{V, s}
-to $S$".  If there are no preconditions we just write
+{S \rightarrow S'}
+Which basically says "if precondition holds then we can step from $S$
+to $S'$".  If there are no preconditions we just write
 \infax[Rule name]
-{\WhState{V, s} \rightarrow S}
+{S \rightarrow S'}
 
-\begin{figure}
+\begin{figure}[h]
   \centering
   \infax[WhE-Decl1]
-  {\WhState{V, \WhDecl{x}{\WhInt}} \: \rightarrow \: V[ x \mapsto 0]}
+  {\WhState{V, \WhDecl{x}{\WhInt};c} \: \rightarrow \: \WhState{V[ x \mapsto 0],
+  c}}
   
   \RuleSpace
 
   \infax[WhE-Decl2]
-  {\WhState{V, \WhDecl{x}{\WhBool}} \: \rightarrow \: V[ x \mapsto \WhFalse]}
+  {\WhState{V, \WhDecl{x}{\WhBool};c} \: \rightarrow \: \WhState{V[ x \mapsto
+  \WhFalse], c}}
   
   \RuleSpace
 
   \infax[WhE-Assign]
-  {\WhState{V, \WhAssign{x}{e}} \: \rightarrow \: V[ x \mapsto \WhEval{V}(e)]}
+  {\WhState{V, \WhAssign{x}{e};c} \: \rightarrow \: \WhState{V[ x \mapsto
+  \WhEval{V}(e)], c}}
 
   \RuleSpace
 
   \infax[WhE-Skip]
-  {\WhState{V, \WhSkip} \: \rightarrow \: V}
-
-  \RuleSpace
-
-  \infrule[WhE-Comp1]
-  {\WhState{V, s_1} \: \rightarrow \: \WhState{V', s'_1}}
-  {\WhState{V, \WhConc{s_1}{s_2}} \: \rightarrow \: \WhState{V',
-  \WhConc{s'_1}{s_2}}}
-  
-  \RuleSpace
-
-  \infrule[WhE-Comp2]
-  {\WhState{V, s_1} \: \rightarrow \: V'}
-  {\WhState{V, \WhConc{s_1}{s_2}} \: \rightarrow \: \WhState{V',
-  s_2}}
+  {\WhState{V, \WhSkip; c} \: \rightarrow \: \WhState{V, c}}
 
   \RuleSpace
 
   \infrule[WhE-IfTrue]
   {\WhEval{V}(e) = \WhTrue}
-  {\WhState{V, \WhIf{e}{s_1}{s_2}} \: \rightarrow \: \WhState{V, s_1}}
+  {\WhState{V, \WhIf{e}{c_1}{c_2};c} \: \rightarrow \: \WhState{V, c_1;c}}
 
   \RuleSpace 
 
   \infrule[WhE-IfFalse]
   {\WhEval{V}(e) = \WhTrue}
-  {\WhState{V, \WhIf{e}{s_1}{s_2}} \: \rightarrow \: \WhState{V, s_2}}
+  {\WhState{V, \WhIf{e}{c_1}{c_2}} \: \rightarrow \: \WhState{V, c_2;c}}
   
   \RuleSpace
 
   \infax[WhE-While]
-  {\WhState{V, \WhWhile{e}{s}} \: \rightarrow \: \WhState{V,
-  \WhIf{e}{(\WhConc{s}{\WhWhile{e}{s}})}{\WhSkip}}}
+  {\WhState{V, \WhWhile{e}{c'};c} \: \rightarrow \: \WhState{V,
+  \WhIf{e}{(\WhConc{c'}{\WhWhile{e}{c'}})}{\WhSkip};c}}
 
   \caption{Small-step operational semantics for While}
   \label{fig:while_sos}
 \end{figure}
+
+Most of the rules are very intuitive. E.g. rules {\sc WhE-Decl1} and {\sc
+WhE-Decl2} extends the state map $V$ with $x$ and a default value corresponding
+to the declared type. Rule {\sc WhE-Assign} evaluates the expression $e$ and
+maps $x$ to the result. Rules {\sc WhE-IfTrue} and {\sc WhE-IfFalse} evaluates
+its expression $e$ and if the result is $\WhTrue$ or $\WhFalse$ they prepend the
+code of the corresponding branch to the rest of the program. We can also see
+that {\sc WhE-While} is just an expansion of a while loop into an if statement.
+Finally we note that we can not step from $\WhState{V, \varepsilon}$ which means
+that this is a halting state.
 
 The SOS rules of While heavily relies on the expression evaluation function
 $\WhEval{\cdot}(\cdot)$. This is a function which takes a state map $V$ and an
@@ -204,8 +205,6 @@ should also propagate upwards, e.g. if $\WhEval{V}(e_1)$ is undefined
 then $\WhEval{V}(e_1 + e_2)$ is undefined aswell. This is implicit in our
 definition.
 
-% TODO explain some of the rules in more detail.
-
 The evaluation function $\WhEval{\cdot}(\cdot)$ together with the derivation
 rules in Figure~\ref{fig:while_sos} gives us a complete description of what
 steps are allowed. It is implicit in the description that if the evaluation
@@ -213,9 +212,6 @@ function is undefined at some point in the derivation of a step, execution
 cannot progress and we get stuck.
 
 \section{Type Systems} \label{sec:type_systems}
-
-% Describe basic type systems and properties that should hold e.g. 
-% TODO Preservation and Progress
 
 A type system is a mathematical construct that consists of elements called types
 and a set of rules that assign types to parts of a programming language, e.g.
@@ -226,7 +222,237 @@ compile time or dynamic checking at runtime. Type systems are found in many
 modern programming languages such as Java, Scala, Haskell, Python and C++.
 
 The focus here will be on static type systems. We will explain the basics using
-our previous 
+our previous example of the While language. Then some uses and extensions will be
+explained.
+
+\subsection{A Type System for While}
+\label{sub:a_type_system_for_while}
+
+For the While language we have the following types:
+\begin{equation*}
+  \WhInt \andalso \WhBool \andalso \WhVoid
+\end{equation*}
+We call the set of all types 
+\begin{equation*}
+  \WhTpe = \left\{ \WhInt, \WhBool, \WhVoid \right\}.
+\end{equation*}
+Our typing rules will define a relation of the form
+\begin{equation} \label{eq:tpe_sys1}
+  \Gamma \vdash r : \tau.
+\end{equation}
+Here $\Gamma$ is a \emph{typing environment}, i.e. a partial map
+\begin{equation*}
+  \Gamma: \WhVar \rightharpoonup \WhTpe,
+\end{equation*}
+$r$ is either code or an expression and $\tau \in \WhTpe$.
+Equation \eqref{eq:tpe_sys1} basically reads "$r$ is typed as $\tau$ under the
+typing environment $\Gamma$." A program $c$ is typeable if
+\begin{equation*}
+  \emptyset \vdash c : \WhVoid
+\end{equation*}
+where $\emptyset$ is the empty typing environment, i.e. $\emptyset(x)$ is
+undefined for all $x \in \WhVar$.
+
+\begin{notation}
+  Sometimes you would like to remap a key of, or extend a partial map $M$. One notation
+  for this commonly used is 
+  \begin{equation*}
+    M[k \mapsto v],
+  \end{equation*}
+  which means that $M(l) = M[k \mapsto v](l)$ for all $l \neq k$ and
+  $M(k) = v$.
+  For typing environments we will also use the notation
+  \begin{equation*}
+    \Gamma, x: \tau
+  \end{equation*}
+  which is equivalent to $\Gamma[x \mapsto \tau]$.
+\end{notation}
+
+\begin{figure}[h]
+  \infax[WhT-Empty]
+  {\Gamma \vdash \varepsilon : \WhVoid}
+
+  \RuleSpace
+
+  \infrule[WhT-Decl]
+  {\Gamma(x) \text{ undefined} \andalso \Gamma, x: \tau \vdash c : \WhVoid}
+  {\Gamma \vdash \WhDecl{x}{\tau}; c : \WhVoid}
+
+  \RuleSpace 
+
+  \infrule[WhT-Assign]
+  {(x: \tau) \in \Gamma \andalso \Gamma \vdash e: \tau \andalso \Gamma \vdash c
+  : \WhVoid}
+  {\Gamma \vdash \WhAssign{x}{e}; c : \WhVoid}
+
+  \RuleSpace
+
+  \infrule[WhT-Skip]
+  {\Gamma \vdash c : \WhVoid}
+  {\Gamma \vdash \WhSkip; c : \WhVoid}
+
+  \RuleSpace
+
+  \infrule[WhT-If]
+  {\Gamma \vdash e : \WhBool \andalso \Gamma \vdash c_1: \WhVoid \\
+  \Gamma \vdash c_2 : \WhVoid \andalso \Gamma \vdash c: \WhVoid}
+  {\Gamma \vdash \WhIf{e}{c_1}{c_2}; c : \WhVoid}
+
+  \RuleSpace
+
+  \infrule[WhT-While]
+  {\Gamma \vdash e: \WhBool \andalso \Gamma \vdash c' : \WhVoid \andalso \Gamma
+  \vdash c : \WhVoid}
+  {\Gamma \vdash \WhWhile{e}{c'}; c : \WhVoid}
+
+  \caption{While program code typing rules.}
+  \label{fig:while_code_tpe}
+\end{figure}
+
+Typing rules for program code are defined in Figure~\ref{fig:while_code_tpe}.
+Generally While program code can only be typed as $\WhVoid$. Intuitively this is
+because the execution of program code does not have a resulting value. Instead
+it can only modify the state map $V$. The rules for typing program code should
+not be hard to understand. E.g. {\sc WhT-Assign} states that for code that
+starts with an assignment the expression in the assignment must be of the same
+type as the variable. {\sc WhT-If} requires that the expression is typeable as
+$\WhBool$ and that both branches should be typeable as $\WhVoid$.
+
+\begin{figure}[h]
+  \begin{multicols}{3}
+  \infax[WhT-Num]
+  {\Gamma \vdash n : \WhInt}
+
+  \infax[WhT-True]
+  {\Gamma \vdash \WhTrue: \WhBool}
+
+  \infax[WhT-False]
+  {\Gamma \vdash \WhFalse: \WhBool}
+  \end{multicols}
+
+  \RuleSpace
+
+  \infrule[WhT-Var]
+  {(x: \tau) \in \Gamma}
+  {\Gamma \vdash x: \tau}
+
+  \RuleSpace
+
+  \infrule[WhT-Add]
+  {\Gamma \vdash e_1: \WhInt \andalso \Gamma \vdash e_2: \WhInt}
+  {\Gamma \vdash e_1 + e_2: \WhInt}
+
+  \RuleSpace
+
+  \infrule[WhT-Times]
+  {\Gamma \vdash e_1: \WhInt \andalso \Gamma \vdash e_2: \WhInt}
+  {\Gamma \vdash e_1 * e_2: \WhInt}
+
+  \RuleSpace
+
+  \infrule[WhT-Minus]
+  {\Gamma \vdash e_1: \WhInt \andalso \Gamma \vdash e_2: \WhInt}
+  {\Gamma \vdash e_1 - e_2: \WhInt}
+
+  \RuleSpace 
+
+  \infrule[WhT-Eq]
+  {\Gamma \vdash e_1: \WhInt \andalso \Gamma \vdash e_2: \WhInt}
+  {\Gamma \vdash e_1 = e_2: \WhBool}
+
+  \RuleSpace 
+
+  \infrule[WhT-Leq]
+  {\Gamma \vdash e_1: \WhInt \andalso \Gamma \vdash e_2: \WhInt}
+  {\Gamma \vdash e_1 \leq e_2: \WhBool}
+
+  \RuleSpace
+
+  \infrule[WhT-Not]
+  {\Gamma \vdash e : \WhBool}
+  {\Gamma \vdash \lnot e: \WhBool}
+
+  \RuleSpace 
+
+  \infrule[WhT-And]
+  {\Gamma \vdash e_1: \WhBool \andalso \Gamma \vdash e_2: \WhBool}
+  {\Gamma \vdash e_1 \land e_2: \WhBool}
+
+  \caption{While expression typing rules.}
+  \label{fig:while_expr_tpe}
+\end{figure}
+
+Finally the rules for typing expressions are found in
+Figure~\ref{fig:while_expr_tpe}. The possible types for an expression are
+$\WhInt$ and $\WhBool$. The rules themselves should not be difficult to
+understand.
 
 
+\subsection{Uses \& Extensions}
+\label{sub:uses_and_extensions}
+
+So what are type systems used for? As mentioned earlier, commonly they are put
+in place to prevent errors such as uncompatible data structures being fed as arguments
+to a function which cannot handle such properly. E.g. in Java you cannot feed a
+List to a method which is denoted to take an Integer as an argument. This will
+result in a compiler error.
+
+\subsection{Preservation \& Progress}
+\label{sub:preservation_&_progress}
+
+A formal type system can furthermore be used to prove properties like
+\emph{preservation} and \emph{progress} for programs which are properly type
+checked. These are important properties since they can beforehand ensure that
+programs terminate properly, or at least that e.g. if it terminates erroneously it
+must have been the result of a null-pointer exception.
+
+As an example we can state preservation and progress properties of While as follows. Let
+$\Gamma(V)$ be defined as 
+\[
+  \Gamma(V)(x) = \begin{cases}
+    \WhInt & \text{ if } V(x) \in \integers \\
+    \WhBool & \text{ if } V(x) \in \left\{\WhTrue, \WhFalse \right\} \\
+    \text{undefined} & \text{ otherwise }
+  \end{cases}
+\]
+\begin{proposition}{(Preservation of While)} 
+  Let
+  \begin{equation*}
+    \WhState{V, c} \: \rightarrow \: \WhState{V', c'} \andalso \Gamma(V) \vdash
+    c: \WhVoid.
+  \end{equation*}
+  Then 
+  \begin{equation}
+    \Gamma(V') \vdash c': \WhVoid
+  \end{equation}
+\end{proposition}
+\begin{proposition}{(Progress of While)}
+  Let $\WhState{V, c}$ be a state and let
+  \begin{equation*}
+    \Gamma(V) \vdash c: \WhVoid.
+  \end{equation*}
+  Then either $c = \varepsilon$ or there is a state $\WhState{V', c'}$ such that
+  \begin{equation*}
+    \WhState{V, c} \: \rightarrow \: \WhState{V', c'}.
+  \end{equation*}
+\end{proposition}
+
+
+\subsection{Extensions}
+\label{sub:extensions}
+
+The example type system for While is of course very simple. This is mostly due
+to the simplicity of the language itself, more complicated languages have more
+complicated type systems and a type system is oftenmost designed in together 
+with the language itself. 
+
+One common construct in type systems is \emph{subtyping}. This introduces a
+relation, oftenmost denoted $\stof$ between types and it oftenmost is used to
+say that "if $\sigma \stof \tau$ then values of $\sigma$ can be used in the same
+way as values of type $\tau$". This is the case for Java where a class $C$ can
+extend a class $D$. This for simply stated means that the fields and methods of $D$
+are also availible in $C$. We will see an example of how subtyping can be used
+in chapter~\ref{cha:core_language}. There the typing relation will also include
+an effect $a$. This basically has the meaning that the typing rules are more or less
+strict depending on the value of $a$.
 
