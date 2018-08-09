@@ -78,6 +78,9 @@ dependencies between cells. The semantics of these will be explained next.
 \section{Semantics}
 \label{sec:semantics}
 
+% TODO describe the rules a bit
+% TODO state that program execution starts from starting state
+
 In this section the semantics of \RACL{} will be introduced. First a brief
 overview is made and then a few of the more interesting or non-standard
 execution rules will be explained.
@@ -145,7 +148,7 @@ the following definitions we describe the execution rules in more detail.
   \end{equation*}
 \end{definition}
 
-\begin{definition}{Thread Sets}
+\begin{definition}{(Thread Sets)}
   A \emph{frame} $F$ is an object of the form
   \begin{equation*}
     \sframe{L, t}
@@ -168,6 +171,27 @@ the following definitions we describe the execution rules in more detail.
 \begin{definition}{(States)}
   We define a \emph{state} to be either the error state $\Error$ or a pair $H,
   P$ where $H$ is a heap and $P$ is a thread set.
+\end{definition}
+
+\begin{definition}
+  The set of all valid types $\ValidTypes$ for a given program $p$ consists of
+  $\AnyRefType$, $\NullType$, $\CellType$, $\LatType$ and all defined
+  class types in $p$, $\ClassTypes$. I.e.
+  \begin{equation*}
+    \ValidTypes = \ClassTypes \cup \left\{ \AnyRefType, \NullType, \CellType,
+    \LatType \right\}
+  \end{equation*}
+\end{definition}
+
+\begin{definition}
+  The function $\default: \ValidTypes \to \Values$ is defined as follows
+  \begin{equation*}
+    \default(\tau) =
+    \begin{cases}
+      \bot_{\LatVals} & \text{ if } \tau = \LatType \\
+      \NullVal        & \text{ otherwise } 
+    \end{cases}
+  \end{equation*}
 \end{definition}
 
 \begin{figure}[]
@@ -244,7 +268,6 @@ the following definitions we describe the execution rules in more detail.
 
 In figures~\ref{fig:frame_red_rules} and \ref{fig:error_red_rules} all reduction
 rules for single frames are defined. 
-% FIXME this is where to continue
 
 \begin{figure}
   \scrule{E-NullSelect}
@@ -792,17 +815,10 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \caption{Definition of OCAP reachability}
   \label{fig:def_ocapreach}
 \end{figure}
-% TODO define \ocrloc
 
 \begin{figure}
-  \scrule{GSep-FS}
-  {a = \ocap \implies \forall o \in \accRoots{(FS, H)}. \: \csep{(H, o, o_g)} }
-  {H;a \vdash FS \tsep \gsep}
-
-  \RuleSpace{}
-
   \scrule{GSep-Threads}
-  {\forall FS|_a^d \in P. \: H;a \vdash FS \tsep \gsep}
+  {\forall FS|_a^d \in P. \: a = \ocap \implies \forall o \in \accRoots{(FS, H)}. \: \csep{(H, o, o_g)} }
   {H \vdash P \tsep \gsep}
 
   \caption{Definition of global separation}

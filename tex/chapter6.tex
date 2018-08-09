@@ -1,5 +1,5 @@
-\chapter{Preservation and Progress}
-\label{cha:preservation_and_progress}
+\chapter{Properties of RACL}
+\label{cha:properties_of_racl}
 
 % Write about the basic ideas behind the proof of preservation and progress
 
@@ -17,5 +17,141 @@
     \item $S = H, \emptyset$ for some heap $H$ s.t. $\noSpawn{(H)}$ or
     \item $S = \Error$.
   \end{enumerate}
+\end{theorem}
+
+% Describe:
+% Theorem of determinism
+% Lemmas leading up to the proof of this
+
+\begin{definition}
+  For each state $S = H, P$ there are two related sets of currently used object
+  identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$.
+  Respectively these contain all object and thread identifiers occuring in $H$
+  and $P$. 
+  %We call an object
+  %identifier $o$ (reference identifier $d$) \emph{fresh} if $o \not\in \mathcal{O}(S)$ ($d \not\in
+  %\mathcal{D}(S)$).
+\end{definition}
+
+\begin{definition}
+  We say that an object (thread) identifier $o$ ($d$) is \emph{fresh} at a state $S$ if
+  $o \not\in \OIDs(S)$ ($d \not\in \TIDs(S)$).
+\end{definition}
+
+\begin{definition} \label{def:eqrel}
+  Let $\simeq$ be a binary relation on the set of states $\States$.
+  We let $S \simeq S'$ if
+  \begin{equation*}
+    S = S' = \Error
+  \end{equation*}
+  or if
+  \begin{equation}
+    S = H, P \andalso S' = H', P'
+  \end{equation}
+  and there exists bijections $g: \OIDs \to \OIDs, h: \TIDs \to \TIDs$
+  such that
+  \begin{equation}
+    H' = \pi(H, g) \andalso P' = \rho(P, g, h)
+  \end{equation}
+  
+  The functions $\pi$ and $\rho$ are defined in definition~\ref{def:pirho}.
+\end{definition}
+
+% TODO define \pi and \rho
+
+
+\begin{proposition} \label{prop:eqrel}
+  $\simeq$ is an equivalence relation.
+\end{proposition}
+
+\begin{proposition} \label{prop:eqrel_stateok}
+  For any $S, S' \in \States$ such that $S \simeq S'$
+  \begin{equation}
+    \vdash S \tsep \stateok \iff \vdash S' \tsep \stateok
+  \end{equation}
+\end{proposition}
+
+We make the following observation
+\begin{claim}
+  A transition between two states can be uniquely identified by
+  \begin{itemize}
+    \item Start state $S$
+    \item Base rule name $R$, e.g., $R = \ENew$ or $R = \ESpawn$. We say base rule
+      because in many cases the step involves more than one rule in its
+      derivation tree of a complete state step. However the use of these extra
+      rules are implied by which rule is used as the "base" of the tree. For
+      example, using $\ECall$ to step one thread implies use of $\EFSProp$ to
+      advance the state, and using $\ENew$ to advance one thread frame implies
+      use of $\EFProp$ and $\EFSProp$ in order to advance the state.
+    \item Thread identifier $\alpha$. In the cases where we advance or terminate
+      one thread, e.g., $\ENull$ or $\ECall$ this is the thread identifier of that
+      thread. In the case where we spawn a new thread this is the callback
+      identifier.
+    \item A fresh object or thread identifier $\beta$ which could be of value
+      \begin{itemize}
+        \item Object identifier $o' \in \OIDs$ in the cases where the rule
+          references a fresh object identifier, i.e. $\ENew$ and $\ENewCell$.
+        \item Thread id $\alpha' \in \TIDs$ for the case where a fresh thread id is
+          referenced, i.e. $\EWhen$.
+        \item $\smiley$ for all other cases.
+      \end{itemize}
+  \end{itemize}
+\end{claim}
+
+Because of this claim we can make the following definition
+
+\begin{definition} \label{def:trans_id}
+  We write a \emph{transition identifier} as $R^{\alpha, \beta}$. The
+  \emph{application} of $R^{\alpha, \beta}$ to state $S$ (if possible) is the
+  use of a rule as specified by $R$, $\alpha$ and $\beta$ to step from $S$ to
+  some state $S'$. We write this as
+  \begin{equation*}
+    S \Rrightarrow^{R^{\alpha, \beta}} S'
+  \end{equation*}
+\end{definition}
+
+\begin{remark}
+  Actually the rule name $R$ in the above definition is redundant since this is
+  completely decided by the state $S$ and thread identifier $\alpha$.
+\end{remark}
+
+\begin{definition}
+  A \emph{transition sequence} $\bar{R}$ is a finite length sequence of
+  transition identifiers
+  \begin{equation*}
+    R_1^{\alpha_1, \beta_1}, R_2^{\alpha_2, \beta_2}, \dots, R_n^{\alpha_n,
+    \beta_n}.
+  \end{equation*}
+  The application of this sequence to a state $S$ is the consecutive application
+  of
+  \begin{equation*}
+    R_i^{\alpha_i, \beta_i} \andalso i = 1, \dots, n
+  \end{equation*}
+  beginning with state $S$. I.e.
+  \begin{equation*} 
+    S \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_1 \Rrightarrow^{R^{\alpha_2,
+    \beta_2}} S_2  \: \dots \: S_{n-1} \Rrightarrow^{R_n^{\alpha_n, \beta_n}} S_n
+  \end{equation*}
+  We shorten this to
+  \begin{equation*}
+    S \Rrightarrow^{\bar{R}} S_n.
+  \end{equation*}
+\end{definition}
+
+We are now ready to state the last main theorem.
+
+\begin{theorem}{(Quasi Determinism)} \label{thm:qd}
+  Let $S, S', T, T'$ be states not equal to $\Error$ such that
+  \begin{equation*}
+    \begin{gathered}
+      S \simeq S' \\
+      S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T'.
+    \end{gathered}
+  \end{equation*}
+  Furthermore neither $T$ or $T'$ can make a step.
+  Then
+  \begin{equation*}
+    T \simeq T'.
+  \end{equation*}
 \end{theorem}
 

@@ -1,71 +1,16 @@
-\chapter{Quasi Determinism}
-\label{cha:determinism}
+\chapter{Discussion \& Conclusion}
+\label{cha:discussion_and_conclusion}
 
-% Describe:
-% Theorem of determinism
-% Lemmas leading up to the proof of this
+% TODO discussion: bring up fact of running callbacks twice does not
+% affect result
 
-\begin{definition}
-  For each state $S = H, P$ there are two related sets of currently used object
-  identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$.
-  Respectively these contain all object and thread identifiers occuring in $H$
-  and $P$. 
-  %We call an object
-  %identifier $o$ (reference identifier $d$) \emph{fresh} if $o \not\in \mathcal{O}(S)$ ($d \not\in
-  %\mathcal{D}(S)$).
-\end{definition}
-
-\begin{definition}
-  We say that an object (thread) identifier $o$ ($d$) is \emph{fresh} at a state $S$ if
-  $o \not\in \OIDs(S)$ ($d \not\in \TIDs(S)$).
-\end{definition}
-
-\begin{definition} \label{def:eqrel}
-  Let $\simeq$ be a binary relation on the set of states $\States$.
-  We let $S \simeq S'$ if
-  \begin{equation*}
-    S = S' = \Error
-  \end{equation*}
-  or if
-  \begin{equation}
-    S = H, P \andalso S' = H', P'
-  \end{equation}
-  and there exists bijections $g: \OIDs \to \OIDs, h: \TIDs \to \TIDs$
-  such that
-  \begin{equation}
-    H' = \pi(H, g) \andalso P' = \rho(P, g, h)
-  \end{equation}
-  
-  The functions $\pi$ and $\rho$ are defined in definition~\ref{def:pirho}.
-\end{definition}
-
-% TODO define \pi and \rho
-
-
-\begin{proposition} \label{prop:eqrel}
-  $\simeq$ is an equivalence relation.
-\end{proposition}
-
-\begin{proposition} \label{prop:eqrel_stateok}
-  For any $S, S' \in \States$ such that $S \simeq S'$
-  \begin{equation}
-    \vdash S \tsep \stateok \iff \vdash S' \tsep \stateok
-  \end{equation}
-\end{proposition}
-
-
-\begin{theorem}{(Quasi Determinism)} \label{thm:qd}
-  Let $S_0, S'_0, S_1, S'_1$ be states not equal to $\Error$ such that
-  \begin{equation*}
-    \begin{gathered}
-      S \simeq S' \\
-      S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T'.
-    \end{gathered}
-  \end{equation*}
-  Furthermore neither $T$ or $T'$ can make a step.
-  Then
-  \begin{equation*}
-    T \simeq T'.
-  \end{equation*}
-\end{theorem}
-
+% Discuss the addition of quiescence in order to actually use the result of the
+% computation. Also discuss the efficiency of our system. In order to make it
+% usable we need to replace the threshold checks with some callback that spawns
+% the required callbacks. This of course is also required to not depend on any
+% shared mutable state.
+% Discuss threshold reads: Could introduce a get stmt. Draw some
+% conclusions of the problematic nature of deterministic concurrency and that
+% great care has to be taken when trying to prove determinism for so called
+% "deterministic-by-design" systems.
+% SHould also

@@ -97,23 +97,7 @@
 
 \include{./tex/chapter7}
 
-\chapter{Discussion \& Conclusion}
-\label{cha:disc_concl}
 
-
-% TODO discussion: bring up fact of running callbacks twice does not
-% affect result
-
-% Discuss the addition of quiescence in order to actually use the result of the
-% computation. Also discuss the efficiency of our system. In order to make it
-% usable we need to replace the threshold checks with some callback that spawns
-% the required callbacks. This of course is also required to not depend on any
-% shared mutable state.
-% Discuss threshold reads: Could introduce a get stmt. Draw some
-% conclusions of the problematic nature of deterministic concurrency and that
-% great care has to be taken when trying to prove determinism for so called
-% "deterministic-by-design" systems.
-% SHould also
 
 \printbibliography[heading=bibintoc] % Print the bibliography (and make it appear in the table of contents)
 

@@ -6,7 +6,6 @@ explained. Section~\ref{sec:language_semantics} gives a brief introduction to
 programming language semantics. Finally section~\ref{sec:type_systems} explains
 some basics of programming language type systems.
 
-% TODO give a reference
 As a basis the well known While language will be used as an example language.
 
 % TODO add a section about basic math, like lattices join operations, partial
@@ -171,7 +170,7 @@ to $S'$".  If there are no preconditions we just write
   \label{fig:while_sos}
 \end{figure}
 
-Most of the rules are very intuitive. E.g. rules {\sc WhE-Decl1} and {\sc
+Most of the rules are very intuitive. For example, rules {\sc WhE-Decl1} and {\sc
 WhE-Decl2} extends the state map $V$ with $x$ and a default value corresponding
 to the declared type. Rule {\sc WhE-Assign} evaluates the expression $e$ and
 maps $x$ to the result. Rules {\sc WhE-IfTrue} and {\sc WhE-IfFalse} evaluates
@@ -203,7 +202,7 @@ values.  If we encounter a state map $V$ and an expression $e$ where the
 corresponding integer or boolean operation above is undefined, the value for
 $\WhEval{V}(e)$ is undefined. Since the definition of $\WhEval{\cdot}(\cdot)$ is
 recursive, the occurrence of an undefined value should also propagate upwards.
-E.g. if $\WhEval{V}(e_1)$ is undefined then $\WhEval{V}(e_1 + e_2)$ is undefined
+For example, if $\WhEval{V}(e_1)$ is undefined then $\WhEval{V}(e_1 + e_2)$ is undefined
 aswell. This is implicit in our definition.
 
 The evaluation function $\WhEval{\cdot}(\cdot)$ together with the derivation
@@ -215,7 +214,7 @@ cannot progress and we get stuck.
 \section{Type Systems} \label{sec:type_systems}
 
 A type system is a mathematical construct that consists of elements called types
-and a set of rules that assign types to parts of a programming language, e.g.
+and a set of rules that assign types to parts of a programming language, e.g.,
 statements, variables and expressions. Type systems are most commonly used to
 prevent programming errors such as feeding a data structure to a function for
 which it was not made, and this can be enforced both using static checking at
@@ -314,7 +313,7 @@ Typing rules for program code are defined in Figure~\ref{fig:while_code_tpe}.
 Generally While program code can only be typed as $\WhVoid$. Intuitively this is
 because the execution of program code does not have a resulting value. Instead
 it can only modify the state map $V$. The rules for typing program code should
-not be hard to understand. E.g. {\sc WhT-Assign} states that for code that
+not be hard to understand. For example, {\sc WhT-Assign} states that for code that
 starts with an assignment the expression in the assignment must be of the same
 type as the variable. {\sc WhT-If} requires that the expression is typeable as
 $\WhBool$ and that both branches should be typeable as $\WhVoid$.
@@ -394,7 +393,7 @@ understand.
 
 So what are type systems used for? As mentioned earlier, commonly they are put
 in place to prevent errors such as uncompatible data structures being fed as arguments
-to a function which cannot handle such properly. E.g. in Java you cannot feed a
+to a function which cannot handle such properly. For example, in Java you cannot feed a
 List to a method which is denoted to take an Integer as an argument. This will
 result in a compiler error.
 
@@ -404,7 +403,7 @@ result in a compiler error.
 A formal type system can furthermore be used to prove properties like
 \emph{preservation} and \emph{progress} for programs which are properly type
 checked. These are important properties since they can beforehand ensure that
-programs terminate properly, or at least that e.g. if it terminates erroneously it
+programs terminate properly, or at least that, e.g., if it terminates erroneously it
 must have been the result of a null-pointer exception.
 
 As an example we can state preservation and progress properties of While as follows. Let
@@ -438,6 +437,13 @@ $\Gamma(V)$ be defined as
   \end{equation*}
 \end{proposition}
 
+%TODO add reference to tapl
+% TODO FM thingy
+% TODO change thread id from d and e to \iota
+% TODO add definition of the subtyping relation.
+% TODO repeat the theorems before proof
+% TODO make remark that we probably have complete determinism
+% TODO move definition of transition identifiers
 
 \subsection{Extensions}
 \label{sub:extensions}

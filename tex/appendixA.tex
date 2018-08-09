@@ -216,9 +216,12 @@
 \end{proof}
 
 \begin{definition} \label{def:ptilde}
-  Let $FS_g = \Frame{L_0}{global}{-} \circ \varepsilon$ bet the framestack where
-  $L_0 = [global \mapsto o_g]$. Then for any thread set $P$, let $\tilde{P}$ be the
-  thread set
+  Let $FS_g$ be any framestack where 
+  \begin{equation*}
+    \accRoots(FS_g, H) = \left\{ o_g \right\}.
+  \end{equation*}
+  I.e., $FS_g$ only has the global object as an accessible root.  Then for
+  any thread set $P$, let $\tilde{P}$ be the thread set
   \begin{equation*}
     \tilde{P} = P \cup \left\{ FS_g|_{\nocap}^d \right\}
   \end{equation*}
@@ -430,35 +433,6 @@ to show.
   $\tilde{P}$.
 \end{proof}
 
-\begin{definition}
-  The set of object references is denoted $\ObjRefs$. The set of lattice values
-  is denoted $\LatVals$. 
-  The set $\Values$ is the set of all valid runtime values 
-  \begin{equation*}
-    \Values = \LatVals \cup \ObjRefs \cup \left\{ \NullVal \right\}
-  \end{equation*}
-\end{definition}
-
-\begin{definition}
-  The set of all valid types $\ValidTypes$ for a given program $p$ consists of
-  $\AnyRefType$, $\NullType$, $\CellType$, $\LatType$ and all defined
-  class types in $p$, $\ClassTypes$. I.e.
-  \begin{equation*}
-    \ValidTypes = \ClassTypes \cup \left\{ \AnyRefType, \NullType, \CellType,
-    \LatType \right\}
-  \end{equation*}
-\end{definition}
-
-\begin{definition}
-  The partial function $\default: \ValidTypes \to \Values$ is defined as follows
-  \begin{equation*}
-    \default(\tau) =
-    \begin{cases}
-      \bot_{\LatVals} & \text{ if } \tau = \LatType \\
-      \NullVal        & \text{ otherwise } 
-    \end{cases}
-  \end{equation*}
-\end{definition}
 
 \section{Proof of preservation}
 \label{sec:proof_of_preservation}
@@ -963,7 +937,7 @@ to show.
 
               In order to prove $H' \vdash P' \tsep \ocr$ the only thing that
               remains is to show $H';a \vdash FS' \tsep \ocr$. This is anologous
-              to the above proof of $H';b \vdash HS \tsep \ocr$ using
+              to the above proof of $H';b \vdash HS~\ocr$ using
               \eqref{eq:lem2.15a} instead. Thus we have
               \begin{equation*}
                 H' \vdash P' \tsep \ocr.
@@ -1709,7 +1683,7 @@ to show.
   
   \begin{remark}
     Note that we only state which "base rule" is used for each step found below.
-    This means that if e.g.\ the rule used is a frame reduction rule (one of the
+    This means that if, e.g., the rule used is a frame reduction rule (one of the
     rules defined in Figure~\ref{fig:frame_red_rules})the application of {\sc
     E-FProp} and {\sc E-FSProp} is implied.
   \end{remark}

@@ -171,15 +171,15 @@ We make the following observation
   A transition between two states can be uniquely identified by
   \begin{itemize}
     \item Start state $S$
-    \item Base rule name $R$ e.g. $R = \ENew$ or $R = \ESpawn$. We say base rule
+    \item Base rule name $R$, e.g., $R = \ENew$ or $R = \ESpawn$. We say base rule
       because in many cases the step involves more than one rule in its
       derivation tree of a complete state step. However the use of these extra
-      rules are implied by which rule is used as the "base" of the tree. E.g.\
-      using $\ECall$ to step one thread implies use of $\EFSProp$ to advance the
-      state, and using $\ENew$ to advance one thread frame implies use of
-      $\EFProp$ and $\EFSProp$ in order to advance the state.
+      rules are implied by which rule is used as the "base" of the tree. For
+      example, using $\ECall$ to step one thread implies use of $\EFSProp$ to
+      advance the state, and using $\ENew$ to advance one thread frame implies
+      use of $\EFProp$ and $\EFSProp$ in order to advance the state.
     \item Thread identifier $\alpha$. In the cases where we advance or terminate
-      one thread e.g. $\ENull$ or $\ECall$ this is the thread identifier of that
+      one thread, e.g., $\ENull$ or $\ECall$ this is the thread identifier of that
       thread. In the case where we spawn a new thread this is the callback
       identifier.
     \item A fresh object or thread identifier $\beta$ which could be of value
@@ -355,7 +355,7 @@ Because of this claim we can make the following definition
       \begin{remark}
         The main point made here is that the two transition identifiers operate
         on different parts of the heap because of isolation of threads. Thus all
-        cases where we have this property follows similarly.
+        cases where we have this property follow similarly.
       \end{remark}
     \item[Case $R_1 = \EVar, R_2 = \EAssign$:] We first note that
       \begin{equation*}
@@ -417,7 +417,7 @@ Because of this claim we can make the following definition
       \begin{remark}
         This case is very simple since one of the transition identifiers
         operate solely on the local state of a thread. All cases with this
-        property follows similarly.
+        property follow similarly.
       \end{remark}
     \item[Case $R_1 = \EPut, R_2 = \EPut$:] Clearly
       \begin{equation*}
@@ -615,7 +615,7 @@ Because of this claim we can make the following definition
         makes the removal and addition to the dependency set $DEP$ commute.
       \end{remark}
   \end{description}
-  All other cases follows similarly to these and it should not be hard to verify
+  All other cases follow similarly to these and it should not be hard to verify
   them.
 \end{proof}
 
@@ -734,22 +734,23 @@ Because of this claim we can make the following definition
   The role of $g$ and $h$ is merely to define a renaming of references in
   $\OIDs(S)$ and $\TIDs(S)$ respectively. Thus it should be clear that whether
   \eqref{eq:propnewgh1} holds or not only depends on what what values
-  $g$ ($h$) takes for the identifiers in $\OIDs(S)$ ($\TIDs(S)$). Since clearly
-  our fresh references are in these sets it should be clear that the following
-  bijections are well defined and satisfies the result of our proposition.
+  $g$ and $h$ takes for the identifiers in $\OIDs(S)$ and $\TIDs(S)$
+  respectively. Since clearly our fresh identifiers are not in these sets it should
+  be clear that the following bijections are well defined and satisfies the
+  result of our proposition.
   \begin{equation*}
     \begin{gathered}
       g'(o_{0}) =
       \begin{cases}
-        g(o_{0}) & \text{ if } o_0 \in \OIDs(S) \\
         o' & \text{ if } o_0 = o \\
-        g(o) &\text{ if } g(o_0) = o'
+        g(o) &\text{ if } g(o_0) = o' \\
+        g(o_{0}) & \text{ otherwise.} 
       \end{cases} \\
       h'(\alpha_0) =
       \begin{cases}
-        h(\alpha_0) & \text{ if } \alpha_0 \in \TIDs(S) \\
         \alpha' & \text{ if } \alpha_0 = \alpha \\
-        g(\alpha) & \text{ if } g(\alpha_0) = \alpha'
+        h(\alpha) & \text{ if } h(\alpha_0) = \alpha' \\
+        h(\alpha_0) & \text{ otherwise.} 
       \end{cases}
     \end{gathered}
   \end{equation*}
@@ -881,8 +882,53 @@ Because of this proposition the following is well defined.
   \end{description}
 \end{proof}
 
+\begin{lemma} \label{lem:lemma4}
+  Let 
+  \begin{equation*}
+    \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_n^{\alpha_n, \beta_n}
+  \end{equation*}
+  be a transition sequence and $S, T$ be states such that.
+  \begin{equation*}
+    S \Rrightarrow^{\bar{R}} T.
+  \end{equation*}
+  Then there is a state $T'$ and a series of mutually compatible 
+  \begin{equation*}
+    \beta'_i, i = 1, \dots, n
+  \end{equation*}
+  such that
+  \begin{equation*}
+    \begin{gathered}
+      \beta'_i \not\in \OIDs(S), \beta'_i \not\in \TIDs(S) \andalso i =
+      1, \dots, n, \\
+      \bar{R'} = R_1^{\alpha_1, \beta'_1}, \dots, R_n^{\alpha_1, \beta'_n} \\
+      S \Rrightarrow^{\bar{R'}} T'.
+    \end{gathered}
+  \end{equation*}
+\end{lemma}
+
+\begin{proof}
+  This is obvious from these two facts:
+  \begin{itemize}
+    \item There are infinitely many elements in both $\OIDs$ and $\TIDs$ and
+      only finitely many in $\OIDs(S)$ and $\TIDs(S)$. This follows from
+      definition of these sets.
+    \item All choices of fresh identifiers results in equivalent states. I.e.
+      for any state $S$, and transition identifiers $R^{\alpha, \beta},
+      R^{\alpha, \beta'}$ such that 
+      \begin{equation*}
+        S \Rrightarrow^{R^{\alpha, \beta}} S_1 \andalso S
+        \Rrightarrow^{R^{\alpha, \beta'}} S'_1,
+      \end{equation*}
+      we have
+      \begin{equation*}
+        S_1 \simeq S'_1.
+      \end{equation*}
+      This is not hard to prove.
+  \end{itemize}
+\end{proof}
+
 Finally we prove quasi determinism.
-\begin{proof}{Theorem~\ref{thm:qd}}
+\begin{proof}{(Theorem~\ref{thm:qd})}
   If $S \neq S'$ by lemma~\ref{lem:lemma3} there is a state $T''$ and a
   transition sequence $\bar{R''}$ such that
   \begin{equation}
@@ -894,9 +940,9 @@ Finally we prove quasi determinism.
   We proceed by induction on $n$ and $n'$, the lengths of $\bar{R}$ and
   $\bar{R'}$ respectively.
   \begin{description}
-    \item[Case $n \leq 1, n' \leq 1$:] Clearly $n = n'$ since otherwise we would
-      have a contradiction with the assumption that neither $T$ or $T'$ can take
-      another step when considering lemma~\ref{lem:lemma3}.
+    \item[Case $n, n' \leq 1$:] Clearly $n = n'$. Otherwise, when considering
+      lemma~\ref{lem:lemma3} we would have a contradiction with the assumption
+      that neither $T$ or $T'$ can take another step .
       If $n = n' = 0$ we are done since $T = S \simeq S' = T'$. Thus we assume
       that $n = n' = 1$. We let
       \begin{equation*}
@@ -954,31 +1000,38 @@ Finally we prove quasi determinism.
           {R'_{n'}}^{\alpha'_{n'}, \beta'_{n'}}.
         \end{gathered}
       \end{equation*}
-      By lemma~\ref{lem:lemma3} we can (using similar reasoning as before) WLOG
-      assume that $\beta'_k$ is compatible with $\beta'_i$ for all $i = 1,
-      \dots, k-1$.
 
-      Now either $\beta'_k = \beta_1 = \smiley$, $\beta'_k, \beta_1 \in \OIDs$
-      or $\beta'_k, \beta_1 \in \TIDs$. In the first case it is immediately
-      clear that ${R'_k}^{\alpha'_k, \beta'_k}$ is applicable at $S$. In the
-      other two cases WLOG we can assume that $\beta'_k$ is fresh at $S$ due to
-      lemma~\ref{lem:lemma3}. This makes $R^{\alpha, \beta'_k}$
-      applicable at $S$.
-
-      By lemma~\ref{lem:lemma2} we have
+      WLOG we can assume that
       \begin{equation*}
-        S \Rrightarrow^{{R'_k}^{\alpha'_k, \beta'_k}} S'_1 \Rrightarrow^{\bar{R'}_{<k}}
-        S'_2 \Rrightarrow^{\bar{R'}_{>k}} T'
+        \beta_1 = \beta'_k = \beta
+      \end{equation*}
+      since otherwise we could just reassign $\beta_1, \dots, \beta_n, \beta'_1, \dots,
+      \beta'_n$, in accordance with lemma~\ref{lem:lemma4}.
+
+%      By lemma~\ref{lem:lemma3} we can (using similar reasoning as before) WLOG
+%      assume that $\beta'_k$ is compatible with $\beta'_i$ for all $i = 1,
+%      \dots, k-1$.
+%
+%      Now either $\beta'_k = \beta_1 = \smiley$, $\beta'_k, \beta_1 \in \OIDs$
+%      or $\beta'_k, \beta_1 \in \TIDs$. In the first case it is immediately
+%      clear that ${R'_k}^{\alpha'_k, \beta'_k}$ is applicable at $S$. In the
+%      other two cases WLOG we can assume that $\beta'_k$ is fresh at $S$ due to
+%      lemma~\ref{lem:lemma3}. This makes $R^{\alpha, \beta'_k}$
+%      applicable at $S$.
+
+      Then by lemma~\ref{lem:lemma2} we have
+      \begin{equation*}
+        S \Rrightarrow^{{R}^{\alpha, \beta}} S_1 \Rrightarrow^{\bar{R'}_{<k}}
+        S_2 \Rrightarrow^{\bar{R'}_{>k}} T'
       \end{equation*}
       Furthermore, by $\bar{R}$ being applicable at $S$ we have
       \begin{equation*}
-        S \Rrightarrow^{R_1^{\alpha_1, \beta_2}} S_1 \Rrightarrow^{\bar{R}_{>1}}
+        S \Rrightarrow^{R^{\alpha, \beta}} S_1 \Rrightarrow^{\bar{R}_{>1}}
         T.
       \end{equation*}
-      Since the only possible difference between $R_1^{\alpha_1, \beta_1}$ and
-      ${R'_k}^{\alpha'_k, \beta'_k}$ is the value of $\beta_1$ and $\beta'_k$ it
-      should be obvious that $S_1 \simeq S'_1$. But then by the induction hypothesis 
-      $T \simeq T'$.
+      Both transition sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and
+      $\bar{R}_{>1}$ are of length less than or equal to $i$.  Thus by the
+      induction hypothesis $T \simeq T'$.
   \end{description}
 \end{proof}
 
