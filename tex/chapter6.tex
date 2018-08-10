@@ -83,15 +83,16 @@ We make the following observation
       example, using $\ECall$ to step one thread implies use of $\EFSProp$ to
       advance the state, and using $\ENew$ to advance one thread frame implies
       use of $\EFProp$ and $\EFSProp$ in order to advance the state.
-    \item Thread identifier $\alpha$. In the cases where we advance or terminate
-      one thread, e.g., $\ENull$ or $\ECall$ this is the thread identifier of that
-      thread. In the case where we spawn a new thread this is the callback
-      identifier.
+    \item Thread identifier $\iota \in \TIDs$. In the cases where we advance or terminate
+      one thread, e.g., $\ENull$ or $\ECall$ this is the thread identifier of
+      that thread, as in definition~\ref{def:thread_sets}. In the case where we
+      spawn a new thread this is the unique thread identifier as in
+      definition~\ref{def:heap_obj}.
     \item A fresh object or thread identifier $\beta$ which could be of value
       \begin{itemize}
         \item Object identifier $o' \in \OIDs$ in the cases where the rule
           references a fresh object identifier, i.e. $\ENew$ and $\ENewCell$.
-        \item Thread id $\alpha' \in \TIDs$ for the case where a fresh thread id is
+        \item Thread id $\iota' \in \TIDs$ for the case where a fresh thread id is
           referenced, i.e. $\EWhen$.
         \item $\smiley$ for all other cases.
       \end{itemize}
@@ -101,36 +102,36 @@ We make the following observation
 Because of this claim we can make the following definition
 
 \begin{definition} \label{def:trans_id}
-  We write a \emph{transition identifier} as $R^{\alpha, \beta}$. The
-  \emph{application} of $R^{\alpha, \beta}$ to state $S$ (if possible) is the
-  use of a rule as specified by $R$, $\alpha$ and $\beta$ to step from $S$ to
-  some state $S'$. We write this as
+  We write a \emph{transition identifier} as $R^{\iota, \beta}$. The
+  \emph{application} of $R^{\iota, \beta}$ to state $S$ (if possible) is the
+  use of a rule specified by $R$, $\iota$ and $\beta$ as described above, to
+  step from $S$ to some state $S'$. We write this as
   \begin{equation*}
-    S \Rrightarrow^{R^{\alpha, \beta}} S'
+    S \Rrightarrow^{R^{\iota, \beta}} S'
   \end{equation*}
 \end{definition}
 
 \begin{remark}
   Actually the rule name $R$ in the above definition is redundant since this is
-  completely decided by the state $S$ and thread identifier $\alpha$.
+  completely decided by the state $S$ and thread identifier $\iota$.
 \end{remark}
 
 \begin{definition}
   A \emph{transition sequence} $\bar{R}$ is a finite length sequence of
   transition identifiers
   \begin{equation*}
-    R_1^{\alpha_1, \beta_1}, R_2^{\alpha_2, \beta_2}, \dots, R_n^{\alpha_n,
+    R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n,
     \beta_n}.
   \end{equation*}
   The application of this sequence to a state $S$ is the consecutive application
   of
   \begin{equation*}
-    R_i^{\alpha_i, \beta_i} \andalso i = 1, \dots, n
+    R_i^{\iota_i, \beta_i} \andalso i = 1, \dots, n
   \end{equation*}
   beginning with state $S$. I.e.
   \begin{equation*} 
-    S \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_1 \Rrightarrow^{R^{\alpha_2,
-    \beta_2}} S_2  \: \dots \: S_{n-1} \Rrightarrow^{R_n^{\alpha_n, \beta_n}} S_n
+    S \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_1 \Rrightarrow^{R^{\iota_2,
+    \beta_2}} S_2  \: \dots \: S_{n-1} \Rrightarrow^{R_n^{\iota_n, \beta_n}} S_n
   \end{equation*}
   We shorten this to
   \begin{equation*}

@@ -121,7 +121,7 @@ the following definitions we describe the execution rules in more detail.
   \end{equation*}
 \end{definition}
 
-\begin{definition}{(Heap Objects)}
+\begin{definition}{(Heap Objects)}\label{def:heap_obj}
   We let $\Objects$ be the set of all \emph{heap objects}, i.e. objects of the
   form
   \begin{equation*}
@@ -134,11 +134,11 @@ the following definitions we describe the execution rules in more detail.
   In $\Cell{DEP, l}$, $l \in \LatVals$ and $DEP$ is a set of elements of the
   form
   \begin{equation*}
-    (l' , (L_{\text{env}}, z \Rightarrow t))^d
+    (l' , (L_{\text{env}}, z \Rightarrow t))^\iota
   \end{equation*}
   where $l' \in \LatVals$, $L_{\text{env}}$ is a local environment, $z \in
-  \VarNames$, $t$ is a term and $d \in \TIDs$ is a unique thread identifier. The
-  uniqueness of $d$ is global to the state of a program.
+  \VarNames$, $t$ is a term and $\iota \in \TIDs$ is a unique thread identifier. The
+  uniqueness of $\iota$ is global to the state of a program.
 \end{definition}
 
 \begin{definition}{(Heap)}
@@ -148,7 +148,7 @@ the following definitions we describe the execution rules in more detail.
   \end{equation*}
 \end{definition}
 
-\begin{definition}{(Thread Sets)}
+\begin{definition}{(Thread Sets)}\label{def:thread_sets}
   A \emph{frame} $F$ is an object of the form
   \begin{equation*}
     \sframe{L, t}
@@ -162,9 +162,9 @@ the following definitions we describe the execution rules in more detail.
 
   A \emph{thread set} $P$ is a finite set 
   \begin{equation*}
-    P = \left\{ FS_i|_{a_i}^{d_i} \right\}_{i = 1}^{n}
+    P = \left\{ FS_i|_{a_i}^{\iota_i} \right\}_{i = 1}^{n}
   \end{equation*}
-  of frame stacks $FS_i$ tagged with a unique thread id $d_i \in \TIDs$ and an
+  of frame stacks $FS_i$ tagged with a unique thread id $\iota_i \in \TIDs$ and an
   OCAP status $a_i \in \ocapstats$. Note that $P$ can be the empty set.
 \end{definition}
 
@@ -258,7 +258,7 @@ the following definitions we describe the execution rules in more detail.
   {L(y) = o \andalso H(o) = \Cell{DEP, l} \andalso L(z) = l' \\
   L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
   \andalso cb = (L_{\text{env}}, w \Rightarrow t') \\
-  d\text{ fresh thread id } \andalso DEP' = DEP \cup (l', cb)^d \\
+  d\text{ fresh thread id } \andalso DEP' = DEP \cup (l', cb)^\iota \\
   H' = H[o \mapsto \Cell{DEP', l}] }
   { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, w \Rightarrow t') }}{t} } \\ \FRedTo \;
   H', \sFrame{L[x \mapsto L(y)]}{t} }
@@ -314,26 +314,26 @@ rules for single frames are defined.
     \end{cases} \\
     L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)] 
   }
-  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^d\; \FSRedTo \\
-  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^d}
+  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^\iota \; \FSRedTo \\
+  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^\iota}
 
   \RuleSpace{}
 
   \scax{E-Ret}
-  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ FS |_a^d \; \FSRedTo \\
-  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^d }
+  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ FS |_a^\iota \; \FSRedTo \\
+  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^\iota }
 
   \RuleSpace{}
 
   \scrule{E-FProp}
   {H, F \; \FRedTo \; H', F'}
-  {H, F \circ FS |_a^d \; \FSRedTo \; H', F' \circ FS |_a^d }
+  {H, F \circ FS |_a^\iota \; \FSRedTo \; H', F' \circ FS |_a^\iota }
 
   \RuleSpace{}
   
   \scrule{E-ErrorFS}
   {H, F \; \FRedTo \; \Error }
-  {H, F \circ FS |_a^d \; \FSRedTo \; \Error}
+  {H, F \circ FS |_a^\iota \; \FSRedTo \; \Error}
 
   \caption{\RACL{} frame stack reduction rules.}
   \label{fig:fs_red_rules}
@@ -343,10 +343,10 @@ rules for single frames are defined.
   \scrule{E-Spawn}
   {
     o \in \dom(H) \andalso H(o) = \Cell{DEP, l} \\ 
-    l' \sqsubseteq l \andalso (l', cb)^d \in DEP \andalso cb = (L_{\text{env}}, z
+    l' \sqsubseteq l \andalso (l', cb)^\iota \in DEP \andalso cb = (L_{\text{env}}, z
     \Rightarrow t) \\
     L = L_{\text{env}}[z \mapsto l'] \\
-    H' = H[o \mapsto \Cell{DEP - (l', cb)^d, l}]
+    H' = H[o \mapsto \Cell{DEP - (l', cb)^\iota, l}]
   }
   {
     H,P \Rrightarrow H', P \cup \left\{ \Frame{L}{t}{-} \circ \varepsilon
@@ -356,7 +356,7 @@ rules for single frames are defined.
   \RuleSpace{}
 
   \scrule{E-Term}
-  {P = P' \cup_D \left\{ \sFrame{L}{x} \circ \varepsilon |_a^d \right\} }
+  {P = P' \cup_D \left\{ \sFrame{L}{x} \circ \varepsilon |_a^\iota \right\} }
   {H,P \Rrightarrow H, P'}
 
   \RuleSpace{}
@@ -378,22 +378,65 @@ rules for single frames are defined.
 \section{Type System}
 \label{sec:type_system}
 
-The types and type lattice of RACL is summarized in
-Figure~\ref{fig:racl_typelat}. Except for the standard types we see that the
-\CellType{} type is grouped under \AnyRefType{} like the class types. This
-signifies that cell values are stored on the heap. We also have a separate
-lattice value type \LatType{}.
+\begin{figure}
+  \begin{multicols}{2}
+
+    \scax{ST-Top}
+    {\tau \stof \RaclTop}
+
+    \RuleSpace
+
+    \scax{ST-Bot}
+    {\RaclBot \stof \tau}
+
+    \RuleSpace
+
+    \scax{ST-Cell-AnyRef}
+    {\CellType \stof \AnyRefType}
+
+    \RuleSpace
+
+    \scax{ST-C-AnyRef}
+    {C \stof \AnyRefType}
+
+    \RuleSpace
+
+    \scax{ST-Null-Cell}
+    {\NullType \stof \CellType}
+    
+    \RuleSpace
+
+    \scax{ST-Null-C}
+    {\NullType \stof C}
+  \end{multicols}
+
+  \RuleSpace
+
+  \scrule{ST-C-D}
+  {p \vdash \ClassDef{C}{D}{...}{...}}
+  {C \stof D}
+
+  \caption{Subtyping relation of RACL}
+  \label{fig:def_stof}
+\end{figure}
+
+The subtyping relation of RACL is defined in Figure~\ref{fig:def_stof}.  The
+types and type lattice of RACL is summarized in Figure~\ref{fig:racl_typelat}.
+Except for the standard types we see that the \CellType{} type is a subtype of
+\AnyRefType{} like the class types. Intuitively this originates from that cell
+values are stored on the heap. We also have a separate lattice value type
+\LatType{}.
 
 \begin{figure}[]
   \centering
   \begin{tikzpicture} 
-    \node (top) at (1,3) {$\top$};
+    \node (top) at (1,3) {$\RaclTop$};
     \node (anyref) at (2,2) {\AnyRefType};
     \node (cell) at (1,1) {\CellType};
     \node (classes) at (3,1) {$C,D$};
     \node (null) at (2,0) {\NullType};
     \node (lat) at (-1, 1) {\LatType};
-    \node (bot) at (1, -1) {$\bot$};
+    \node (bot) at (1, -1) {$\RaclBot$};
     \draw (top) -- (lat) -- (bot) -- (null) -- (classes) -- (anyref) -- (top);
     \draw (anyref) -- (cell) -- (null);
   \end{tikzpicture}
@@ -565,7 +608,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 \label{sec:properties}
 
 \begin{definition}
-  The function $\typeOf$ is defined as follows:
+  The partial function $\typeOf$ is defined as follows:
   \begin{equation}
     \typeOf{(k, H)} =
     \begin{cases}
@@ -573,7 +616,6 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
       \NullType, &\text{ if }k = \NullVal \\
       \CellType, &\text{ if }k \in \dom{(H)}\text{ and } H(k) = \Cell{...} \\
       C, &\text{ if }k \in \dom{(H)}\text{ and } H(k) = \Obj{C, ...} \\
-      \ErrType, &\text{ otherwise.}
     \end{cases}
   \end{equation}
   The typing environment $\Gamma_{\CellType}(L)$ is defined as follows:
@@ -598,7 +640,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   and if $H(o) = \Cell{DEP, l}$ then
   \begin{equation} \label{eq:defwth2}
     \begin{aligned}
-      \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^d \in DEP. \\
+      \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^\iota \in DEP. \\
       &\forall (x \mapsto k) \in L_{\text{env}}.\: \typeOf{(k, H)} \stof
       \CellType \: \land \\
       &\TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), z:
@@ -642,13 +684,13 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
     \begin{aligned}
       \forall o &\in \dom(H). \\
         & H(o) = \Cell{DEP, l} \implies 
-        \forall (l', cb)^d \in DEP. \: \lnot (l' \sqsubseteq l).
+        \forall (l', cb)^\iota \in DEP. \: \lnot (l' \sqsubseteq l).
     \end{aligned}
   \end{equation}
 \end{definition}
 
 \begin{definition}{(Unique main thread)}
-  For a thread $FS|_a^d$ let
+  For a thread $FS|_a^\iota$ let
   \begin{equation*}
     \chi_{\nocap}(a) =
     \begin{cases}
@@ -658,7 +700,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{equation*}
   For a thread set $P$ let
   \begin{equation*}
-    \chi(P) = \sum_{FS|_a^d \in P} \chi_{\nocap}(a).
+    \chi(P) = \sum_{FS|_a^\iota \in P} \chi_{\nocap}(a).
   \end{equation*}
   This is the number of non OCAP protected threads in $P$. Finally we define
   \begin{equation*}
@@ -736,7 +778,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 
   \scrule{T-Procs}
   { H; a \vdash FS \andalso H \vdash P }
-  { H \vdash P \cup \left\{FS |_a^d \right\} }
+  { H \vdash P \cup \left\{FS |_a^\iota \right\} }
 
   \caption{Rules for typing thread sets and the special value \Error{} under some heap $H$.}
   \label{fig:ts_typing}
@@ -755,7 +797,8 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 
   \scrule{ISO-Procs}
   {
-    \forall FS|_a^d, GS_b^e \in P \text{ where } FS|_a^d \neq GS|_b^e . \\
+    \forall FS|_a^\iota, GS_b^{\iota'} \in P \text{ where } FS|_a^\iota \neq
+    GS|_b^{\iota'} . \\
     a = \ocap \: \lor \: b = \ocap \implies \isolated{(H, FS, GS)}
   }
   {
@@ -810,7 +853,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 
   \scrule{OCR-P}
   {H \vdash P \tsep \ocr \andalso H; a \vdash FS \tsep \ocr}
-  {H \vdash P \cup \left\{ FS|_a^d \right\} \tsep \ocr}
+  {H \vdash P \cup \left\{ FS|_a^\iota \right\} \tsep \ocr}
 
   \caption{Definition of OCAP reachability}
   \label{fig:def_ocapreach}
@@ -818,7 +861,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 
 \begin{figure}
   \scrule{GSep-Threads}
-  {\forall FS|_a^d \in P. \: a = \ocap \implies \forall o \in \accRoots{(FS, H)}. \: \csep{(H, o, o_g)} }
+  {\forall FS|_a^\iota \in P. \: a = \ocap \implies \forall o \in \accRoots{(FS, H)}. \: \csep{(H, o, o_g)} }
   {H \vdash P \tsep \gsep}
 
   \caption{Definition of global separation}

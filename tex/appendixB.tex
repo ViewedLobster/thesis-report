@@ -166,74 +166,6 @@
   $\isolation(H', P')$ and $H' \vdash P' \tsep \gsep$.
 \end{proof}
 
-We make the following observation
-\begin{claim}
-  A transition between two states can be uniquely identified by
-  \begin{itemize}
-    \item Start state $S$
-    \item Base rule name $R$, e.g., $R = \ENew$ or $R = \ESpawn$. We say base rule
-      because in many cases the step involves more than one rule in its
-      derivation tree of a complete state step. However the use of these extra
-      rules are implied by which rule is used as the "base" of the tree. For
-      example, using $\ECall$ to step one thread implies use of $\EFSProp$ to
-      advance the state, and using $\ENew$ to advance one thread frame implies
-      use of $\EFProp$ and $\EFSProp$ in order to advance the state.
-    \item Thread identifier $\alpha$. In the cases where we advance or terminate
-      one thread, e.g., $\ENull$ or $\ECall$ this is the thread identifier of that
-      thread. In the case where we spawn a new thread this is the callback
-      identifier.
-    \item A fresh object or thread identifier $\beta$ which could be of value
-      \begin{itemize}
-        \item Object identifier $o' \in \OIDs$ in the cases where the rule
-          references a fresh object identifier, i.e. $\ENew$ and $\ENewCell$.
-        \item Thread id $\alpha' \in \TIDs$ for the case where a fresh thread id is
-          referenced, i.e. $\EWhen$.
-        \item $\smiley$ for all other cases.
-      \end{itemize}
-  \end{itemize}
-\end{claim}
-
-Because of this claim we can make the following definition
-
-\begin{definition} \label{def:trans_id}
-  We write a \emph{transition identifier} as $R^{\alpha, \beta}$. The
-  \emph{application} of $R^{\alpha, \beta}$ to state $S$ (if possible) is the
-  use of a rule as specified by $R$, $\alpha$ and $\beta$ to step from $S$ to
-  some state $S'$. We write this as
-  \begin{equation*}
-    S \Rrightarrow^{R^{\alpha, \beta}} S'
-  \end{equation*}
-\end{definition}
-
-\begin{remark}
-  Actually the rule name $R$ in the above definition is redundant since this is
-  completely decided by the state $S$ and thread identifier $\alpha$.
-\end{remark}
-
-\begin{definition}
-  A \emph{transition sequence} $\bar{R}$ is a finite length sequence of
-  transition identifiers
-  \begin{equation*}
-    R_1^{\alpha_1, \beta_1}, R_2^{\alpha_2, \beta_2}, \dots, R_n^{\alpha_n,
-    \beta_n}.
-  \end{equation*}
-  The application of this sequence to a state $S$ is the consecutive application
-  of
-  \begin{equation*}
-    R_i^{\alpha_i, \beta_i} \andalso i = 1, \dots, n
-  \end{equation*}
-  beginning with state $S$. I.e.
-  \begin{equation*} 
-    S \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_1 \Rrightarrow^{R^{\alpha_2,
-    \beta_2}} S_2  \: \dots \: S_{n-1} \Rrightarrow^{R_n^{\alpha_n, \beta_n}} S_n
-  \end{equation*}
-  We shorten this to
-  \begin{equation*}
-    S \Rrightarrow^{\bar{R}} S_n.
-  \end{equation*}
-\end{definition}
-
-
 \section{Proof of Quasi Determinism}
 \label{sec:proof_of_quasi_determinism}
 
@@ -241,16 +173,16 @@ Because of this claim we can make the following definition
   Let $S$ be a state s.t. $\vdash S \tsep \stateok$ where the two transitions
   \begin{equation*}
     \begin{gathered}
-      R_1^{\alpha_1, \beta_1} \neq R_2^{\alpha_2, \beta_2} \\
-      \alpha_1 \neq \alpha_2 \andalso \beta_1 \neq \beta_2 \text{ or } \beta_1 =
+      R_1^{\iota_1, \beta_1} \neq R_2^{\iota_2, \beta_2} \\
+      \iota_1 \neq \iota_2 \andalso \beta_1 \neq \beta_2 \text{ or } \beta_1 =
       \beta_2 = - 
     \end{gathered}
   \end{equation*}
   are applicable.
   Let
   \begin{equation*}
-    \bar{R}_1  = R_1^{\alpha_1, \beta_1}, R_2^{\alpha_2, \beta_2} \andalso
-    \bar{R}_2 = R_2^{\alpha_2, \beta_2}, R_1^{\alpha_1, \beta_1}
+    \bar{R}_1  = R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2} \andalso
+    \bar{R}_2 = R_2^{\iota_2, \beta_2}, R_1^{\iota_1, \beta_1}
   \end{equation*}
   Then both $\bar{R}_1, \bar{R}_2$ applicable to $S$ and
   \begin{equation*}
@@ -270,20 +202,21 @@ Because of this claim we can make the following definition
   where $P_1$ and $P'_1$ are sets of 0 or 1 threads. Moreover, by rule
   inspection, if $|P_1| = 1$ and $P'_1 = 1$ then
   \begin{equation*}
-    P_1 =  \left\{ FS|_a^\alpha \right\} \andalso P'_1 = \left\{ FS'|_a^\alpha
+    P_1 =  \left\{ FS|_a^\iota \right\} \andalso P'_1 = \left\{ FS'|_a^\iota
     \right\}.
   \end{equation*}
   Also there is no rule such that $|P_1| = |P'_1| = 0$.
-  Therefore since $\alpha_1 \neq \alpha_2$ and the fact that all threads or
+  Therefore since $\iota_1 \neq \iota_2$ and the fact that all threads or
   callbacks have unique IDs it is simple to verify that both $\bar{R_1}$ and
-  $\bar{R_2}$ are applicable to $S$. Since there are very many cases this is not
-  done here.
+  $\bar{R_2}$ are applicable to $S$. Since there are a large abundance of cases
+  this is not done here.
 
   The only thing remaining is to verify that $S'_1 = S'_2$. There are very many
-  cases, most of which are very trivial to verify. Thus we are only going to do
-  a few here, the others can be done similarly. One thing to note is that the
-  cases are symmetric in $R_1^{\alpha_1, \beta_1}$ and $R_2^{\alpha_2,
-  \beta_2}$. We proceed by cases on the value of $R_1$ and $R_2$.
+  cases, most of which are very to verify. Thus we are only going to do
+  a few here to convince the reader. The others can be done similarly.  We
+  proceed by cases on the value of $R_1$ and $R_2$. One thing to note is that
+  the proofs are symmetric in $R_1$ and $R_2$, meaning that if we prove case
+  $R_1 = R, R_2 = R'$ we have also proven case $R_1 = R', R_2 = R$.
 
   \begin{description}
     \item[Case $R_1 = \EAssign, R_2 = \EAssign$:] We note that this means that
@@ -291,8 +224,8 @@ Because of this claim we can make the following definition
       to $S$ we have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
-          FS_2|_{a_2}^{\alpha_2} \right\} \\
+          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
+          FS_2|_{a_2}^{\iota_2} \right\} \\
           FS_1 = \xframe{L_1, \Let{w_1}{\FAss{x_1}{f_1}{y_1}}{t'_1}}^{s_1} \circ GS_1
           \\ 
           FS_1 = \xframe{L_2, \Let{w_2}{\FAss{x_2}{f_2}{y_2}}{t'_2}}^{s_2}
@@ -300,19 +233,19 @@ Because of this claim we can make the following definition
           L_1(x_1) = o_1 \andalso L_2(x_2) = o_2 \\
           H(o_1) = \Obj{C_1, FM_1} \andalso H(o_2) = \Obj{C_2, FM_2} \\
           f_1 \in \dom(FM_1) \andalso f_2 \in \dom(FM_2) \\
-          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\alpha_1, \smiley}} S_1
+          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\iota_1, \smiley}} S_1
           \\
-          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS_2|_{a_2}^{\alpha_2} \right\} \\
+          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS_2|_{a_2}^{\iota_2} \right\} \\
           FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[w_1 \mapsto
           L_1(y_1)] \\
           FM'_1 = FM_1[f_1 \mapsto L_1(y_1)] \andalso H_1 = H[o_1 \mapsto
           \Obj{C_1, FM'_1}]
           \\
-          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\alpha_2, \smiley}} S_2
+          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
           \\
-          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ GS_2  \andalso L'_2 = L_2[w_2 \mapsto
           L_2(y_2)] \\
           FM'_2 = FM_2[f_2 \mapsto L_2(y_2)] \andalso H_2 = H[o_2 \mapsto
@@ -328,26 +261,26 @@ Because of this claim we can make the following definition
       \begin{equation}
         o_1 \neq o_2.
       \end{equation}
-      Using this and inspecting $R_2^{\alpha_2, \smiley}$ it is not hard to see
+      Using this and inspecting $R_2^{\iota_2, \smiley}$ it is not hard to see
       that 
       \begin{equation}
         \begin{gathered}
-          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\alpha_2,
+          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\iota_2,
           \smiley}} S_{12}
           \\
-          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           H_{12} = H[o_1 \mapsto \Obj{C_1, FM'_1}, o_2 \mapsto \Obj{C_2, FM'_2}]
         \end{gathered}
       \end{equation}
       and similarly 
       \begin{equation}
         \begin{gathered}
-          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\alpha_1,
+          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\iota_1,
           \smiley}} S_{21}
           \\
-          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           H_{21} = H[o_1 \mapsto \Obj{C_1, FM'_1}, o_2 \mapsto \Obj{C_2, FM'_2}]
         \end{gathered}
       \end{equation}
@@ -364,26 +297,26 @@ Because of this claim we can make the following definition
       Since the transition identifiers are applicable to $S$ we have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
-          FS_2|_{a_2}^{\alpha_2} \right\} \\
+          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
+          FS_2|_{a_2}^{\iota_2} \right\} \\
           FS_1 = \xframe{L_1, \Let{x_1}{y_1}{t'_1}}^{s_1} \circ GS_1
           \\ 
           FS_1 = \xframe{L_2, \Let{x_2}{\FAss{y_2}{f_2}{z_2}}{t'_2}}^{s_2}
           \circ GS_2 \\
           L_2(y_2) = o_2 \andalso H(o_2) = \Obj{C_2, FM_2} \\
           f_2 \in \dom(FM_2) \\
-          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\alpha_1, \smiley}} S_1
+          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\iota_1, \smiley}} S_1
           \\
-          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS_2|_{a_2}^{\alpha_2} \right\} \\
+          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS_2|_{a_2}^{\iota_2} \right\} \\
           FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[x_1 \mapsto
           L_1(y_1)] \\
           H_1 = H
           \\
-          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\alpha_2, \smiley}} S_2
+          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
           \\
-          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ GS_2  \andalso L'_2 = L_2[x_2 \mapsto
           L_2(y_2)] \\
           FM'_2 = FM_2[f_2 \mapsto L_2(y_2)] \andalso H_2 = H[o_2 \mapsto
@@ -394,22 +327,22 @@ Because of this claim we can make the following definition
       Furthermore it is not hard to see that 
       \begin{equation}
         \begin{gathered}
-          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\alpha_2,
+          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\iota_2,
           \smiley}} S_{12}
           \\
-          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           H_{12} = H[o_2 \mapsto \Obj{C_2, FM'_2}]
         \end{gathered}
       \end{equation}
       and 
       \begin{equation}
         \begin{gathered}
-          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\alpha_1,
+          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\iota_1,
           \smiley}} S_{21}
           \\
-          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           H_{21} = H[o_2 \mapsto \Obj{C_2, FM'_2}]
         \end{gathered}
       \end{equation}
@@ -426,8 +359,8 @@ Because of this claim we can make the following definition
       Similarly to previous cases we have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
-          FS_2|_{a_2}^{\alpha_2} \right\} \\
+          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
+          FS_2|_{a_2}^{\iota_2} \right\} \\
           FS_1 = \xframe{L_1, \Let{x_1}{\Put{y_1}{z_1}}{t'_1}}^{s_1} \circ GS_1
           \\ 
           FS_1 = \xframe{L_2, \Let{x_2}{\Put{y_2}{z_2}}{t'_2}}^{s_2}
@@ -448,10 +381,10 @@ Because of this claim we can make the following definition
       Then
       \begin{equation}
         \begin{gathered}
-          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\alpha_1, \smiley}} S_1
+          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\iota_1, \smiley}} S_1
           \\
-          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS_2|_{a_2}^{\alpha_2} \right\} \\
+          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS_2|_{a_2}^{\iota_2} \right\} \\
           FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[x_1 \mapsto
           L_1(y_1)] \\
           H_1 = H[o \mapsto \Cell{DEP, l \sqcup l_1}]
@@ -460,10 +393,10 @@ Because of this claim we can make the following definition
       and similarly
       \begin{equation}
         \begin{gathered}
-          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\alpha_2, \smiley}} S_2
+          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
           \\
-          P_1 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_1 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ GS_2  \andalso L'_2 = L_2[x_2 \mapsto
           L_2(y_2)] \\
           H_2 = H[o \mapsto \Cell{DEP, l \sqcup l_2}]
@@ -472,22 +405,22 @@ Because of this claim we can make the following definition
       We also have
       \begin{equation}
         \begin{gathered}
-          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\alpha_2,
+          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\iota_2,
           \smiley}} S_{12}
           \\
-          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           H_{12} = H[o_2 \mapsto \Cell{DEP, (l \sqcup l_1) \sqcup l_2}]
         \end{gathered}
       \end{equation}
       and
       \begin{equation}
         \begin{gathered}
-          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\alpha_1,
+          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\iota_1,
           \smiley}} S_{21}
           \\
-          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS'_2|_{a_2}^{\alpha_2} \right\} \\
+          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS'_2|_{a_2}^{\iota_2} \right\} \\
           H_{21} = H[o_2 \mapsto \Cell{DEP, (l \sqcup l_2) \sqcup l_1}]
         \end{gathered}
       \end{equation}
@@ -498,14 +431,14 @@ Because of this claim we can make the following definition
       and thus we have $S_{12} = S_{21}$.
     \item[Case $R_1 = \EWhen, R_2 = \EWhen$:] We have that
       \begin{equation}
-        \beta_1 = \alpha'_1 \andalso \beta_2 = \alpha'_2 \andalso \alpha'_1 \neq
-        \alpha'_2.
+        \beta_1 = \iota'_1 \andalso \beta_2 = \iota'_2 \andalso \iota'_1 \neq
+        \iota'_2.
       \end{equation}
       Similarly to previous cases we have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
-          FS_2|_{a_2}^{\alpha_2} \right\} \\
+          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
+          FS_2|_{a_2}^{\iota_2} \right\} \\
           FS_1 = \xframe{L_1, \Let{x_1}{\When{y_1}{z_1}{\dots}}{t'_1}}^{s_1} \circ GS_1
           \\ 
           FS_1 = \xframe{L_2, \Let{x_2}{\When{y_2}{z_2}{\dots}}{t'_2}}^{s_2}
@@ -522,31 +455,31 @@ Because of this claim we can make the following definition
       \begin{equation}
         \begin{gathered}
           H_1 = H[o \mapsto \Cell{DEP_1, l}] \andalso DEP_1 = DEP \cup \{ (l_1,
-          \dots)^{\alpha'_1} \} \\
+          \dots)^{\iota'_1} \} \\
           H_2 = H[o \mapsto \Cell{DEP_2, l}] \andalso DEP_2 = DEP \cup \{ (l_2,
-          \dots)^{\alpha'_2} \} \\
+          \dots)^{\iota'_2} \} \\
           H_{12} = H[o \mapsto \Cell{DEP_{12}, l}] \andalso DEP_{12} = DEP \cup \{ (l_1,
-          \dots)^{\alpha'_1}, (l_2, \dots)^{\alpha'_2} \} \\
+          \dots)^{\iota'_1}, (l_2, \dots)^{\iota'_2} \} \\
           H_{21} = H[o \mapsto \Cell{DEP_{21}, l}] \andalso DEP_{21} = DEP \cup \{ (l_1,
-          \dots)^{\alpha'_1}, (l_2, \dots)^{\alpha'_2} \} \\
+          \dots)^{\iota'_1}, (l_2, \dots)^{\iota'_2} \} \\
         \end{gathered}
       \end{equation}
       Thus $S_{12} = S_{21}$.
 
     \item[Case $R_1 = \EWhen, R_2 = \ESpawn$:] First 
       \begin{equation}
-        \beta_1 = \alpha'_1 \andalso \beta_2 = \smiley.
+        \beta_1 = \iota'_1 \andalso \beta_2 = \smiley.
       \end{equation}
       We have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1}
+          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1}
           \right\} \\
           FS_1 = \xframe{L_1, \Let{x_1}{\When{y_1}{z_1}{\dots}}{t'_1}}^{s_1} \circ GS_1
           \\ 
           L_1(y_1) = o_1 \andalso L_1(z_1) = l_1 \\
           o_2 \in \dom(H) \andalso H(o_2) = \Cell{DEP, l} \\
-          (l_2, (L_{\text{env}}, z_2 \Rightarrow t''))^{\alpha_2} \in DEP
+          (l_2, (L_{\text{env}}, z_2 \Rightarrow t''))^{\iota_2} \in DEP
         \end{gathered}
       \end{equation}
       Similarly to previous cases we have the case where $o_1 \neq o_2$ which
@@ -560,58 +493,58 @@ Because of this claim we can make the following definition
       We have that 
       \begin{equation} \label{eq:lem1_ewhen_espawn_1}
         \begin{gathered}    
-          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_1
+          S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_1
           \\
-          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1} \right\} \\
+          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1} \right\} \\
           FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[x_1 \mapsto
           L_1(y_1)] \\
           H_1 = H[o \mapsto \Cell{DEP_1, l}] \andalso DEP_1 = DEP \cup \{ (l_1,
-          \dots)^{\alpha'_1} \}
+          \dots)^{\iota'_1} \}
         \end{gathered}
       \end{equation}
-      Stepping accoriding to $R_2^{\alpha_2, \smiley}$ from $S$ gives
+      Stepping accoriding to $R_2^{\iota_2, \smiley}$ from $S$ gives
       \begin{equation} \label{eq:lem1_ewhen_espawn_2}
         \begin{gathered}
-          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\alpha_2, \smiley}} S_2
+          S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
           \\
-          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\alpha_1},
-          FS_2|_{\ocap}^{\alpha_2} \right\} \\
+          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
+          FS_2|_{\ocap}^{\iota_2} \right\} \\
           FS_2 = \xframe{L_{\text{env}}[z \mapsto l_2], t''}^{-} \circ
           \varepsilon \\
           H_2 = \Cell{DEP_2, l} \andalso DEP_2 = DEP \setminus \{ (l_2,
-          \dots)^{\alpha_2} \}
+          \dots)^{\iota_2} \}
         \end{gathered}
       \end{equation}
       Given \eqref{eq:lem1_ewhen_espawn_1} and \eqref{eq:lem1_ewhen_espawn_2} it
       is not hard to verify that
       \begin{equation} 
         \begin{gathered}
-          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\alpha_2,
+          S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\iota_2,
           \smiley}} S_{12}
           \\
-          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS_2|_{\ocap}^{\alpha_2} \right\} \\
+          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS_2|_{\ocap}^{\iota_2} \right\} \\
           H_{12} = H[o \mapsto \Cell{DEP_{12}, l}] \\ 
-          DEP_{12} = DEP \cup \{ (l_1, \dots)^{\alpha'_1} \} \setminus \{ (l_2,
-          \dots)^{\alpha_2} \}
+          DEP_{12} = DEP \cup \{ (l_1, \dots)^{\iota'_1} \} \setminus \{ (l_2,
+          \dots)^{\iota_2} \}
         \end{gathered}
       \end{equation}
       \begin{equation} 
         \begin{gathered}
-          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\alpha_1,
-          \alpha'_1}} S_{21}
+          S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\iota_1,
+          \iota'_1}} S_{21}
           \\
-          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\alpha_1},
-          FS_2|_{\ocap}^{\alpha_2} \right\} \\
+          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
+          FS_2|_{\ocap}^{\iota_2} \right\} \\
           H_{21} = H[o \mapsto \Cell{DEP_{12}, l}] \\ 
-          DEP_{21} = DEP \setminus \{ (l_2, \dots)^{\alpha_2} \} \cup \{ (l_1,
-          \dots)^{\alpha'_1} \} 
+          DEP_{21} = DEP \setminus \{ (l_2, \dots)^{\iota_2} \} \cup \{ (l_1,
+          \dots)^{\iota'_1} \} 
         \end{gathered}
       \end{equation}
-      Since $\alpha'_1$ is fresh it is clear that $DEP_{12} = DEP_{21}$ and
+      Since $\iota'_1$ is fresh it is clear that $DEP_{12} = DEP_{21}$ and
       therefore we have $S_{12} = S_{21}$.
       \begin{remark}
-        The main point here is that $\alpha'_1$ being a fresh thread identifier
+        The main point here is that $\iota'_1$ being a fresh thread identifier
         makes the removal and addition to the dependency set $DEP$ commute.
       \end{remark}
   \end{description}
@@ -620,7 +553,7 @@ Because of this claim we can make the following definition
 \end{proof}
 
 \begin{definition} \label{def:betacompat}
-  Let $R^{\alpha, \beta}$ be a transition
+  Let $R^{\iota, \beta}$ be a transition
   identifier. We call $\beta$ \emph{compatible} to a state $S$ if either
   \begin{equation*}
     \beta = \smiley \text{ or } \beta \text{ fresh at } S
@@ -628,13 +561,13 @@ Because of this claim we can make the following definition
 \end{definition}
 \begin{remark}
   Note that $\beta$ being compatible to $S$ is a necessary condition of
-  $R^{\alpha, \beta}$ being applicable at $S$. Furthermore if a $\beta$ is
+  $R^{\iota, \beta}$ being applicable at $S$. Furthermore if a $\beta$ is
   compatible to $S$ it will be compatible to all states preceeding $S$ in the
   computation.
 \end{remark}
 
 \begin{definition}
-  Let $R_1^{\alpha_1, \beta_1}, R_2^{\alpha_2, \beta_2}$ be two transition
+  Let $R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2}$ be two transition
   identifiers. We call $\beta_1$ and $\beta_2$ compatible if
   \begin{equation*}
     \beta_1 \neq \beta_2 \text{ of } \beta_1 = \beta_2 = \smiley.
@@ -645,23 +578,23 @@ Because of this claim we can make the following definition
 \begin{lemma} \label{lem:lemma2}
   Let $S$ be a state. Let
   \begin{equation*}
-    \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_n^{\alpha_n, \beta_n} \andalso
+    \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n} \andalso
     S \Rrightarrow^{\bar{R}} S_{\bar{R}}
   \end{equation*}
-  Let $R^{\alpha, \beta}$ be a transition such that
+  Let $R^{\iota, \beta}$ be a transition such that
   \begin{equation} \label{eq:lemma2_1}
-    \alpha \neq \alpha_i \andalso \forall i \in \left\{ 1, \dots, n \right\},
+    \iota \neq \iota_i \andalso \forall i \in \left\{ 1, \dots, n \right\},
   \end{equation}
   and
   \begin{equation*}
-    S \Rrightarrow^{R^{\alpha, \beta}} S_{R^{\alpha, \beta}} \andalso
-    S_{\bar{R}} \Rrightarrow^{R^{\alpha, \beta}} S'.
+    S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}} \andalso
+    S_{\bar{R}} \Rrightarrow^{R^{\iota, \beta}} S'.
   \end{equation*}
   Furthermore let $\beta$ be compatible with $\beta_i$ for all $i = 1, \dots,
   n$.
   Then
   \begin{equation*}
-    S_{R^{\alpha, \beta}} \Rrightarrow^{\bar{R}} S'.
+    S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
   \end{equation*}
 \end{lemma}
 
@@ -672,35 +605,35 @@ Because of this claim we can make the following definition
     \item[Case $n = 1$:] Follows immediately from lemma~\ref{lem:lemma1}.
     \item[Case $n = i+1, i \geq 1$:] Let
       \begin{equation*}
-        \bar{R_2} = R_2^{\alpha_2, \beta_2}, \dots, R_n^{\alpha_n, \beta_n}.
+        \bar{R_2} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n}.
       \end{equation*}
       Since $\bar{R}$ applicable to $S$ we have 
       \begin{equation}
-        S \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_1.
+        S \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_1.
       \end{equation}
       Then clearly
       \begin{equation}
         S_1 \Rrightarrow^{\bar{R_2}} S_{\bar{R}}.
       \end{equation}
       
-      Since $R^{\alpha, \beta}$ is applicable at $S$, \eqref{eq:lemma2_1} and
+      Since $R^{\iota, \beta}$ is applicable at $S$, \eqref{eq:lemma2_1} and
       the compatibility of $\beta$ it is not hard to see that
-      $R^{\alpha, \beta}$ is applicable at $S_1$, i.e.
+      $R^{\iota, \beta}$ is applicable at $S_1$, i.e.
       \begin{equation}
-        S_1 \Rrightarrow^{R^{\alpha, \beta}} S_{1,R^{\alpha, \beta}}.
+        S_1 \Rrightarrow^{R^{\iota, \beta}} S_{1,R^{\iota, \beta}}.
       \end{equation}
       Then, by induction hypothesis
       \begin{equation} \label{eq:lemma2_2}
-        S_{1,R^{\alpha, \beta}} \Rrightarrow^{\bar{R_2}} S'.
+        S_{1,R^{\iota, \beta}} \Rrightarrow^{\bar{R_2}} S'.
       \end{equation}
       By lemma~\ref{lem:lemma1} 
       \begin{equation} \label{eq:lemma2_3}
-        S \Rrightarrow^{R^{\alpha, \beta}} S_{R^{\alpha, \beta}}
-        \Rrightarrow^{R_1^{\alpha_1, \beta_1}} S_{1, R^{\alpha, \beta}}.
+        S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}}
+        \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_{1, R^{\iota, \beta}}.
       \end{equation}
       But then combining \eqref{eq:lemma2_2} and \eqref{eq:lemma2_3} we have
       \begin{equation}
-        S_{R^{\alpha, \beta}} \Rrightarrow^{\bar{R}} S'.
+        S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
       \end{equation}
   \end{description}
 \end{proof}
@@ -711,14 +644,14 @@ Because of this claim we can make the following definition
     H' = \pi(H, g, h) \andalso P' = \eta(P, g, h).
   \end{equation}
   Let $o, o' \in \OIDs$ be fresh at $S, S'$ respectively.
-  Let $\alpha, \alpha' \in \TIDs$ be fresh at $S, S'$ respectively.
+  Let $\iota, \iota' \in \TIDs$ be fresh at $S, S'$ respectively.
   Then there are bijections
   \begin{equation*}
     g': \OIDs \hookrightarrow \OIDs \andalso h': \TIDs \hookrightarrow \TIDs
   \end{equation*}
   such that 
   \begin{equation} \label{eq:propnewgh2}
-    g'(o) = o', h'(\alpha) = \alpha'
+    g'(o) = o', h'(\iota) = \iota'
   \end{equation} 
   and
   \begin{equation} \label{eq:propnewgh3}
@@ -729,7 +662,7 @@ Because of this claim we can make the following definition
 \begin{proof}
   By the definition of the identifiers being fresh
   \begin{equation*}
-    o, o' \not\in \OIDs \andalso \alpha, \alpha' \not\in \TIDs.
+    o, o' \not\in \OIDs \andalso \iota, \iota' \not\in \TIDs.
   \end{equation*}
   The role of $g$ and $h$ is merely to define a renaming of references in
   $\OIDs(S)$ and $\TIDs(S)$ respectively. Thus it should be clear that whether
@@ -746,11 +679,11 @@ Because of this claim we can make the following definition
         g(o) &\text{ if } g(o_0) = o' \\
         g(o_{0}) & \text{ otherwise.} 
       \end{cases} \\
-      h'(\alpha_0) =
+      h'(\iota_0) =
       \begin{cases}
-        \alpha' & \text{ if } \alpha_0 = \alpha \\
-        h(\alpha) & \text{ if } h(\alpha_0) = \alpha' \\
-        h(\alpha_0) & \text{ otherwise.} 
+        \iota' & \text{ if } \iota_0 = \iota \\
+        h(\iota) & \text{ if } h(\iota_0) = \iota' \\
+        h(\iota_0) & \text{ otherwise.} 
       \end{cases}
     \end{gathered}
   \end{equation*}
@@ -764,14 +697,14 @@ Because of this proposition the following is well defined.
     H' = \pi(H, g, h) \andalso P' = \eta(P, g, h).
   \end{equation}
   Let $o, o' \in \OIDs$ be fresh at $S, S'$ respectively.
-  Let $\alpha, \alpha' \in \TIDs$ be fresh at $S, S'$ respectively.
+  Let $\iota, \iota' \in \TIDs$ be fresh at $S, S'$ respectively.
   Then define
   \begin{equation}
     g[o \mapsto o']: \OIDs \hookrightarrow \OIDs 
-    \andalso h[\alpha \mapsto \alpha']: \TIDs \hookrightarrow \TIDs
+    \andalso h[\iota \mapsto \iota']: \TIDs \hookrightarrow \TIDs
   \end{equation}
   as any bijections satisfying \eqref{eq:propnewgh2} and \eqref{eq:propnewgh3}
-  with $g' = g[o \mapsto o'], h' = h[\alpha \mapsto \alpha']$.
+  with $g' = g[o \mapsto o'], h' = h[\iota \mapsto \iota']$.
 \end{definition}
 
 \begin{lemma} \label{lem:lemma3}
@@ -795,15 +728,15 @@ Because of this proposition the following is well defined.
     \item[Case $n = i + 1, i \geq 0$:] Let
       \begin{equation*}
         \begin{gathered}
-          \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_{i+1}^{\alpha_{i+1},
+          \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_{i+1}^{\iota_{i+1},
           \beta_{i+1}} \\
-          \bar{R_i} = R_1^{\alpha_1, \beta_1}, \dots, R_{i}^{\alpha_{i},
+          \bar{R_i} = R_1^{\iota_1, \beta_1}, \dots, R_{i}^{\iota_{i},
           \beta_{i}}
         \end{gathered}
       \end{equation*}
       By assumption
       \begin{equation*}
-        S \Rrightarrow^{\bar{R_i}} S_i \Rrightarrow^{R_{i+1}^{\alpha_{i+1},
+        S \Rrightarrow^{\bar{R_i}} S_i \Rrightarrow^{R_{i+1}^{\iota_{i+1},
         \beta_{i+1}}} T
       \end{equation*}
       for some state $S_i$. By induction hypothesis there is $\bar{R'_i}, S'_i$
@@ -816,7 +749,7 @@ Because of this proposition the following is well defined.
         S_i = H, P \andalso S'_i = H', P'.
       \end{equation*}
       
-      Now consider $R_{i+1}^{\alpha_{i+1}, \beta_{i+1}}$. Since $S_i \simeq
+      Now consider $R_{i+1}^{\iota_{i+1}, \beta_{i+1}}$. Since $S_i \simeq
       S'_i$ there are
       \begin{equation*}
         g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs \hookrightarrow \TIDs
@@ -828,7 +761,7 @@ Because of this proposition the following is well defined.
       Now let 
       \begin{equation*}
         \begin{gathered}
-          R = R_{i+1} \andalso \alpha = h(\alpha_{i+1}) \\
+          R = R_{i+1} \andalso \iota = h(\iota_{i+1}) \\
           \beta = 
           \begin{cases}
             \smiley         & \text{ if } \beta_{i+1} = \smiley \\
@@ -838,16 +771,16 @@ Because of this proposition the following is well defined.
               &o_{\text{new}} \text{ is fresh at } S_i \\
               &o'_{\text{new}} \text{ is fresh at } S'_i 
             \end{aligned} \\
-            \alpha'_{\text{new}} & \begin{aligned}[t]
-              \text{ if }&\beta_{i+1} = \alpha_{\text{new}} \in \TIDs \\
-              &\alpha_{\text{new}} \text{ is fresh at } S_i \\
-              &\alpha'_{\text{new}} \text{ is fresh at } S'_i
+            \iota'_{\text{new}} & \begin{aligned}[t]
+              \text{ if }&\beta_{i+1} = \iota_{\text{new}} \in \TIDs \\
+              &\iota_{\text{new}} \text{ is fresh at } S_i \\
+              &\iota'_{\text{new}} \text{ is fresh at } S'_i
             \end{aligned}
           \end{cases} \\
           g_{\text{new}} = 
           \begin{cases}
             g & \text{ if } \beta_{i+1} = \smiley \text{ or } \beta_{i+1} = 
-            \alpha_{\text{new}} \\
+            \iota_{\text{new}} \\
             g[o_{\text{new}} \mapsto o'_{\text{new}}] & \text{ if } \beta_{i+1}
             = o_{\text{new}}
           \end{cases} \\
@@ -855,19 +788,19 @@ Because of this proposition the following is well defined.
           \begin{cases}
             h & \text{ if } \beta_{i+1} = \smiley \text{ or } \beta_{i+1} = 
             o_{\text{new}} \\
-            h[\alpha_{\text{new}} \mapsto \alpha'_{\text{new}}] & \text{ if } \beta_{i+1}
-            = \alpha_{\text{new}}
+            h[\iota_{\text{new}} \mapsto \iota'_{\text{new}}] & \text{ if } \beta_{i+1}
+            = \iota_{\text{new}}
           \end{cases}
         \end{gathered}
       \end{equation*}
 
       Since
       \begin{equation}
-        S_i \Rrightarrow^{R_{i+1}^{\alpha_{i+1}, \beta_{i+1}}} T,
+        S_i \Rrightarrow^{R_{i+1}^{\iota_{i+1}, \beta_{i+1}}} T,
       \end{equation}
       by rule inspection it is easy to verify that
       \begin{equation}
-        S'_i \Rrightarrow^{R^{\alpha, \beta}} T'
+        S'_i \Rrightarrow^{R^{\iota, \beta}} T'
       \end{equation}
       for some $T'$. If $T = \Error$ then by rule inspection we must have $T' =
       \Error$ and trivially that $T \simeq T'$. Furthermore, if $T = H_{T},
@@ -885,7 +818,7 @@ Because of this proposition the following is well defined.
 \begin{lemma} \label{lem:lemma4}
   Let 
   \begin{equation*}
-    \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_n^{\alpha_n, \beta_n}
+    \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n}
   \end{equation*}
   be a transition sequence and $S, T$ be states such that.
   \begin{equation*}
@@ -900,7 +833,7 @@ Because of this proposition the following is well defined.
     \begin{gathered}
       \beta'_i \not\in \OIDs(S), \beta'_i \not\in \TIDs(S) \andalso i =
       1, \dots, n, \\
-      \bar{R'} = R_1^{\alpha_1, \beta'_1}, \dots, R_n^{\alpha_1, \beta'_n} \\
+      \bar{R'} = R_1^{\iota_1, \beta'_1}, \dots, R_n^{\iota_1, \beta'_n} \\
       S \Rrightarrow^{\bar{R'}} T'.
     \end{gathered}
   \end{equation*}
@@ -913,11 +846,11 @@ Because of this proposition the following is well defined.
       only finitely many in $\OIDs(S)$ and $\TIDs(S)$. This follows from
       definition of these sets.
     \item All choices of fresh identifiers results in equivalent states. I.e.
-      for any state $S$, and transition identifiers $R^{\alpha, \beta},
-      R^{\alpha, \beta'}$ such that 
+      for any state $S$, and transition identifiers $R^{\iota, \beta},
+      R^{\iota, \beta'}$ such that 
       \begin{equation*}
-        S \Rrightarrow^{R^{\alpha, \beta}} S_1 \andalso S
-        \Rrightarrow^{R^{\alpha, \beta'}} S'_1,
+        S \Rrightarrow^{R^{\iota, \beta}} S_1 \andalso S
+        \Rrightarrow^{R^{\iota, \beta'}} S'_1,
       \end{equation*}
       we have
       \begin{equation*}
@@ -946,11 +879,11 @@ Finally we prove quasi determinism.
       If $n = n' = 0$ we are done since $T = S \simeq S' = T'$. Thus we assume
       that $n = n' = 1$. We let
       \begin{equation*}
-        \bar{R} = R^{\alpha, \beta} \andalso \bar{R'} = R'^{\alpha', \beta'}.
+        \bar{R} = R^{\iota, \beta} \andalso \bar{R'} = R'^{\iota', \beta'}.
       \end{equation*}
       We must have 
       \begin{equation} \label{eq:qd_1}
-        R = R' \andalso \alpha = \alpha'
+        R = R' \andalso \iota = \iota'
       \end{equation} 
       since otherwise $T$ and $T'$ can take another step.  If $\beta = \beta'$
       then we are done since this implies $T = T'$.  Otherwise let $g, h$ be the
@@ -969,21 +902,21 @@ Finally we prove quasi determinism.
     \item[Case $1 < n, n' \leq i+1$ and $i \geq 1$:] We let 
       \begin{equation*}
         \begin{gathered}
-          \bar{R} = R_1^{\alpha_1, \beta_1}, \dots, R_n^{\alpha_n, \beta_n} \\
-          \bar{R'} = {R'_1}^{\alpha'_1, \beta'_1}, \dots, {R'_{n'}}^{\alpha'_{n'},
+          \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n} \\
+          \bar{R'} = {R'_1}^{\iota'_1, \beta'_1}, \dots, {R'_{n'}}^{\iota'_{n'},
           \beta'_{n'}}.
         \end{gathered}
       \end{equation*}
       Furthermore let
       \begin{equation*}
-        \bar{R_{>1}} = R_2^{\alpha_2, \beta_2}, \dots, R_n^{\alpha_n, \beta_n} \\
+        \bar{R_{>1}} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n} \\
       \end{equation*}
       Consider the first tranisition identifier of $\bar{R}$. We let
       Let $k$ be such
-      that ${R'_k}^{\alpha'_k, \beta'_k}$ is the first transition identifier in
+      that ${R'_k}^{\iota'_k, \beta'_k}$ is the first transition identifier in
       $\bar{R'}$ for which 
       \begin{equation*}
-        \alpha_1 = \alpha'_k = \alpha.
+        \iota_1 = \iota'_k = \iota.
       \end{equation*} 
       This $k$ must exist since
       otherwise $T'$ can take another step. By the remark following
@@ -994,10 +927,10 @@ Finally we prove quasi determinism.
       We let
       \begin{equation*}
         \begin{gathered}
-          \bar{R'}_{<k} = {R'_1}^{\alpha'_1, \beta'_1}, \dots,
-          {R'_{k-1}}^{\alpha'_{k-1}, \beta'_{k-1}}  \\
-          \bar{R'}_{>k} = {R'_{k+1}}^{\alpha'_{k+1}, \beta'_{k+1}}, \dots,
-          {R'_{n'}}^{\alpha'_{n'}, \beta'_{n'}}.
+          \bar{R'}_{<k} = {R'_1}^{\iota'_1, \beta'_1}, \dots,
+          {R'_{k-1}}^{\iota'_{k-1}, \beta'_{k-1}}  \\
+          \bar{R'}_{>k} = {R'_{k+1}}^{\iota'_{k+1}, \beta'_{k+1}}, \dots,
+          {R'_{n'}}^{\iota'_{n'}, \beta'_{n'}}.
         \end{gathered}
       \end{equation*}
 
@@ -1014,19 +947,19 @@ Finally we prove quasi determinism.
 %
 %      Now either $\beta'_k = \beta_1 = \smiley$, $\beta'_k, \beta_1 \in \OIDs$
 %      or $\beta'_k, \beta_1 \in \TIDs$. In the first case it is immediately
-%      clear that ${R'_k}^{\alpha'_k, \beta'_k}$ is applicable at $S$. In the
+%      clear that ${R'_k}^{\iota'_k, \beta'_k}$ is applicable at $S$. In the
 %      other two cases WLOG we can assume that $\beta'_k$ is fresh at $S$ due to
-%      lemma~\ref{lem:lemma3}. This makes $R^{\alpha, \beta'_k}$
+%      lemma~\ref{lem:lemma3}. This makes $R^{\iota, \beta'_k}$
 %      applicable at $S$.
 
       Then by lemma~\ref{lem:lemma2} we have
       \begin{equation*}
-        S \Rrightarrow^{{R}^{\alpha, \beta}} S_1 \Rrightarrow^{\bar{R'}_{<k}}
+        S \Rrightarrow^{{R}^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R'}_{<k}}
         S_2 \Rrightarrow^{\bar{R'}_{>k}} T'
       \end{equation*}
       Furthermore, by $\bar{R}$ being applicable at $S$ we have
       \begin{equation*}
-        S \Rrightarrow^{R^{\alpha, \beta}} S_1 \Rrightarrow^{\bar{R}_{>1}}
+        S \Rrightarrow^{R^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R}_{>1}}
         T.
       \end{equation*}
       Both transition sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and

@@ -156,10 +156,10 @@
 \begin{proposition} \label{prop:2.11}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
-    \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
-      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^d \right\}$
+    \item $P = Q \cup_D \left\{ FS|_a^\iota \right\}$, $\isolation{(H, P)}$, $H
+      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^\iota \right\}$
     \item $\Graph{(H)} = \Graph{(H')}$
-    \item $\forall HS|_b^e \in Q.$ \\ 
+    \item $\forall HS|_b^{\iota'} \in Q.$ \\ 
       $\reachable{(\accRoots{(HS, H')}, \Graph{(H')})} \subseteq$ \\
       $\reachable{(\accRoots{(HS, H)}, \Graph{(H)})}$
     \item $\reachable{(\accRoots{(FS', H')}, \Graph{(H')})} \subseteq$ \\
@@ -177,11 +177,11 @@
 \begin{proof}
   We prove that 
   \begin{equation*}
-    \forall \text{ distinct } HS|_a^d, GS|_b^e \in P'.\; a = \ocap \lor b = \ocap \implies
+    \forall \text{ distinct } HS|_a^\iota, GS|_b^{\iota'} \in P'.\; a = \ocap \lor b = \ocap \implies
     \isolated(H', HS, GS).
   \end{equation*}
   This implies $\isolation(H', P')$ by rule {\sc ISO-Procs}.
-  Take any distinct $HS|_b^e, GS|_c^f \in P$. Then by assumption 3, 4 and basic set
+  Take any distinct $HS|_b^{\iota'}, GS|_c^{\iota''} \in P$. Then by assumption 3, 4 and basic set
   properties
   \begin{equation} \label{eq:reachinclusion1}
     \begin{gathered}
@@ -200,10 +200,10 @@
 \begin{corollary} \label{cor:2.11}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
-    \item $P = Q \cup_D \left\{ FS|_a^d \right\}$, $\isolation{(H, P)}$, $H
-      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^d \right\}$
+    \item $P = Q \cup_D \left\{ FS|_a^\iota \right\}$, $\isolation{(H, P)}$, $H
+      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^\iota \right\}$
     \item $\Graph{(H)} = \Graph{(H')}$
-    \item $\forall HS|_b^e \in Q. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
+    \item $\forall HS|_b^{\iota'} \in Q. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
     \item $\accRoots{(FS', H')} \subseteq \accRoots{(FS, H)}$
     \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
   \end{enumerate}
@@ -339,7 +339,7 @@ obvious.
 \begin{proposition} \label{prop:2.13}
   For any $H, P$ we have 
   \begin{equation}
-    H \vdash P \iff \forall HS|_b^e \in P.\: H;b \vdash HS
+    H \vdash P \iff \forall HS|_b^{\iota'} \in P.\: H;b \vdash HS
   \end{equation}
 \end{proposition}
 
@@ -402,7 +402,7 @@ to show.
     \begin{gathered}
       H \vdash P \tsep \ocr \\
       \iff \\
-      \forall HS|_b^e \in P. \quad
+      \forall HS|_b^{\iota'} \in P. \quad
          b = \ocap \implies \ocrloc(HS, H)
     \end{gathered}
   \end{equation*}
@@ -462,10 +462,10 @@ to show.
   To prove everything else we proceed by cases.
   \begin{description}
     \item[Case {\sc E-FSProp}:] According to this rule $P = Q \cup_D \left\{
-        FS|_a^d \right\}$ and $P' = Q \cup \left\{ FS'|_a^d \right\}$. We proceed by cases.
+        FS|_a^\iota \right\}$ and $P' = Q \cup \left\{ FS'|_a^\iota \right\}$. We proceed by cases.
       \begin{description}
-        \item[Case {\sc E-FProp}:] By the rule definition $FS|_a^d = F \circ
-          GS|_a^d$ and $FS'|_a^d = F' \circ GS|_a^d$. Furthermore we can assume
+        \item[Case {\sc E-FProp}:] By the rule definition $FS|_a^\iota = F \circ
+          GS|_a^\iota$ and $FS'|_a^\iota = F' \circ GS|_a^\iota$. Furthermore we can assume
           that $F = \sframe{L, t}$ and $F' = \sframe{L', t'}$.
           We proceed by cases.
           \begin{description}
@@ -565,7 +565,7 @@ to show.
               \end{equation}
               By proposition \ref{prop:2.13} and $H \vdash P$ we get
               \begin{equation*} 
-                \forall HS|_b^d \in Q. \: H; b \vdash HS.
+                \forall HS|_b^{\iota'} \in Q. \: H; b \vdash HS.
               \end{equation*}
               By this, \eqref{eq:evar1} and proposition \ref{prop:2.13}
               \begin{equation*}
@@ -772,7 +772,7 @@ to show.
               state the following lemma.
 
               \begin{lemma} \label{lem:2.15}
-                Let $HS|_b^e \in Q$ and $L(z) \in \dom(H)$. Then
+                Let $HS|_b^{\iota'} \in Q$ and $L(z) \in \dom(H)$. Then
                 \begin{equation} \label{eq:lem2.15a}
                   \begin{aligned}
                     &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
@@ -911,9 +911,9 @@ to show.
 
               Continuing with the proof of case {\sc E-Assign} first off we use
               the lemma to prove OCAP reachability.  We first take any thread
-              $HS|_b^e \in Q$. Studying the $\ocr$ rules it is clear that we can
+              $HS|_b^{\iota'} \in Q$. Studying the $\ocr$ rules it is clear that we can
               prove that $H'; b \vdash HS \tsep \ocr$ holds trivially for any
-              thread $HS|_b^e$ for which $b = \nocap$. Therefore we from now on
+              thread $HS|_b^{\iota'}$ for which $b = \nocap$. Therefore we from now on
               assume that $b = \ocap$.  Using proposition \ref{prop:ocr_eq} we
               note that $H \vdash P \tsep \ocr$ iff $H;b \vdash HS \tsep
               \ocr$ which in using proposition \ref{prop:ocrloc_eq} in turn is
@@ -1335,8 +1335,8 @@ to show.
           \end{equation}
           We also note that 
           \begin{equation}
-            \tilde{P} = \tilde{Q} \cup_D \left\{ FS|_a^d \right\} \text{ and }
-            \tilde{P'} = \tilde{Q} \cup_D \left\{ FS'|_a^d \right\}.
+            \tilde{P} = \tilde{Q} \cup_D \left\{ FS|_a^\iota \right\} \text{ and }
+            \tilde{P'} = \tilde{Q} \cup_D \left\{ FS'|_a^\iota \right\}.
           \end{equation}
 
           We first assume that $a = \ocap$. It is very
@@ -1347,7 +1347,7 @@ to show.
           and that
           \begin{equation}
             \begin{aligned}
-              \forall HS|_b^e &\in \tilde{Q}. \\
+              \forall HS|_b^{\iota'} &\in \tilde{Q}. \\
               &\accRoots(HS, H') = \accRoots(HS, H).
             \end{aligned}
           \end{equation}
@@ -1356,22 +1356,24 @@ to show.
           \ocr$. Thus we are done.
 
           Now instead assume $a = \nocap$. Since $\isolation(H, \tilde{P})$ we have
-          $\isolated(H, HS_1, HS_2)$ for any two distinct $HS_1|_b^e, HS_2|_c^f
+          $\isolated(H, HS_1, HS_2)$ for any two distinct $HS_1|_b^{\iota'},
+          HS_2|_c^{\iota''}
           \in \tilde{Q}$ such that $b = \ocap$ or $c = \ocap$. Therefore since $H = H'$
           \begin{equation}
             \begin{aligned}
-              \forall &\text{ distinct } HS_1|_b^e, HS_2|_c^f \in \tilde{Q}. \\ 
+              \forall &\text{ distinct } HS_1|_b^{\iota'}, HS_2|_c^{\iota''} \in \tilde{Q}. \\ 
               & b = \ocap \lor c = \ocap \implies \isolated(H', HS_1, HS_2).
             \end{aligned}
           \end{equation}
           Thus all we need for $\isolation(H', \tilde{P'})$ is to show that
           \begin{equation}
             \begin{aligned}
-              \forall HS|_b^e &\in \tilde{Q} . \\
+              \forall HS|_b^{\iota'} &\in \tilde{Q} . \\
               &b = \ocap \implies \isolated(H', FS', HS)
             \end{aligned}
           \end{equation}
-          since $a = \nocap$. To prove this implication we take any $HS|_b^e \in
+          since $a = \nocap$. To prove this implication we take any
+          $HS|_b^{\iota'} \in
           \tilde{Q}$ such that $b = \ocap$. Because of $a = \nocap$ and the
           definition of $L'$ in \eqref{eq:ecall1}
           \begin{equation} \label{eq:ecall-iso1}
@@ -1412,7 +1414,7 @@ to show.
             o' \in \accRoots(FS, H).
           \end{equation}
           Similarly this would contradict \eqref{eq:ecall-iso4}.  Since
-          $HS|_b^e$ was arbitrary and $H = H'$ we have 
+          $HS|_b^{\iota'}$ was arbitrary and $H = H'$ we have 
           \begin{equation}
             \isolation(H', \tilde{P'}).
           \end{equation}
@@ -1606,7 +1608,7 @@ to show.
       \end{equation}
       Thus by proposition \ref{prop:2.6} we are done if we can prove 
       \begin{equation}
-        HS|_b^e \in P. \: \isolated(H', FS', HS).
+        HS|_b^{\iota'} \in P. \: \isolated(H', FS', HS).
       \end{equation}
       Again using proposition~\ref{prop:2.6} we are done if we show
       \begin{equation}
@@ -1662,7 +1664,7 @@ to show.
   We proceed with the case where $S = H, P$ and $P \neq \emptyset$. This means
   that
   \begin{equation*}
-    P = Q \cup_D \left\{ FS|_a^d \right\} \andalso FS = \sframe{L, t} \circ GS
+    P = Q \cup_D \left\{ FS|_a^\iota \right\} \andalso FS = \sframe{L, t} \circ GS
   \end{equation*}
   By $\vdash S \tsep \stateok$ we must have
   \begin{equation*}
@@ -1697,7 +1699,7 @@ to show.
       can step to $S' = H, P'$ where
       \begin{equation*}
         \begin{gathered}
-          P' = Q \cup_D \left\{ FS'|_a^d \right\} \andalso FS' = \xframe{L'',
+          P' = Q \cup_D \left\{ FS'|_a^\iota \right\} \andalso FS' = \xframe{L'',
           t'}^{s'} \circ HS \\ 
           L'' = L'[s \mapsto L(x)],
         \end{gathered}
@@ -1711,7 +1713,7 @@ to show.
           We can step to $S' = H, P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto \NullVal]
             \end{gathered}
@@ -1722,7 +1724,7 @@ to show.
           We can step to $S' = H, P'$ where 
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto l]
             \end{gathered}
@@ -1733,7 +1735,7 @@ to show.
           We can step to $S' = H, P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto L(y)]
             \end{gathered}
@@ -1774,7 +1776,7 @@ to show.
           But then by rule {\sc E-Select} we can step to $S' = H, P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto FM(f)].
             \end{gathered}
@@ -1818,7 +1820,7 @@ to show.
           We can then by {\sc E-Assign} step to $S' = H', P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto L(z)] \andalso FM' = FM[f \mapsto L(z)] \\
               H' = H[o_y \mapsto \Obj{C', FM'}]
@@ -1839,7 +1841,7 @@ to show.
           = H', P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto o] \andalso o \text{ fresh object reference } \\
               H' = H[o \mapsto \Obj{C, FM}].
@@ -1851,7 +1853,7 @@ to show.
           We can immediately step to $S' = H', P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto o] \andalso o \text{ fresh object reference } \\
               H' = H[o \mapsto \Cell{\emptyset, \bot_{\LatVals}}]
@@ -1891,7 +1893,7 @@ to show.
           By rule {\sc E-Call} we can then step to $S' = H, P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \xframe{L'',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \xframe{L'',
               t''}^x \circ \sframe{L, t'} \\
               L_{\text{base}} =
               \begin{cases}
@@ -1934,7 +1936,7 @@ to show.
           Then we can use rule {\sc E-Put} to step to $S' = H', P'$ where 
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto L(y)] \andalso c' = \Cell{DEP, l \sqcup l'} \\
               H' = H[o_y \mapsto c']
@@ -1984,7 +1986,7 @@ to show.
           By {\sc E-When} we can step to $S' = H', P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^d \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto L(y)] \andalso L_{\text{env}} = [u \mapsto L(u'):
               (\Capt{u}{u'}) \in \overline{cap}] \\
