@@ -1,15 +1,53 @@
-\chapter{Background} \label{cha:background}
+\chapter{Background \& Preliminaries} \label{cha:background}
 
-This chapter is a brief introduction to language and type system theory. In
+This chapter is an introduction to some mathematical concepts aswell as some
+language and type system theory.  In section~\ref{sec:mathematical_definitions}
+we will initially give some mathematical definitions. In
 section~\ref{sec:language_syntax} some basics of language syntax will be
 explained. Section~\ref{sec:language_semantics} gives a brief introduction to
 programming language semantics. Finally section~\ref{sec:type_systems} explains
 some basics of programming language type systems.
 
-As a basis the well known While language will be used as an example language.
+As a basis, in the later sections the well known While language will be used as
+an example language.
 
-% TODO add a section about basic math, like lattices join operations, partial
-% maps
+\section{Mathematical Preliminaries}
+\label{sec:mathematical_definitions}
+
+\begin{definition}
+  Let $(V, \sqsubseteq)$ be a partial order. Then the \emph{least upper bound}
+  of two elements $v, v' \in V$ is a an element $u \in V$ such that
+  \begin{equation*}
+    v \sqsubseteq u \andalso v' \sqsubseteq u
+  \end{equation*}
+  and for all $v'' \in V$ such that $v \sqsubseteq v'', v' \sqsubseteq v''$
+  \begin{equation*}
+    u \sqsubseteq v''
+  \end{equation*}
+\end{definition}
+It is easy to show that if a least upper bound exists, it is unique.
+\begin{definition}
+  A \emph{join-semilattice} is a partially ordered set $(\LatVals, \sqsubseteq)$ such
+  that for any two $l, l' \in \LatVals$ there is a least upper bound $u \in
+  \LatVals$. $u$ is also called the \emph{join} of $l$ and $l'$ and we can write
+  this as
+  \begin{equation*}
+    u = l \sqcup l'
+  \end{equation*}
+\end{definition}
+From now on we will refer to a join-semilattice simply as a \emph{lattice}.
+\begin{definition}
+  A \emph{partial function} or \emph{partial map}
+  \begin{equation*}
+    f: A \hookrightarrow B
+  \end{equation*}
+  is a function is a function defined on a subset of $A$, i.e.
+  \begin{equation*}
+    f: A' \to B \andalso A' \subseteq A
+  \end{equation*}
+\end{definition}
+
+
 
 \section{Language Syntax} \label{sec:language_syntax}
 

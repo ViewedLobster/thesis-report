@@ -625,7 +625,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 \end{definition}
 
 
-\begin{definition}{(Well typed heap)}
+\begin{definition}[Well Typed Heap]
   A heap $H$ is well typed, written $\vdash{H}$, if
   $\forall o \in \dom{(H)}$:
 
@@ -650,7 +650,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 \end{definition}
 
 
-\begin{definition}{(Class Object Separation)}
+\begin{definition}[Class Object Separation]
   For any heap $H$ and heap references $o, o'$ we have class object separation,
   $\csep{(H, o, o')}$ iff
   \begin{align}
@@ -661,7 +661,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{align}
 \end{definition}
 
-\begin{definition}{(Accessible Roots)}
+\begin{definition}[Accessible Roots]
   For a heap $H$ and a frame stack $FS$ we define $\accRoots{(FS, H)}$ as
 
   \begin{equation}
@@ -669,7 +669,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{equation}
 \end{definition}
 
-\begin{definition}{(OCAP reachability)}
+\begin{definition}[OCAP Reachability]
   For a heap $H$ and frame stack $FS$ we have $\ocrloc{(FS,H)}$ iff
   \begin{align}
     \label{eq:ocr_def}
@@ -678,7 +678,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{align}
 \end{definition}
 
-\begin{definition}{(No Spawn)}
+\begin{definition}[No Spawn]
   For any heap $H$ we have $\noSpawn(H)$ if and only if
   \begin{equation}
     \begin{aligned}
@@ -689,7 +689,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{equation}
 \end{definition}
 
-\begin{definition}{(Unique main thread)}
+\begin{definition}[Unique Main Thread]
   For a thread $FS|_a^\iota$ let
   \begin{equation*}
     \chi_{\nocap}(a) =
@@ -708,7 +708,7 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{equation*}
 \end{definition}
 
-\begin{definition}{(Well Typed States)}
+\begin{definition}[Well Typed States]
   A state $S$ is a value of either $\Error$ or a pair $H, P$ where $H$ is a heap
   and $P$ is a set of threads. For a state $S$ we say that it is well typed,
   written

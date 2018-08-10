@@ -1,7 +1,7 @@
 \chapter{Proof of Preservation and Progress}
 \label{proof_of_pnp}
 
-\begin{definition}{(Heap Induced Graph)}
+\begin{definition}[Heap Induced Graph]
   The induced graph of heap $H$, written $\Graph{(H)}$ is the directed graph
   $(V, E)$ such that $V = \dom{(H)}$ and 
   \begin{equation}
@@ -10,7 +10,7 @@
   \end{equation}
 \end{definition}
 
-\begin{definition}{(Graph Reachability)}
+\begin{definition}[Graph Reachability]
   We say an object $o'$ is reachable from $o$ in graph $G = (V,
   E)$, $\reach{(G, o, o')}$ if there is a finite sequence $o_0, \dots,
   o_n \in V$ such that $o = o_0, o_n = o'$ and
@@ -29,7 +29,7 @@
   \end{equation}
 \end{definition}
 
-\begin{proposition}{(Reachability equivalence)}
+\begin{proposition}[Reachability equivalence]
   \label{prop:reacheq}
   For a heap $H$ 
   \begin{equation}
@@ -244,7 +244,6 @@
 
 We state the following two propositions without proof, but they should be quite
 obvious.
-% TODO define transition identifier
 \begin{proposition} \label{prop:uniq_trans}
   Let $H, P \Rrightarrow H', P'$. Then there is a unique transition identifier
   $R^{\alpha, \beta}$ such that $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$.
@@ -255,7 +254,6 @@ obvious.
   \Rrightarrow^{R^{\alpha, \beta}} H', \tilde{P'}$
 \end{proposition}
 
-%TODO check formulation of prop
 \begin{proposition} \label{prop:2.9}
   For any $H, H', P, P'$ such that $\vdash H, H \vdash P$, $H \vdash P \tsep
   \ocr$ and $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$, if

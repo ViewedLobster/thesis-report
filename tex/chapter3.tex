@@ -26,7 +26,7 @@ At the foundation of the LVars system lays lattices. The values resulting from a
 computation is going to be elements from a lattice $\LVarsLat$, specified by the
 programmer. These lattice values are stored in a \emph{store}.  This is a set of
 pairs consisting of a location and a lattice element. For a location there is
-exactly one value. Letting $\LVarsLoc$ be the set of locations, a store $S$ can
+at most one value. Letting $\LVarsLoc$ be the set of locations, a store $S$ can
 be represented using a partial map
 \begin{equation*}
   S: \LVarsLoc \rightharpoonup \LVarsLat.
@@ -35,7 +35,7 @@ be represented using a partial map
 \subsection{LVars Operations}%
 \label{sub:lvars_operations}
 
-The LVars model supports three main operations
+The LVars model supports three main operations~\parencite{kuper2013lvars}.
 \begin{itemize}
   \item Extending the store with a new location. This takes a fresh location and
     sets its value to $\bot_{\LVarsLat}$, the bottom element of $\LVarsLat$.
@@ -56,35 +56,70 @@ The LVars model supports three main operations
     where $\top$ is the top element of $\LVarsLat$.
 \end{itemize}
 
-% TODO brief introduction to lvars:
-% Programming model to ensure deterministic concurrent execution
-% Quasi determinism (maybe later)
-% stores and lattice variables
-% put and get operations
-
 \subsection{LVish: Extending LVars}%
 \label{sub:lvish_extending_lvars}
 
-% TODO describe lvish, the lvars extension:
-% freezing
-% quasi determinism
-% quiescence
-% indicate that there are problems
+LVish~\parencite{kuper2014freeze} is an extension of LVars. It introduces a new
+operation called freezing, a system to create dependencies between store
+locations, and the concepts of quasi determinism and quiescence.  In LVish the
+store is modified such that every location also has an associated \emph{freeze
+bit} with a default value of $\LVarsFalse$. The \emph{freeze} operation
+takes a location and changes its associated bit to $\LVarsTrue$.  Whenever a
+freeze bit is $\LVarsTrue$ it prevents the associated lattice value from being
+changed. If a put operation tries to modify a freezed store location the
+computation ends up in an error state, $\Error$.
 
-% TODO
-% Should describe the basic ideas of LVars and also mention that there are
-% problems with the proof and hint of bigger problems.
+As mentioned LVish also permits the programmer to create dependencies between
+store locations. To do this the programmer specifies a location together with a
+set of threshold lattice values and a callback function. The callback is
+executed as soon as the given location passes a threshold value. Upon execution
+the callback is given access to the threshold passed. Unlike the threshold sets
+for the get operation the elements does not have to be incompatible. 
+
+With the introduction of freezing a program could take different execution
+paths where one halts in $\Error$ and the other halts in a non-erroneos state.
+It is thus obvious that the LVish system is no longer deterministic. Therefore
+the authors introduce \emph{quasi determinism}, a weaker form of
+determinism. Instead of requiring the same computation result for all execution
+paths, quasi determinism only requires that results be the same for
+non-erroneous halting states.
+
+Finally the LVish system makes use of a concept called \emph{quiescence}, in
+order to decide when to freeze a location. In short a computation reaches
+quiescence when no more changes to the store are expected to take place. For
+example, this could be when there are no more callback threads running.
+
+The proof of quasi determinism for LVish presented by
+\textcite{kuper2014freezeTR} is flawed. This will be touched upon further in
+chapter~\ref{cha:challenges}.
+
 
 \section{Reactive Async}\label{sec:reactive_async}
 
-% Should describe reactive async. There are multiple issues with this system,
-% e.g. that great care has to be taken in order to make the system
-% deterministic, e.g. make sure that only certain types of operations are
-% allowed in the callbacks.
+% TODO add ref to scala language
+% TODO add ref to RA article or thesis.
+Reactive Async is a Scala programming framework inspired by LVish. It is based
+around objects called \emph{cells}.  Cells are similar to the store locations
+from LVish: They hold a value from a lattice, the value is updated through a
+join operation and you are able to create dependencies between them using
+callbacks.
+
+% TODO make some figure of cells and dependencies
+% TODO explain the problem of callback spawning
+% TODO explain the problem of shared state
+
+
+% TODO maybe mention that this work aims to build a formal model for a future
+% revision of RA
+
+% problems of reactive async includes:
+% access to shared state is permitted within callbacks
+% even then semantics of callback thread spawning is flawed
+
 
 \section{LaCasa}\label{sec:lacasa}
 
-% Describes the basic ideas of lacasa and the idea of using OCAP constraints to 
+% Describe the basic ideas of lacasa and the idea of using OCAP constraints to 
 % assure determinism
 
 \section{Spores}\label{sec:spores}
