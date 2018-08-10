@@ -3,13 +3,13 @@
 
 % Write about the basic ideas behind the proof of preservation and progress
 
-\begin{theorem}{(Preservation)}
+\begin{theorem}[Preservation]
   \label{thm:preservation}
   Let $S, S'$ be states such that $\vdash S \tsep \stateok$ and $S \Rrightarrow
   S'$. Then $\vdash S' \tsep \stateok$.
 \end{theorem}
 
-\begin{theorem}{(Progress)}
+\begin{theorem}[Progress]
   \label{thm:progress}
   Let $S$ be a state such that $\vdash S \tsep \stateok$. Then either 
   \begin{enumerate}
@@ -141,15 +141,15 @@ Because of this claim we can make the following definition
 
 We are now ready to state the last main theorem.
 
-\begin{theorem}{(Quasi Determinism)} \label{thm:qd}
-  Let $S, S', T, T'$ be states not equal to $\Error$ such that
+\begin{theorem}[Quasi Determinism] \label{thm:qd}
+  Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
   \begin{equation*}
     \begin{gathered}
       S \simeq S' \\
       S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T'.
     \end{gathered}
   \end{equation*}
-  Furthermore neither $T$ or $T'$ can make a step.
+  Furthermore we assume that neither $T$ or $T'$ can make a step.
   Then
   \begin{equation*}
     T \simeq T'.

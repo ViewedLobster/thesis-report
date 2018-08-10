@@ -404,7 +404,10 @@ A formal type system can furthermore be used to prove properties like
 \emph{preservation} and \emph{progress} for programs which are properly type
 checked. These are important properties since they can beforehand ensure that
 programs terminate properly, or at least that, e.g., if it terminates erroneously it
-must have been the result of a null-pointer exception.
+must have been the result of a null-pointer exception. Progress and preservation
+together is often refered to as \emph{soundness} of a type system and to prove this
+is a standard approach. For a more in depth explanation
+see~\parencite{pierce2002types}.
 
 As an example we can state preservation and progress properties of While as follows. Let
 $\Gamma(V)$ be defined as 

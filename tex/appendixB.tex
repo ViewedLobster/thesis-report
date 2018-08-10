@@ -37,7 +37,7 @@
 
   Furthermore writing
   \begin{equation}
-    P = \left\{ FS_i|_{a_i}^{d_i} \right\}_{i = 1}^n
+    P = \left\{ FS_i|_{a_i}^{\iota_i} \right\}_{i = 1}^n
   \end{equation}
   we let
   \begin{equation*}
@@ -50,7 +50,7 @@
       t_1}^{s_1} \circ \varepsilon \\
       FS_i^* = \xframe{\delta(L_{m_i}, g), t_{m_i}}^{s_{m_i}} \circ \dots \circ
       \xframe{\delta(L_1,g), t_1}^{s_1} \circ \varepsilon \\
-      P^* = \left\{ FS_i^*|_{a_i}^{h(d_i)} \right\}_{i = 1}^n.
+      P^* = \left\{ FS_i^*|_{a_i}^{h(\iota_i)} \right\}_{i = 1}^n.
     \end{gathered}
   \end{equation*}
 \end{definition}
@@ -72,12 +72,12 @@
   Let $g, h$ be as in definition \ref{def:pirho}. 
   \begin{equation*}
     \eta(DEP, g, h) = \left\{ (l, (\delta(L_{\text{env}}, g), z \Rightarrow
-    t))^{h(d)}: (l,
-    (L_{\text{env}}, z \Rightarrow t))^d \in DEP \right\}
+    t))^{h(\iota)}: (l,
+    (L_{\text{env}}, z \Rightarrow t))^\iota \in DEP \right\}
   \end{equation*}
   I.e. we replace all object identifiers occuring in callback environments
   according to the replacement map $g$, and change the corresponding thread
-  identifier $d$ to $h(d)$.
+  identifier $\iota$ to $h(\iota)$.
 \end{definition}
 
 
@@ -166,8 +166,28 @@
   $\isolation(H', P')$ and $H' \vdash P' \tsep \gsep$.
 \end{proof}
 
+\begin{proof}{(Proposition~\ref{prop:eqrel_stateok})}
+  Follows from the fact that applying $\pi$ and $\rho$ to a state is simply a
+  renaming of object and thread identifiers.
+\end{proof}
+
 \section{Proof of Quasi Determinism}
 \label{sec:proof_of_quasi_determinism}
+
+\begin{theorem*}[Quasi Determinism]
+  Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
+  \begin{equation*}
+    \begin{gathered}
+      S \simeq S' \\
+      S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T'.
+    \end{gathered}
+  \end{equation*}
+  Furthermore we assume that neither $T$ or $T'$ can make a step.
+  Then
+  \begin{equation*}
+    T \simeq T'.
+  \end{equation*}
+\end{theorem*}
 
 \begin{lemma} \label{lem:lemma1}
   Let $S$ be a state s.t. $\vdash S \tsep \stateok$ where the two transitions
@@ -861,7 +881,7 @@ Because of this proposition the following is well defined.
 \end{proof}
 
 Finally we prove quasi determinism.
-\begin{proof}{(Theorem~\ref{thm:qd})}
+\begin{proof}{(Theorem~\ref{thm:qd}, Quasi Determinism)}
   If $S \neq S'$ by lemma~\ref{lem:lemma3} there is a state $T''$ and a
   transition sequence $\bar{R''}$ such that
   \begin{equation}

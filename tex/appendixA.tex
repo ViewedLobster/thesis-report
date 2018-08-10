@@ -437,6 +437,11 @@ to show.
 \section{Proof of preservation}
 \label{sec:proof_of_preservation}
 
+\begin{theorem*}[Preservation]
+  Let $S, S'$ be states such that $\vdash S \tsep \stateok$ and $S \Rrightarrow
+  S'$. Then $\vdash S' \tsep \stateok$.
+\end{theorem*}
+
 \begin{proof} 
   First of all we have that $S \neq \Error$ since no step can be made from this
   state. Thus $S = H, P$ and
@@ -1637,6 +1642,15 @@ to show.
 
 \section{Proof of Progress}
 \label{sec:proof_of_progress}
+
+\begin{theorem*}[Progress]
+  Let $S$ be a state such that $\vdash S \tsep \stateok$. Then either 
+  \begin{enumerate}
+    \item $\exists S'$ s.t. $S \Rrightarrow S'$, 
+    \item $S = H, \emptyset$ for some heap $H$ s.t. $\noSpawn{(H)}$ or
+    \item $S = \Error$.
+  \end{enumerate}
+\end{theorem*}
 
 \begin{proof}
   Assume for a contradiction that $\vdash S \tsep \stateok$ but that neither 1,
