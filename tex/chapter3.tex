@@ -104,20 +104,55 @@ from LVish: They hold a value from a lattice, the value is updated through a
 join operation and you are able to create dependencies between them using
 callbacks.
 
-% TODO make some figure of cells and dependencies
-% TODO explain the problem of callback spawning
-% TODO explain the problem of shared state
+Like in LVish the cells are updated through a put operation.  The cells and
+dependencies can be illustrated as a graph.  Figure~\ref{fig:ra_example} is a
+very simple example of a dependency graph.  There are two cells $c_1$ and $c_2$
+and a dependency callback $f$ between them. This should be interpreted as $c_2$
+being dependent on $c_1$.  $f$ is a function which takes a lattice value and
+returns either nothing or a new lattice value.  As soon as the lattice value of
+$c_1$ is updated to a new lattice value $l$, the callback $f(l)$ runs. If $f(l)$
+returns a lattice value $l'$, $c_2$ is updated with $l'$ though a put operation.
+If the result of $f(l)$ is nothing, nothing is done with the lattice value of
+$c_2$.
 
+If a programmer is not careful, there are several aspects of Reactive Async
+which can make a computation non-deterministic. This will be further discussed
+in chapter~\ref{cha:challenges}. This work aims to construct a formal model with
+proven determinism properties which could be used as a basis for future
+revisions of Reactive Async.
 
-% TODO maybe mention that this work aims to build a formal model for a future
-% revision of RA
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[circle,draw] (c1) at (0, 0) {$c_1$};
+    \node[circle,draw] (c2) at (3, 0) {$c_2$};
+    \draw[-{Latex[length=0.3cm]}] (c1)  -- node[above] {$f$}  (c2);
+  \end{tikzpicture} 
+  \caption{Simple Reactive Async dependency graph.}
+  \label{fig:ra_example}
+\end{figure}
 
 % problems of reactive async includes:
 % access to shared state is permitted within callbacks
 % even then semantics of callback thread spawning is flawed
 
+% Should we do these in the challenges? Prolly yes.
+% TODO explain the problem of callback spawning
+% TODO explain the problem of shared state
 
 \section{LaCasa}\label{sec:lacasa}
+
+% TODO add section in background about the OCAP model, use the prestudy
+% material.
+LaCasa\parencite{conf/oopsla/HallerL16} is a programming model for ensuring
+determinism in an actor model\parencite{actormodelref} setting. It is based on
+the OCAP model to ensure isolation between threads.  In this section we give a
+brief introduction to the type system of LaCasa and the intuition behind it.
+
+% TODO explain connection between lacasa and OCAP model
+% TODO quickly introduce the type system and explain a little bit why it ensures
+% isolation
+
 
 % Describe the basic ideas of lacasa and the idea of using OCAP constraints to 
 % assure determinism
