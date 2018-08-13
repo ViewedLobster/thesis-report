@@ -500,3 +500,53 @@ In chapter~\ref{cha:core_language} the typing relation will also include an
 effect $a$. In short this means that the typing rules are more or less strict
 depending on the value of $a$.
 
+\section{The Object Capability Model}%
+\label{sec:the_object_capability_model}
+
+In this final background section the object capability (OCAP) model will be
+introduced.
+
+The object capability (OCAP) model is a computer security model that was
+introduced in 1966 by \textcite{Dennis-VanHorn66}. In this model, the access
+rights to an object are equivalent to a reference to the object itself. What
+this means is that if we somehow accuire a reference to the object, we are free
+to use it as we see fit. While this might seem like a severe loosening of
+security, implementing access restrictions can be done using proxy-like
+objects~\parencite{Miller06b}.
+% TODO find better phrasing of loosening of security
+
+In the OCAP model we formalize the concept of an object. This could be of
+two types: Either a primitive object or an instance. A primitive object is
+for example data such as a character string or number. In a setting where
+communication with some outside world is modeled this could also be for example
+a device. An instance contains state and code. For example, a class
+object in a object oriented language could be modeled as an
+instance.
+
+Instances can only interact by sending messages over references. This implies
+that for an instance to interact with another one, it needs a reference to the
+other. Continuing the example with the class object above, a message corresponds
+to a method call. That is, we specify what the object should do (specify the
+method), together with some information (the method parameters). The message can
+only be called if we have a reference to the corresponding class object
+beforehand.
+
+In the OCAP model references can only be obtained in four ways:
+\begin{enumerate}
+  \item Initial connectivity: The system must have some initial references in
+    the connectivity graph.
+  \item Parenthood: If some instance A creates an object B, at creation it has
+    a reference to B.
+  \item Endowment: If some instance A has access to B and creates C with a
+    reference to B, then C has a reference to B.
+  \item Introduction: If instance A sends a message to (calls a method on)
+    instance B, B gets all references A sends in the message (gives as
+    parameters).
+\end{enumerate}
+We can model references and objects using a directed graph.  The above four
+rules imply that two disjoint components in a reference graph can never become
+connected~\parencite{Miller06b}.
+
+A language implementing the OCAP model is called an OCAP language. Most common
+object oriented languages are not OCAP. This is because they allow global
+references, i.e. objects referable from all instances.
