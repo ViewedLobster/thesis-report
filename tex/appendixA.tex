@@ -223,9 +223,9 @@
   I.e., $FS_g$ only has the global object as an accessible root.  Then for
   any thread set $P$, let $\tilde{P}$ be the thread set
   \begin{equation*}
-    \tilde{P} = P \cup \left\{ FS_g|_{\nocap}^d \right\}
+    \tilde{P} = P \cup \left\{ FS_g|_{\nocap}^\iota \right\}
   \end{equation*}
-  for some valid $d$.
+  for some valid $\iota$.
 \end{definition}
 
 \begin{proposition} \label{prop:2.8}
@@ -1108,7 +1108,8 @@ to show.
                   L_{\text{env}} = [u \mapsto L(u'): (\Capt{u}{u'}) \in
                   \overline{cap}] \andalso cb = (L_{\text{env}}, w \Rightarrow
                   t'') \\
-                  d \text{ fresh thread id} \andalso DEP' = DEP \cup (l', cb)^d
+                  \iota \text{ fresh thread id} \andalso DEP' = DEP \cup (l',
+                  cb)^\iota
                   \\
                   H' = H[o \mapsto \Cell{DEP', l}].
                 \end{gathered}
@@ -1147,7 +1148,7 @@ to show.
                   DEP' \text{ s.t. }  \\
                   &(l^{\text{cb}}, (L^{\text{cb}}_{\text{env}}, z^{\text{cb}}
                   \Rightarrow t^{\text{cb}}))^{d^{\text{cb}}} \neq
-                  (l', cb)^d. \\
+                  (l', cb)^\iota. \\
                   &\forall (x \mapsto k) \in L^{\text{cb}}_{\text{env}}.\: \typeOf{(k, H')} \stof
                   \CellType \: \land \\
                   &\TypeRel{\Gamma_{\CellType{}}(L^{\text{cb}}_{\text{env}}), z^{\text{cb}}:
@@ -1505,11 +1506,11 @@ to show.
       \begin{equation}
         \begin{gathered} \label{eq:espawn1}
           o \in \dom(H) \andalso H(o) = \Cell{DEP, l} \\
-          l' \sqsubseteq l \andalso (l', cb)^d \in DEP \andalso cb =
+          l' \sqsubseteq l \andalso (l', cb)^\iota \in DEP \andalso cb =
           (L_{\text{env}}, z \Rightarrow t') \\
           L' = L_{\text{env}}[z \mapsto l'] \\
-          H' = H[o \mapsto \Cell{DEP - (l', cb)^d, l}] \\
-          P' = P \cup \left\{ FS'|_{\ocap}^d \right\} \\
+          H' = H[o \mapsto \Cell{DEP - (l', cb)^\iota, l}] \\
+          P' = P \cup \left\{ FS'|_{\ocap}^\iota \right\} \\
           FS' = \xframe{L', t'}^- \circ \varepsilon.
         \end{gathered}
       \end{equation}
@@ -1667,7 +1668,7 @@ to show.
   hold. Looking at the definition of $\noSpawn$ this means that there is at
   least one $o \in \dom(H)$ such that, for $H(o) = \Cell{DEP, l}$
   \begin{equation*}
-    \exists (l', cb)^d \in DEP. \: l' \sqsubseteq l.
+    \exists (l', cb)^\iota \in DEP. \: l' \sqsubseteq l.
   \end{equation*}
   This clearly satisfies the preconditions of execution rule {\sc E-Spawn} to
   find another state $S' = H', P'$ such that $S \Rrightarrow S'$. But this
@@ -2003,8 +2004,8 @@ to show.
               L' = L[x \mapsto L(y)] \andalso L_{\text{env}} = [u \mapsto L(u'):
               (\Capt{u}{u'}) \in \overline{cap}] \\
               cb = ( L_{\text{env}}, w \Rightarrow t'' ) \andalso DEP' = DEP
-              \cup (l', cb)^d \\
-              d \text{ fresh thread id } \andalso H' = H[o_y \mapsto \Cell{DEP',
+              \cup (l', cb)^\iota \\
+              \iota \text{ fresh thread id } \andalso H' = H[o_y \mapsto \Cell{DEP',
               l}].
             \end{gathered}
           \end{equation*}

@@ -46,7 +46,7 @@ describes a dependency graph which is a little more complex.
     \draw[-{Latex[length=0.3cm]}] (c2) -- node[above] {$f_2$} (c3);
     \draw[-{Latex[length=0.3cm]}] (c3) -- node[above] {$f_3$} (c4);
   \end{tikzpicture}
-  \caption{Reactive Async problematic example.}
+  \caption{Reactive Async dependency graph.}
   \label{fig:ra_example2}
 \end{figure}
 
@@ -184,8 +184,8 @@ associated threshold set, similar to LVish. It can easily be translated into a
 language and semantics of LVish (with the extension of an if-statement).
 
 Say we have two cells $c_1$ and $c_2$ and two callbacks $f_1$ and $f_2$. Let the
-lattice be $(\integers, \leq)$ and let the initial values of both cells be the
-bottom element $0$ and both associated freeze bits are $\LVarsFalse$. The
+lattice be $(\integers, \leq)$, let the initial cell values of both cells be 
+$0$ and let both associated freeze bits be $\LVarsFalse$. The
 callbacks are registered to some auxilliary cell $c$. 
 
 \begin{table}
@@ -316,7 +316,7 @@ in the freeze statement. By freezing a variable we could attain information
 about the value and freeze bit of another cell. In the example above, by
 freezing cell $c_1$ ($c_2$) and inspecting its value we can attain information
 about wether $c_2$ ($c_1$) has been frozen or not. By conditioning on this
-information we can skip a put operation that would otherwise lead to an error.
+information, we can skip a put operation that would otherwise lead to an error.
 
 A simple solution to this problem is to simply remove the capability of freezing
 a cell and this is the approach of the system presented in

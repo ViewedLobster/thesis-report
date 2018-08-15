@@ -10,8 +10,8 @@ a type system enforcing OCAP properties, much like the system of LaCasa.
 \label{sec:syntax}
 
 The language which we shall call Reactive Async Core Language (RACL) has a big
-similarity with CLC from LaCasa. Many expressions are the same except for a few
-removals and additions. The language grammar is defined in
+similarity with the core language from LaCasa. Many expressions are the same
+except for a few removals and additions. The language grammar is defined in
 Figure~\ref{fig:racl_grammar}. It is a simple object oriented language which is
 parameterized on the lattice \LatVals{}.
 
@@ -73,9 +73,7 @@ that we have a separate instance creation expression for cells, an expression
 for updating the value of a cell aswell as an expression for creating
 dependencies between cells. The semantics of these will be explained next.
 
-% TODO note something about the language being parameterized on the lattice
-
-\section{Semantics}
+\section{Semantics}%
 \label{sec:semantics}
 
 % TODO describe the rules a bit
@@ -95,7 +93,10 @@ to rules on either frame, frame stack or thread set level. All steps taken on
 lower levels are propagated to thread set level using auxilliary rules. After
 the following definitions we describe the execution rules in more detail.
 
-\begin{definition}{(Sets)}
+\subsection{Semantical Definitions}%
+\label{sub:semantical_definitions}
+
+\begin{definition}[Sets] We define the following sets.
   \begin{itemize}
     \item We let $\VarNames$ be the set of all allowed variable names.
     \item We let $\FieldNames$ be the set of all allowed field names.
@@ -114,14 +115,7 @@ the following definitions we describe the execution rules in more detail.
   \end{itemize}
 \end{definition}
 
-\begin{definition}
-  A \emph{local environment} $L$ is a partial map
-  \begin{equation*}
-    L: \VarNames \rightharpoonup \Values.
-  \end{equation*}
-\end{definition}
-
-\begin{definition}{(Heap Objects)}\label{def:heap_obj}
+\begin{definition}[Heap Objects]\label{def:heap_obj}
   We let $\Objects$ be the set of all \emph{heap objects}, i.e. objects of the
   form
   \begin{equation*}
@@ -141,14 +135,21 @@ the following definitions we describe the execution rules in more detail.
   uniqueness of $\iota$ is global to the state of a program.
 \end{definition}
 
-\begin{definition}{(Heap)}
+\begin{definition}
   A \emph{heap} $H$ is a partial map
   \begin{equation*}
     H: \OIDs \rightharpoonup \Objects.
   \end{equation*}
 \end{definition}
 
-\begin{definition}{(Thread Sets)}\label{def:thread_sets}
+\begin{definition}
+  A \emph{local environment} $L$ is a partial map
+  \begin{equation*}
+    L: \VarNames \rightharpoonup \Values.
+  \end{equation*}
+\end{definition}
+
+\begin{definition}\label{def:thread_sets}
   A \emph{frame} $F$ is an object of the form
   \begin{equation*}
     \sframe{L, t}
@@ -157,8 +158,8 @@ the following definitions we describe the execution rules in more detail.
   return tag.
 
   A \emph{frame stack} $FS$ is a finitely large stack of frames. We can write
-  all of these as either the empty stack $FS = \varepsilon$, or as $FS = F \circ
-  GS$ where $GS$ is also a frame stack.
+  all of these recursively as either the empty stack $FS = \varepsilon$, or as
+  $FS = F \circ GS$ where $GS$ is also a frame stack.
 
   A \emph{thread set} $P$ is a finite set 
   \begin{equation*}
@@ -194,7 +195,76 @@ the following definitions we describe the execution rules in more detail.
   \end{equation*}
 \end{definition}
 
-\begin{figure}[]
+\begin{definition}
+  Execution of a program starts from state $S_0 = H_0, P_0$ where $H_0$ and
+  $P_0$ are defined as follows. 
+  \begin{equation*}
+    H_0
+  \end{equation*}
+\end{definition}
+
+\subsection{Reduction Rules}%
+\label{sub:reduction_rules}
+
+An execution step from state $S$ to $S'$ in RACL is expressed using the relation
+\begin{equation*}
+  S \Rrightarrow S'.
+\end{equation*}
+RACL reduction rules are expressed at three different levels:
+Thread set, frame stack and frame level. 
+Therefore we will also see the relations 
+\begin{equation*}
+  H, FS \;\FSRedTo\; H', FS' \quad \text{ and } \quad H, F\; \FRedTo\; H', F'
+\end{equation*}
+This is to allow expression of e.g. single frame execution,
+thread creation and method calls as will be explained below. 
+A reduction on frame or frame stack level are propagated up to thread set level
+with the rules \EFProp{} and \EFSProp{} which are defined in
+figures~\ref{fig:fs_red_rules} and~\ref{fig:threads_red_rules}.
+
+In Figure~\ref{fig:frame_red_rules}, reduction rules for single frames are
+defined. These are rules that advance the state of a single frame $F$ and
+possibly changes the heap $H$. We have very simple ones like the rule {\sc
+E-LVal}, which assigns the specified lattice value to a local variable and the
+rule {\sc E-Var} which assigns the value of one local variable to another one.
+The rules \ESelect{} and \EAssign{} respectively fetches and sets the value of a
+field $f$ of an object on the heap. Rules \ENew{} and \ENewCell{} creates a new
+object on the heap of either class or cell type and assigns the corresponding
+new object identifier to a local variable. The rule \EPut{} updates the value of
+a cell object on the heap through a join operation.  Finally the rule \EWhen{}
+is responsible for adding a new dependency with callback. Looking at this rule
+more closely we see that it captures the variables specified by $\overline{cap}$
+and creates a local environment $L_{\text{env}}$. This is then stored, together
+with the closure $w \Rightarrow t'$, a threshold value $l'$ and a fresh thread
+identifier $\iota$, in the new dependency set $DEP'$. Note that all rules in
+Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
+
+In Figure~\ref{fig:error_red_rules}, rules that lead to error are defined. These
+are all what would be called null-pointer exceptions in a language like Java.
+That is, that we try to access an object through the $\NullVal$ identifier.
+Errors are then propagated to frame stack and thread set level using rules
+\EErrorFS{} and \EErrorP{} from figures~\ref{fig:fs_red_rules} and
+\ref{fig:threads_red_rules}.
+
+In Figure~\ref{fig:fs_red_rules}, rules for frame stack reductions are defined.
+Here we find the aforementioned \EFProp{} and \EErrorFS{} together with rules
+for method calls and returns. \ECall{} handles method calls by creating a new
+frame with the corresponding term and local environment. Note that the new local
+environment differs depending on the OCAP status of the working thread. If the
+thread is tagged with $a = \nocap$ the new frame also has access to the global
+environment, while if $a = \ocap$ it will not. Note also that the new frame
+stack is tagged with the variable name $x$, the variable being assigned the
+method result in rule \ERet{}. \ERet{} corresponds to method return and utilizes
+the aforementioned variable name tag. Note that none of these rules changes the
+thread identifier or OCAP status of a thread.
+
+Finally, in Figure~\ref{fig:threads_red_rules}, the rules for thread set
+reductions are defined. Here we find \EFSProp{} and \EErrorP{} which were
+mentioned above. Furthermore we have rule \ESpawn{}, which spawns a new callback
+thread for the threshold value $l$ in the cell specified by $o$. \ETerm{} is a
+rule to remove any thread stack finished with its execution.
+
+\begin{figure}[h]
   \scax{E-Null}
   {H, \sFrame{L}{\Let{x}{\NullVal}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
   \NullVal]}{t}}
@@ -229,7 +299,7 @@ the following definitions we describe the execution rules in more detail.
   \RuleSpace{}
 
   \scrule{E-New}
-  {o\text{ fresh object reference } \\
+  {o\text{ fresh object identifier } \\
   FM = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in \fdecls(C)] \\
   H' = H[o \mapsto \Obj{C, FM}]}
   {H, \sFrame{L}{ \Let{x}{\New{C}}{t} } \; \FRedTo \\
@@ -238,7 +308,7 @@ the following definitions we describe the execution rules in more detail.
   \RuleSpace{}
 
   \scrule{E-NewCell}
-  {o\text{ fresh object reference } \andalso
+  {o\text{ fresh object identifier } \andalso
   H' = H[o \mapsto \Cell{\emptyset, \bot_{\LatVals{}}}]}
   {H, \sFrame{L}{ \Let{x}{\NewCell}{t} } \; \FRedTo \\
   H', \sFrame{L[x \mapsto o]}{t}}
@@ -258,7 +328,7 @@ the following definitions we describe the execution rules in more detail.
   {L(y) = o \andalso H(o) = \Cell{DEP, l} \andalso L(z) = l' \\
   L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
   \andalso cb = (L_{\text{env}}, w \Rightarrow t') \\
-  d\text{ fresh thread id } \andalso DEP' = DEP \cup (l', cb)^\iota \\
+  \iota\text{ fresh thread identifier } \andalso DEP' = DEP \cup (l', cb)^\iota \\
   H' = H[o \mapsto \Cell{DEP', l}] }
   { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, w \Rightarrow t') }}{t} } \\ \FRedTo \;
   H', \sFrame{L[x \mapsto L(y)]}{t} }
@@ -266,8 +336,6 @@ the following definitions we describe the execution rules in more detail.
   \label{fig:frame_red_rules}
 \end{figure}
 
-In figures~\ref{fig:frame_red_rules} and \ref{fig:error_red_rules} all reduction
-rules for single frames are defined. 
 
 \begin{figure}
   \scrule{E-NullSelect}
@@ -350,7 +418,7 @@ rules for single frames are defined.
   }
   {
     H,P \Rrightarrow H', P \cup \left\{ \Frame{L}{t}{-} \circ \varepsilon
-    |_{\ocap}^{d} \right\}
+    |_{\ocap}^{\iota} \right\}
   }
 
   \RuleSpace{}
@@ -444,6 +512,9 @@ values are stored on the heap. We also have a separate lattice value type
   \label{fig:racl_typelat}
 \end{figure}
 
+\subsection{Terms \& Expressions}%
+\label{sub:terms_and_expressions}
+
 The basic building blocks of our type system are the typing of expressions and
 terms. Our type relation is written
 \begin{equation}
@@ -451,11 +522,38 @@ terms. Our type relation is written
   \TypeRel{\Gamma}{a}{e}{\tau}. \notag
 \end{equation}
 Apart from the usual parts of typing environment $\Gamma$, term $t$ or
-expression $e$ and type $\tau$ we note that it includes a designator $a$ which
+expression $e$ and type $\tau$, we note that it includes a designator $a$ which
 can take on the values \nocap{} and \ocap{}. The latter indicates that the term
-or expression is typed under OCAP constraints. This is exactly like the type
-system of \LaCasa{}. All typing rules for terms and expressions can be found in
-Figure~\ref{fig:expr_typing}.
+or expression is typed under OCAP constraints. This is equivalent to the OCAP
+typing of \LaCasa{}~\parencite{conf/oopsla/HallerL16}. 
+
+All typing rules for terms and expressions can be found in
+Figure~\ref{fig:expr_typing}. Most of the type system rules are standard. For
+example, rule {\sc T-Let} types a let-term if the subexpression $e$ is typeable
+as $\tau$ under $\Gamma; a$, and the subterm $t$ is typeable under the extended
+environment $\Gamma, x: \tau$ and $a$. Rule {\sc T-Var} types a variable under
+$\Gamma$ provided $x \in \dom(\Gamma)$. {\sc T-New} types $\New{C}$ under effect
+$a = \ocap$ only if the class $C$ is typeable as $\ocap$. The rules for typing a
+class as $\ocap$ is defined in Figure~\ref{fig:ocap_typing}. Typing rule {\sc
+T-Call} states that a method call $\Call{x}{m}{y}$, is only typeable if the type
+of $y$ is a subtype of the method parameter type $\sigma$. {\sc T-Put} types the
+expression $\Put{x}{y}$ if $x$ is typeable as \CellType{} and $y$ is of the lattice
+type \LatType.
+
+As a final example, the rule {\sc T-When} describes typing of the dependency
+creation expression. It says that in order to register a callback for lattice
+value $y$ in cell $x$, first $x$ and $y$ must be typeable as $\CellType$ and
+$\LatType$ respectively. Furthermore all captured variables in $\overline{cap}$
+must be typeable as $\CellType$.  Finally, the term $t$ from callback closure $z
+\Rightarrow t$ must be typeable in an environment consisting of the captured
+variables and $z: \LatType$.
+
+\subsection{Well Formed Programs}%
+\label{sub:well_formed_programs}
+
+In order to decide
+The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
+{\sc WF-Prog} says that 
 
 \begin{figure}[h!]
   \centering
@@ -527,21 +625,6 @@ Figure~\ref{fig:expr_typing}.
   \label{fig:expr_typing}
 \end{figure}
 
-Many of the typing rules are both intuitive and standard. For example the
-resulting type of a field selection from a class object is the type of the
-field as in {\sc T-Select}, and creating a new object of class $C$ results in
-type $C$ as in {\sc T-New}. A little more interesting are the rules typing the
-non-standard \emph{put} and \emph{when} expressions. 
-
-The rule {\sc T-Put} says that in order to update $x$ with $y$, $x$ and $y$ must
-be typeable as $\CellType$ and $\LatType$ respectively. The rule {\sc T-When}
-describes typing of the dependency creation expression. It says that in order to
-register a callback for lattice value $y$ in cell $x$, firstly $x$ and $y$ must
-be typeable as $\CellType$ and $\LatType$ respectively, secondly that all
-captured variables in $\overline{cap}$ are typeable as $\CellType$ and that the
-callback expression is typeable in an environment consisting of the captured
-variables and the lattice variable on which the callback triggers.
-
 \begin{figure}[h]
   \scrule{WF-Prog}
   {p \vdash \overline{cd} \andalso p \vdash \Gamma_0 \andalso
@@ -574,8 +657,6 @@ variables and the lattice variable on which the callback triggers.
   \label{fig:wf_typing}
 \end{figure}
 
-The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
-{\sc WF-Prog} says that 
 
 \begin{figure}
   \scax{OCAP-AnyRef}
