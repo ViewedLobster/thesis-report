@@ -3,11 +3,33 @@
 
 % Write about the basic ideas behind the proof of preservation and progress
 
+We are now finally ready to state and prove the progress and preservation
+properties of RACL. These will then be used in order to prove
+quasi determinism. 
+
+
+\section{Preservation \& Progress}%
+\label{sec:preservation_and_progress}
+
+The preservation theorem states that if we have a well typed state that can
+step to another state, this will also be well typed.
+
 \begin{theorem}[Preservation]
   \label{thm:preservation}
-  Let $S, S'$ be states such that $\vdash S \tsep \stateok$ and $S \Rrightarrow
+  Let $S, S'$ be states such that $\vdash S \tsep~\stateok$ and $S \Rrightarrow
   S'$. Then $\vdash S' \tsep \stateok$.
 \end{theorem}
+
+The proof of preservation in its full can be found in
+Appendix~\ref{cha:proof_of_pnp}. The part concerning preservation of isolation
+is probably the most interesting, since properties like well typed heap and
+threads are standard. The isolation preservation proof is based on the
+fact that, by OCAP reachability, all $\ocap$ threads can only reach $\ocap$
+class objects. Combined with global object separation, this means the thread can
+never access the global object or create non-$\ocap$ objects through a
+$\New{...}$-expression. This implies the thread follows the OCAP model as
+described in Section~\ref{sec:the_object_capability_model}. Thus isolated
+threads will stay isolated.
 
 \begin{theorem}[Progress]
   \label{thm:progress}
@@ -19,10 +41,20 @@
   \end{enumerate}
 \end{theorem}
 
+The progress theorem proof is by contradiction. The full proof can also be found in
+Appendix~\ref{cha:proof_of_pnp}.
 % Describe:
 % Theorem of determinism
 % Lemmas leading up to the proof of this
 
+\section{Quasi Determinism}%
+\label{sec:quasi_determinism}
+
+Having prooved soundness of the type system, the next thing to proove is quasi
+determinism. In order to state this more formally, we need some definitions.
+
+The following is one way to define the concept of a fresh object\slash thread
+identifier.
 \begin{definition}
   For each state $S = H, P$ there are two related sets of currently used object
   identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$.
@@ -38,6 +70,8 @@
   $o \not\in \OIDs(S)$ ($d \not\in \TIDs(S)$).
 \end{definition}
 
+Now we define a relation on states and show that this is an equivalence
+relation.
 \begin{definition} \label{def:eqrel}
   Let $\simeq$ be a binary relation on the set of states $\States$.
   We let $S \simeq S'$ if
@@ -57,13 +91,15 @@
   The functions $\pi$ and $\rho$ are defined in definition~\ref{def:pirho}.
 \end{definition}
 
-% TODO define \pi and \rho
-
 
 \begin{proposition} \label{prop:eqrel}
   $\simeq$ is an equivalence relation.
 \end{proposition}
 
+A proof sketch of this can be found in Appendix~\ref{cha:proof_of_qd}.
+
+Similarly we can prove the following. The full proof can also be found in
+Appendix~\ref{cha:proof_of_qd}.
 \begin{proposition} \label{prop:eqrel_stateok}
   For any $S, S' \in \States$ such that $S \simeq S'$
   \begin{equation}
@@ -116,6 +152,8 @@ Because of this claim we can make the following definition
   completely decided by the state $S$ and thread identifier $\iota$.
 \end{remark}
 
+To simplify notation we make the following definition.
+
 \begin{definition}
   A \emph{transition sequence} $\bar{R}$ is a finite length sequence of
   transition identifiers
@@ -139,6 +177,12 @@ Because of this claim we can make the following definition
   \end{equation*}
 \end{definition}
 
+We state the following proposition without proof.
+\begin{proposition} \label{prop:uniq_trans}
+  Let $H, P \Rrightarrow H', P'$. Then there is a unique transition identifier
+  $R^{\alpha, \beta}$ such that $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$.
+\end{proposition}
+
 We are now ready to state the last main theorem.
 
 \begin{theorem}[Quasi Determinism] \label{thm:qd}
@@ -155,4 +199,26 @@ We are now ready to state the last main theorem.
     T \simeq T'.
   \end{equation*}
 \end{theorem}
+
+The proof of theorem~\ref{thm:qd} is based on induction on the length of the two
+transition sequences. It can be seen as incrementally transforming $\bar{R'}$ to
+$\bar{R}$ by moving transition specifiers to positions specified by $\bar{R}$.
+Each intermediate sequence is shown to halt in the same state.
+
+Finally, this corollary follows from theorem~\ref{thm:qd} and
+proposition~\ref{prop:uniq_trans}:
+\begin{corollary}
+  Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
+  \begin{equation*}
+    \begin{gathered}
+      S \simeq S' \\
+      S \Rrightarrow^* T \andalso S' \Rrightarrow^* T'.
+    \end{gathered}
+  \end{equation*}
+  Furthermore we assume that neither $T$ or $T'$ can make a step.
+  Then
+  \begin{equation*}
+    T \simeq T'.
+  \end{equation*}
+\end{corollary}
 

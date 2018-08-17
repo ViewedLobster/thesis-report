@@ -27,7 +27,7 @@ parameterized on the lattice \LatVals{}.
     \sigma,\tau & ::= & & \mbox{Types} \\
     & & C, D & \mbox{Class types} \\ 
     &| & \CellType & \mbox{Cell type} \\
-    &| & \NullType & \mbox{Null type} \\
+    %&| & \NullType & \mbox{Null type} \\
     &| & \LatType & \mbox{Lattice value type} \\
     &&&\\
     t &::=& & \mbox{Terms} \\
@@ -75,9 +75,6 @@ dependencies between cells. The semantics of these will be explained next.
 
 \section{Semantics}%
 \label{sec:semantics}
-
-% TODO describe the rules a bit
-% TODO state that program execution starts from starting state
 
 In this section the semantics of \RACL{} will be introduced. First a brief
 overview is made and then a few of the more interesting or non-standard
@@ -165,11 +162,11 @@ the following definitions we describe the execution rules in more detail.
   \begin{equation*}
     P = \left\{ FS_i|_{a_i}^{\iota_i} \right\}_{i = 1}^{n}
   \end{equation*}
-  of frame stacks $FS_i$ tagged with a unique thread id $\iota_i \in \TIDs$ and an
+  of non-empty frame stacks $FS_i$ tagged with a unique thread id $\iota_i \in \TIDs$ and an
   OCAP status $a_i \in \ocapstats$. Note that $P$ can be the empty set.
 \end{definition}
 
-\begin{definition}{(States)}
+\begin{definition}
   We define a \emph{state} to be either the error state $\Error$ or a pair $H,
   P$ where $H$ is a heap and $P$ is a thread set.
 \end{definition}
@@ -196,12 +193,28 @@ the following definitions we describe the execution rules in more detail.
 \end{definition}
 
 \begin{definition}
-  Execution of a program starts from state $S_0 = H_0, P_0$ where $H_0$ and
-  $P_0$ are defined as follows. 
+  Execution of a program starts from state $S_0 = H_0, P_0$. $H_0$ and
+  $P_0$ are defined as follows for a program $p =
+  \overline{cd}~\overline{vd}~t$.
   \begin{equation*}
-    H_0
+    \begin{gathered}
+      H_0 = [o_g \mapsto \Obj{C_g, FM_g}] \\
+      FM_0 = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in \overline{vd}]
+    \end{gathered}
   \end{equation*}
+  where $o_g$ is a reserved object identifier for the default object and $C_g$
+  is the global class name.
+  \begin{equation*}
+    \begin{gathered}
+      P_0 = \left\{ \xframe{L_g, t} \circ \varepsilon
+      |_{\nocap}^{\iota_{\text{main}}} \right\} \andalso
+      L_g = [ \Global \mapsto o_g ].
+    \end{gathered}
+  \end{equation*}
+  where $\iota_{\text{main}}$ is a reserved thread identifier.
 \end{definition}
+
+% TODO define \Gamma_0
 
 \subsection{Reduction Rules}%
 \label{sub:reduction_rules}
@@ -521,7 +534,7 @@ terms. Our type relation is written
   \TypeRel{\Gamma}{a}{t}{\tau} \quad \text{ or } \quad
   \TypeRel{\Gamma}{a}{e}{\tau}. \notag
 \end{equation}
-Apart from the usual parts of typing environment $\Gamma$, term $t$ or
+Apart from the usual components, i.e., typing environment $\Gamma$, term $t$ or
 expression $e$ and type $\tau$, we note that it includes a designator $a$ which
 can take on the values \nocap{} and \ocap{}. The latter indicates that the term
 or expression is typed under OCAP constraints. This is equivalent to the OCAP
@@ -548,12 +561,6 @@ must be typeable as $\CellType$.  Finally, the term $t$ from callback closure $z
 \Rightarrow t$ must be typeable in an environment consisting of the captured
 variables and $z: \LatType$.
 
-\subsection{Well Formed Programs}%
-\label{sub:well_formed_programs}
-
-In order to decide
-The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
-{\sc WF-Prog} says that 
 
 \begin{figure}[h!]
   \centering
@@ -625,12 +632,52 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \label{fig:expr_typing}
 \end{figure}
 
+\subsection{Well Formed Programs}%
+\label{sub:well_formed_programs}
+
+Intuitively, a well formed program is a program which obeys our type system. We
+define well-formedness in Figure~\ref{fig:wf_typing}. We also need the
+definition of the global typing environment $\Gamma_0$. 
+\begin{definition}
+  Let the \emph{global typing environment} $\Gamma_0$ be defined as 
+  \begin{equation*}
+    \Gamma_0 = \Global : C_g
+  \end{equation*}
+\end{definition}
+{\sc WF-Prog} says that in order for a program $p =
+\overline{cd}~\overline{vd}~t$ to be well typed, all classes $\overline{cd}$,
+global variables $\overline{vd}$ and the program term $t$ must be well typed.
+Rule {\sc WF-Global} says that in order for a global variable declaration to be
+well typed, the denoted type must either be $\LatType$, $\CellType$ or be of
+class type $C$ where the class definition of $C$ is well formed. In order for a
+class definition of $C$ to be well typed, rule {\sc WF-Class} declares that all
+methods must be well formed under $C$, the extended class $D$ must either be
+$\AnyRefType$ or must also be well formed. Furthermore, all methods must obey the
+rules of overriding and $C$ cannot redeclare any fields that has been declared
+in an extended class $D$. {\sc WF-Override} declares that for a method to be
+correctly overriden it must either not be declared in any extended class or it
+must have the same declared type as in the extended class. Finally {\sc
+WF-Method} states that in order for a method to be well typed, its term must be
+typable as a type $\tau'$ under an environment consisting of the global
+environment, the class itself $\This : C$ and the method parameter $x: \sigma$.
+Futhermore $\tau' \stof \tau$, where $\tau$ is the declared return type of the
+method.
+
+
+
 \begin{figure}[h]
   \scrule{WF-Prog}
-  {p \vdash \overline{cd} \andalso p \vdash \Gamma_0 \andalso
+  {p \vdash \overline{cd} \andalso p \vdash \overline{vd} \andalso
   \TypeRel{\Gamma_0}{\nocap}{t}{\tau}}
   {p \vdash \overline{cd} \: \overline{vd} \: t}
 
+  \RuleSpace{}
+
+  \scrule{WF-Global}
+  {\sigma = \LatType \lor \sigma = \CellType ~ \lor  \\
+  (\sigma = C \land p \vdash \ClassDef{C}{...}{...}{...})}
+  {p \vdash \VarDecl{f}{\sigma}}
+  
   \RuleSpace{}
 
   \scrule{WF-Class}
@@ -657,6 +704,19 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \label{fig:wf_typing}
 \end{figure}
 
+\subsection{OCAP Typing}%
+\label{sub:ocap_typing}
+
+In Figure~\ref{fig:ocap_typing} we find the rules for classifying a type as $\ocap$.
+Immediately we see that unconditionally, both $\AnyRefType$ and $\CellType$ are
+$\ocap$. To type a class as $\ocap$, {\sc OCAP-Class} says that apart from being
+well formed, the superclass $D$ must be $\ocap$. Furthermore, all methods must
+be typable under the special judgement $\vdash_{\ocap}$ and all fields must be
+$\ocap$.  For a method to be typed under $\vdash_{\ocap}$, rule {\sc
+OCAP-Method} declares that the method term must be typable under effect $\ocap$
+without access to the global environment $\Gamma_0$. Being typable under effect
+$\ocap$ means that expression $\New{C}$ is only allowed if $C$ is $\ocap$, as
+stated in rule {\sc T-New}.
 
 \begin{figure}
   \scax{OCAP-AnyRef}
@@ -688,6 +748,15 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 \section{Properties}
 \label{sec:properties}
 
+In order to prove things such as progress and preservation we need a few more
+definitions. Many of them are just auxilliary properties of things like a state
+and type, and build up to the final definition of a well typed state.
+
+\subsection{Well Typed Heap}%
+\label{sub:well_typed_heap}
+
+This first definition is a straightforward partial function to get the dynamic
+type of a value.
 \begin{definition}
   The partial function $\typeOf$ is defined as follows:
   \begin{equation}
@@ -699,13 +768,22 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
       C, &\text{ if }k \in \dom{(H)}\text{ and } H(k) = \Obj{C, ...} \\
     \end{cases}
   \end{equation}
+\end{definition}
+In order to simplify the definition of a well typed heap we define the
+following.
+\begin{definition}
   The typing environment $\Gamma_{\CellType}(L)$ is defined as follows:
   \begin{equation}
     \Gamma_{\CellType}(L) = \left[(x: \CellType) : x \in \dom(L)\right]
   \end{equation}
 \end{definition}
-
-
+Finally comes the definition of a well typed heap. To say that a heap is
+well typed intuitively means that for all class objects, all field values are of
+a subtype of the declared type. Furthermore, our definition includes a statement
+about cell objects. We say that for all callbacks stored in dependency sets, all
+captured values must be of cell type and the callback term must be typeable
+under an environment containing the captured variables and closure parameter
+$z$.
 \begin{definition}[Well Typed Heap]
   A heap $H$ is well typed, written $\vdash{H}$, if
   $\forall o \in \dom{(H)}$:
@@ -730,7 +808,37 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{equation}
 \end{definition}
 
+\subsection{Well Typed Threads}%
+\label{sub:well_typed_threads}
 
+A non erroneous state $S = H, P$ has two parts. In order to both define and
+prove preservation properties, we furthermore need to put restrictions on the
+thread set $P$. We do this with the relation $H \vdash P$, saying $P$ is well
+typed under heap $H$. This relation is defined in Figure~\ref{fig:ts_typing}.
+{\sc T-Procs} and {\sc T-Empty} basically says that in order for a thread set
+$P$ to be well typed under heap $H$, all threads needs to be well typed under
+$H$ and its OCAP status $a$.  For a thread $GS|_a^\iota$ we write this as $H; a
+\vdash GS$. This relation is defined in Figure~\ref{fig:fs_typing}. 
+
+For $H; a \vdash GS$ to hold, either $FS = \varepsilon$ as in rule {\sc
+T-FSEmpty1} (this is actually impossible since frame stacks of a state cannot be
+empty), or the term $t$ of top frame $F$ is typeable with some environment
+$\Gamma$ which is conformant with its local variable map $L$ and $H$. This
+conformancy is expressed through the relation $H \vdash \Gamma; L$ which is
+defined in Figure~\ref{fig:local_typing}. Simply stated, it says that all types
+specified in $\Gamma$ aligns with the dynamic types of the state. Furthermore
+{\sc T-FS1} declares that the rest of the frame stack $FS$ must be typable under
+the judgement $\vdash^{x: \sigma}$. This relation is defined by rules {\sc
+T-FS2} and {\sc T-FSEmpty2}. The latter reflects that the top frame
+returns some value to its underlying frame stack. It is closely connected with
+the well-formedness of methods and call\slash return execution rules as defined
+in {\sc WF-Method} and \ECall{}\slash\ERet{} respectively.
+
+\subsection{Isolation}%
+\label{sub:isolation}
+
+The next two definitions are used when defining isolation of threads in the
+reference graph of the heap. 
 \begin{definition}[Class Object Separation]
   For any heap $H$ and heap references $o, o'$ we have class object separation,
   $\csep{(H, o, o')}$ iff
@@ -744,12 +852,26 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
 
 \begin{definition}[Accessible Roots]
   For a heap $H$ and a frame stack $FS$ we define $\accRoots{(FS, H)}$ as
-
   \begin{equation}
     \accRoots{(FS, H)} = \left\{ o \in \dom{(H)}: \accRoot{(o, FS)} \right\}
   \end{equation}
 \end{definition}
 
+Isolation of threads is defined in Figure~\ref{fig:def_isolation}. Rule {\sc
+ISO-FS} states that for two threads to be isolated with regards to heap $H$, all
+accessible roots of the two threads must have class object separation, i.e. that
+all objects that are reachable from both threads must be of type $\CellType$.
+Rule {\sc ISO-Procs} states that we have isolation for a thread set $P$ under
+heap $H$, if there is isolation between all pair of threads such that at least
+one is $\ocap$.
+
+\subsection{OCAP Reachability}%
+\label{sub:ocap_reachability}
+
+In order to prove preservation of isolation we also need to ensure that all
+objects reachable from an $\ocap$ thread can be typed as $\ocap$. The next
+definition together with Figure~\ref{fig:def_ocapreach} defines this property
+formally.
 \begin{definition}[OCAP Reachability]
   For a heap $H$ and frame stack $FS$ we have $\ocrloc{(FS,H)}$ iff
   \begin{align}
@@ -759,6 +881,18 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{align}
 \end{definition}
 
+\subsection{Global Object Separation}%
+\label{sub:global_object_separation}
+
+Another thing needed to prove preservation of isolation is global object
+separation. Simply stated this means that no $\ocap$ thread can reach the global
+object $o_g$ through heap references. This is formally defined in
+Figure~\ref{fig:def_gsep}.
+
+\subsection{No Thread Spawning}%
+\label{sub:no_thread_spawning}
+
+The next definition is needed to prove progress.
 \begin{definition}[No Spawn]
   For any heap $H$ we have $\noSpawn(H)$ if and only if
   \begin{equation}
@@ -770,6 +904,13 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{equation}
 \end{definition}
 
+\subsection{Unique Main Thread}%
+\label{sub:unique_main_thread}
+
+In order to prove determinism we must be sure that there is at most one
+non-$\ocap$ thread running. Otherwise these two could interfere since there are no
+constraints on wethere these can share data. Therefore we define the following
+property.
 \begin{definition}[Unique Main Thread]
   For a thread $FS|_a^\iota$ let
   \begin{equation*}
@@ -789,10 +930,14 @@ The rules for a well formed programs can be found in Figure~\ref{fig:wf_typing}.
   \end{equation*}
 \end{definition}
 
+
+\subsection{Well Typed States}%
+\label{sub:well_typed_states}
+
+Finally we can define the notion of a well typed state. This combines many of
+the properties already defined into one.
 \begin{definition}[Well Typed States]
-  A state $S$ is a value of either $\Error$ or a pair $H, P$ where $H$ is a heap
-  and $P$ is a set of threads. For a state $S$ we say that it is well typed,
-  written
+  For a state $S$ we say that it is well typed, written
   \begin{equation}
     \vdash S \tsep \stateok
   \end{equation}

@@ -1,5 +1,5 @@
 \chapter{Proof of Preservation and Progress}
-\label{proof_of_pnp}
+\label{cha:proof_of_pnp}
 
 \begin{definition}[Heap Induced Graph]
   The induced graph of heap $H$, written $\Graph{(H)}$ is the directed graph
@@ -242,13 +242,7 @@
     o_g \right\}$ 
 \end{proof}
 
-We state the following two propositions without proof, but they should be quite
-obvious.
-\begin{proposition} \label{prop:uniq_trans}
-  Let $H, P \Rrightarrow H', P'$. Then there is a unique transition identifier
-  $R^{\alpha, \beta}$ such that $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$.
-\end{proposition}
-
+We state the following without proof.
 \begin{proposition} \label{prop:tilde_trans}
   Let $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$. Then $H, \tilde{P}
   \Rrightarrow^{R^{\alpha, \beta}} H', \tilde{P'}$

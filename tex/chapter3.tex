@@ -132,14 +132,6 @@ revisions of Reactive Async.
   \label{fig:ra_example}
 \end{figure}
 
-% problems of reactive async includes:
-% access to shared state is permitted within callbacks
-% even then semantics of callback thread spawning is flawed
-
-% Should we do these in the challenges? Prolly yes.
-% TODO explain the problem of callback spawning
-% TODO explain the problem of shared state
-
 \section{LaCasa}\label{sec:lacasa}
 
 LaCasa\parencite{conf/oopsla/HallerL16} is a programming model for ensuring
@@ -159,10 +151,11 @@ are isolated, i.e., that at most one thread can access the data and perform
 calculations with it.
 
 A big part of ensuring isolation is requiring all objects encapsulated in boxes
-are of classes typed as \emph{ocap}. This basically means two things.
+are of classes typed as \emph{ocap}. This basically means three things.
 \begin{enumerate}
   \item The methods never access a global global object.
   \item All field types are ocap.
+  \item Method can only create new instances of ocap classes.
 \end{enumerate}
 To ensure this holds in the presence of a subtyping relation, superclasses are
 furthermore required to be ocap~\parencite{conf/oopsla/HallerL16}.
