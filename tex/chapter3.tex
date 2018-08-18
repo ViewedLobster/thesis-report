@@ -61,7 +61,7 @@ The LVars model supports three main operations~\parencite{kuper2013lvars}.
 
 LVish~\parencite{kuper2014freeze} is an extension of LVars. It introduces a new
 operation called freezing, a system to create dependencies between store
-locations, and the concepts of quasi determinism and quiescence.  In LVish the
+locations, and the concepts of quasi-determinism and quiescence.  In LVish the
 store is modified such that every location also has an associated \emph{freeze
 bit} with a default value of $\LVarsFalse$. The \emph{freeze} operation
 takes a location and changes its associated bit to $\LVarsTrue$.  Whenever a
@@ -79,9 +79,9 @@ for the get operation the elements does not have to be incompatible.
 With the introduction of freezing a program could take different execution
 paths where one halts in $\Error$ and the other halts in a non-erroneos state.
 It is thus obvious that the LVish system is no longer deterministic. Therefore
-the authors introduce \emph{quasi determinism}, a weaker form of
+the authors introduce \emph{quasi-determinism}, a weaker form of
 determinism. Instead of requiring the same computation result for all execution
-paths, quasi determinism only requires that results be the same for
+paths, quasi-determinism only requires that results be the same for
 non-erroneous halting states.
 
 Finally the LVish system makes use of a concept called \emph{quiescence}, in
@@ -89,7 +89,7 @@ order to decide when to freeze a location. In short a computation reaches
 quiescence when no more changes to the store are expected to take place. For
 example, this could be when there are no more callback threads running.
 
-The proof of quasi determinism for LVish presented by
+The proof of quasi-determinism for LVish presented by
 \textcite{kuper2014freezeTR} is flawed. This will be touched upon further in
 chapter~\ref{cha:challenges}.
 

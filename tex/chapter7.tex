@@ -20,6 +20,18 @@ conclusions.
 % lattices. Have some
 % function that generates callbacks: I.e. for the new value, spawn some new
 % callbackthreads
+\section{A Remark About Determinism}%
+\label{sec:a_remark_about_determinism}
+
+In this report, the quasi-determinism of RACL is proved. However, it
+should be possible to prove complete determinism, meaning that you get the same
+halting result in all executions which start in the same state. This is due to
+that all return results from cell operations are agnostic to the cell value.
+This implies that callback threads, with the current semantics are in practice
+completely isolated and cannot share any information. This in turn means that
+the execution of a thread is deterministic, meaning that if there is an error
+spawning thread in one execution path, there will be in all other executions
+aswell.
 
 \section{Possible Extensions}%
 \label{sec:extensions}
@@ -45,7 +57,6 @@ As mentioned in Section~\ref{sec:lvars}, LVars has an additional \emph{get}
 operation, not modeled in RACL. Adopting the semantics of LVars, it should be
 possible to extend RACL with this operation aswell.
 
-
 \section{Implementation}%
 \label{sec:implementation}
 
@@ -57,9 +68,35 @@ required for this operation is linear in the combined size of dependency sets.
 The LVish implementation solved this by optimizing their library for so called
 atomic lattices, i.e., lattices where all values can be written as a join of so
 called \emph{atoms}. An atom $a$ is an element of the lattice $\LatVals$ where
-$l \sqsubseteq a \implies l \in \{\bot, a\}$. Instead of using the threshold set
-semantics, the LVish implementation uses the concept of
+$l \sqsubseteq a \implies l \in \{\bot, a\}$. For example, the lattice of
+integer sets $(2^{\integers}, \subseteq)$ has the atoms
+\begin{equation*}
+  \{ i \} \andalso i = \dots, -2, -1, 0, 1, 2,\dots
+\end{equation*}
+Working with atomic lattices allows for expressing a LVar update by a delta
+value, i.e., a difference between the old and new value. Instead of using the
+threshold set semantics, LVish registers callback generators, which for each
+update to an LVar generates callbacks to be run. Levaraging the delta
+representation, these generators can be made efficient in many
+cases~\parencite{kuper2014freeze}. In a RACL implementation, these generators
+would of course also have to be isolated similar to regular callbacks, in
+order to guarantee determinism.
 
+
+\section{Conclusion}%
+\label{sec:conclusion}
+
+With this thesis, the aim was to construct a similar formal system to LVish, but
+with object oriented characteristics, mostly levaraging the work
+of~\textcite{conf/oopsla/HallerL16}. Furthermore the aim was to prove
+quasi-determinism similar to LVish. This goal has been met, but not without its
+hardships. The discovery of an error in the proof
+of~\textcite{kuper2014freezeTR} led to the elimination of the freeze operation
+in its current form. This indicates two things: Firstly, when formal systems get
+larger, proofs get longer and great care has to be taken in order to ensure
+correctness. Secondly, the goal of determinisic-by-design concurrent systems is
+difficult to understand, and seemingly safe operations such as freezing could
+have unforseen consequences.
 
 % TODO discussion: bring up fact of running callbacks twice does not
 % affect result

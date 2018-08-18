@@ -5,7 +5,7 @@
 
 We are now finally ready to state and prove the progress and preservation
 properties of RACL. These will then be used in order to prove
-quasi determinism. 
+quasi-determinism. 
 
 
 \section{Preservation \& Progress}%
@@ -47,11 +47,12 @@ Appendix~\ref{cha:proof_of_pnp}.
 % Theorem of determinism
 % Lemmas leading up to the proof of this
 
-\section{Quasi Determinism}%
+\section{Quasi-Determinism}%
 \label{sec:quasi_determinism}
 
-Having prooved soundness of the type system, the next thing to proove is quasi
-determinism. In order to state this more formally, we need some definitions.
+Having prooved soundness of the type system, the next thing to proove is
+quasi-determinism. In order to state this more formally, we need some
+definitions.
 
 The following is one way to define the concept of a fresh object\slash thread
 identifier.
@@ -185,7 +186,7 @@ We state the following proposition without proof.
 
 We are now ready to state the last main theorem.
 
-\begin{theorem}[Quasi Determinism] \label{thm:qd}
+\begin{theorem} \label{thm:qd}
   Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
   \begin{equation*}
     \begin{gathered}
@@ -207,7 +208,7 @@ Each intermediate sequence is shown to halt in the same state.
 
 Finally, this corollary follows from theorem~\ref{thm:qd} and
 proposition~\ref{prop:uniq_trans}:
-\begin{corollary}
+\begin{corollary}[Quasi-Determinism]
   Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
   \begin{equation*}
     \begin{gathered}

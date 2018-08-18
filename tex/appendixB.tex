@@ -1,4 +1,4 @@
-\chapter{Proof of Quasi Determinism}
+\chapter{Proof of Quasi-Determinism}
 \label{cha:proof_of_qd}
 
 \section{Preliminaries}
@@ -172,23 +172,8 @@
   renaming of object and thread identifiers.
 \end{proof}
 
-\section{Proof of Quasi Determinism}
+\section{Proof of Quasi-Determinism}
 \label{sec:proof_of_quasi_determinism}
-
-\begin{theorem*}[Quasi Determinism]
-  Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
-  \begin{equation*}
-    \begin{gathered}
-      S \simeq S' \\
-      S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T'.
-    \end{gathered}
-  \end{equation*}
-  Furthermore we assume that neither $T$ or $T'$ can make a step.
-  Then
-  \begin{equation*}
-    T \simeq T'.
-  \end{equation*}
-\end{theorem*}
 
 \begin{lemma} \label{lem:lemma1}
   Let $S$ be a state s.t. $\vdash S \tsep \stateok$ where the two transitions
@@ -881,8 +866,23 @@ Because of this proposition the following is well defined.
   \end{itemize}
 \end{proof}
 
-Finally we prove quasi determinism.
-\begin{proof}{(Theorem~\ref{thm:qd}, Quasi Determinism)}
+Finally we restate and prove theorem~\ref{thm:qd}.
+\begin{theorem*}
+  Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
+  \begin{equation*}
+    \begin{gathered}
+      S \simeq S' \\
+      S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T'.
+    \end{gathered}
+  \end{equation*}
+  Furthermore we assume that neither $T$ or $T'$ can make a step.
+  Then
+  \begin{equation*}
+    T \simeq T'.
+  \end{equation*}
+\end{theorem*}
+
+\begin{proof}{(Theorem~\ref{thm:qd}, Quasi-Determinism)}
   If $S \neq S'$ by lemma~\ref{lem:lemma3} there is a state $T''$ and a
   transition sequence $\bar{R''}$ such that
   \begin{equation}
@@ -930,7 +930,7 @@ Finally we prove quasi determinism.
       \end{equation*}
       Furthermore let
       \begin{equation*}
-        \bar{R_{>1}} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n} \\
+        \bar{R}_{>1} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n} \\
       \end{equation*}
       Consider the first tranisition identifier of $\bar{R}$. We let
       Let $k$ be such
