@@ -1,6 +1,6 @@
 \chapter{Related Work}\label{cha:related_work}
 
-In this chapter four major pieces of major work is going to be described.
+In this chapter four important pieces of work are going to be described.
 Section~\ref{sec:lvars} describes the LVars system and LVish, the extension
 of LVars which introduces the concepts of quiescence and freezing. 
 Section~\ref{sec:reactive_async} describes Reactive Async, a programming model
@@ -14,16 +14,16 @@ LVars~\parencite{kuper2013lvars} is a programming model that was introduced as a
 solution to the problem of guaranteed deterministic concurrent programs. It
 generalizes the concept of write-once data
 structures~\parencite{nikhil1989structures}, also called IVars, with the ability
-to write more than once but limiting update operations to being monotonic. I.e.
-the values taken by LVars are part of a programmer specified lattice and all
-updates are done through a join operation of the old and new values. This
-ensures that writes commute~\parencite{kuper2013lvars}.
+to write more than once but limiting update operations to being monotonic.
+In LVars, all variables shared between threads are part of a programmer
+specified lattice and all updates are done through a join operation of the old
+and new values. This ensures that writes commute~\parencite{kuper2013lvars}.
 
 \subsection{Stores \& Lattice}%
 \label{sub:stores_and_lattice}
 
 At the foundation of the LVars system lays lattices. The values resulting from a
-computation is going to be elements from a lattice $\LVarsLat$, specified by the
+computation are going to be elements from a lattice $\LVarsLat$, specified by the
 programmer. These lattice values are stored in a \emph{store}.  This is a set of
 pairs consisting of a location and a lattice element. For a location there is
 at most one value. Letting $\LVarsLoc$ be the set of locations, a store $S$ can
@@ -41,19 +41,19 @@ The LVars model supports three main operations~\parencite{kuper2013lvars}.
     sets its value to $\bot_{\LVarsLat}$, the bottom element of $\LVarsLat$.
   \item Updating a store location, also called a \emph{put} operation. This
     operation takes a store location $r$ and a lattice value $l$. Given a store
-    $S$ this updates location $r$ with $l \sqcup S(r)$. To ensure determinism,
-    any put that takes a store location to $\top_{\LVarsLat}$ results in an
-    error.
-  \item A read operation also referred to as \emph{get}. This operation is
-    further specified with a threshold set, i.e. a set of lattice values, and a
-    store location. The operation blocks until the store location has passed one
-    of the values in the threshold set, upon which it returns this value. In
-    order to ensure determinism the elements in the threshold set are required
-    to be mutually \emph{incompatible}. Two elements $l_1, l_2$ are incompatible if
+    $S$ this updates location $r$ with $l \sqcup S(r)$. To ensure determinism in
+    conjunction with the next operation, any put operation that takes a store
+    location to $\top_{\LVarsLat}$ results in an error.
+  \item A LVar read operation, also referred to as \emph{get}. This operation is
+    specified with a store location and a threshold set, i.e. a set of lattice
+    values. The operation blocks until the store location has passed one of the
+    values in the threshold set, upon which it returns that value. In order to
+    ensure determinism, the elements in the threshold set are required to be
+    mutually \emph{incompatible}. Two elements $l_1, l_2$ are incompatible if
     \begin{equation*}
       l_1 \sqcup l_2 = \top_{\LVarsLat}
     \end{equation*}
-    where $\top$ is the top element of $\LVarsLat$.
+    where $\top_{\LVarsLat}$ is the top element of $\LVarsLat$.
 \end{itemize}
 
 \subsection{LVish: Extending LVars}%
@@ -61,22 +61,22 @@ The LVars model supports three main operations~\parencite{kuper2013lvars}.
 
 LVish~\parencite{kuper2014freeze} is an extension of LVars. It introduces a new
 operation called freezing, a system to create dependencies between store
-locations, and the concepts of quasi-determinism and quiescence.  In LVish the
+locations and the concepts of quasi-determinism and quiescence.  In LVish the
 store is modified such that every location also has an associated \emph{freeze
 bit} with a default value of $\LVarsFalse$. The \emph{freeze} operation
 takes a location and changes its associated bit to $\LVarsTrue$.  Whenever a
-freeze bit is $\LVarsTrue$ it prevents the associated lattice value from being
-changed. If a put operation tries to modify a freezed store location the
-computation ends up in an error state, $\Error$.
+freeze bit is $\LVarsTrue$, it prevents the associated lattice value from being
+changed. If a put operation tries to modify a freezed store location, the
+computation ends up in the error state $\Error$.
 
-As mentioned LVish also permits the programmer to create dependencies between
+As mentioned, LVish also permits the programmer to create dependencies between
 store locations. To do this the programmer specifies a location together with a
 set of threshold lattice values and a callback function. The callback is
 executed as soon as the given location passes a threshold value. Upon execution
 the callback is given access to the threshold passed. Unlike the threshold sets
-for the get operation the elements does not have to be incompatible. 
+for the get operation, the elements do not have to be incompatible. 
 
-With the introduction of freezing a program could take different execution
+With the introduction of freezing, a program could take different execution
 paths where one halts in $\Error$ and the other halts in a non-erroneos state.
 It is thus obvious that the LVish system is no longer deterministic. Therefore
 the authors introduce \emph{quasi-determinism}, a weaker form of
@@ -98,7 +98,7 @@ chapter~\ref{cha:challenges}.
 
 % TODO add ref to scala language
 % TODO add ref to RA article or thesis.
-Reactive Async is a Scala programming framework inspired by LVish. It is based
+Reactive Async is a Scala~\parencite{} programming framework inspired by LVish. It is based
 around objects called \emph{cells}.  Cells are similar to the store locations
 from LVish: They hold a value from a lattice, the value is updated through a
 join operation and you are able to create dependencies between them using

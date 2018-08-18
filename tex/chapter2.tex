@@ -5,11 +5,10 @@ language and type system theory.  In section~\ref{sec:mathematical_definitions}
 we will initially give some mathematical definitions. In
 section~\ref{sec:language_syntax} some basics of language syntax will be
 explained. Section~\ref{sec:language_semantics} gives a brief introduction to
-programming language semantics. Finally section~\ref{sec:type_systems} explains
-some basics of programming language type systems.
-
-As a basis, in the later sections the well known While language will be used as
-an example language.
+programming language semantics. Section~\ref{sec:type_systems} explains
+some basics of programming language type systems. Finally
+Section~\ref{sec:the_object_capability_model} explains the object capability
+security model.
 
 \section{Mathematical Preliminaries}
 \label{sec:mathematical_definitions}
@@ -39,9 +38,9 @@ From now on we will refer to a join-semilattice simply as a \emph{lattice}.
 \begin{definition}
   A \emph{partial function} or \emph{partial map}
   \begin{equation*}
-    f: A \hookrightarrow B
+    f: A \rightharpoonup B
   \end{equation*}
-  is a function is a function defined on a subset of $A$, i.e.
+  is a function is a function defined on some subset of $A$, i.e.
   \begin{equation*}
     f: A' \to B \andalso A' \subseteq A
   \end{equation*}
@@ -52,10 +51,10 @@ From now on we will refer to a join-semilattice simply as a \emph{lattice}.
 \section{Language Syntax} \label{sec:language_syntax}
 
 % Describe the foundations of syntaxes for languages: BNF, ANF
-A language syntax is a formal way to describe the structure of programs written
-in a programming language. It gives us a basis on which to build the language
-semantics and type systems as will be clear later. In this section the
-Backus-Naur-form (BNF) will be introduced. 
+A language syntax is a formal way to describe the syntactical structure a
+programming language. It gives us a basis on which to build the language
+semantics and type systems as will be clear later. This section will give a
+brief introduction to the Backus-Naur-form (BNF).
 
 \subsection{The Backus-Naur-form} \label{sub:the_backus_naur_form} 
 
@@ -64,7 +63,7 @@ programming languages. BNF describes a syntax using rules of the form
 \begin{equation*}
   s ::= \text{<expression>}.
 \end{equation*}
-The the left side symbol $s$ is refered to as a non-terminal. <expression> could
+The left side symbol $s$ is refered to as a non-terminal. <expression> could
 also be a list of the
 possible forms of $s$, separated by $|$, i.e. 
 \begin{equation*}
@@ -73,15 +72,16 @@ possible forms of $s$, separated by $|$, i.e.
 The expressions can themselves contain non-terminals and terminals.
 Terminals are symbols which does not occur on the left side of any rule.
 
-The While language can be written in BNF as described
-in~\parencite{nielson2007semantics} For reference we give a similar description
-here with the addition of a very simple type system.
+As an example, the While language can be written in BNF as described
+by \textcite{nielson2007semantics}. For reference we give a similar description
+here, with the addition of a very simple type system which will be explained in
+Section~\ref{sec:type_systems}.
 
-Furthermore we let $\WhVar$ be the set of all variable names and $\WhVal$ the
-set of all values which for the While language will be the integers $\integers$,
-and the boolean values $\WhTrue$ and $\WhFalse$. 
+We let $\WhVar$ be the set of all variable names and $\WhVal$ the
+set of all values, which for the While language will be the integers $\integers$,
+and the boolean values $\WhTrue$ and $\WhFalse$,
 \begin{equation*}
-  \WhVal = \integers \cup \left\{ \WhTrue, \WhFalse \right\}
+  \WhVal = \integers \cup \left\{ \WhTrue, \WhFalse \right\}.
 \end{equation*}
 Note that in~\parencite{nielson2007semantics} 
 the conversion between the syntactical (numerals\slash boolean literals) and semantic
@@ -129,12 +129,12 @@ this conversion is implicit.
 
 % Describe small step operational semantics and give example with while lang
 In order to prove properties of a program you must be able to formally describe
-the "meaning" of the program, i.e. to describe how programs statements modify
+the "meaning" of the program, i.e., to describe how programs statements modify
 state and what execution steps can be taken. A common approach to this is
 small-step operational semantics, also called structural operational semantics
 (SOS). Other approaches includes big-step operational semantics or natural
-semantics, and denotational semantics. Since SOS models concurrency well this is
-the only one described here.
+semantics, and denotational semantics. The presentation here will focus on SOS
+since this can model concurrency well. 
 
 Small-step operational semantics defines rules which can be used to derive
 single execution steps (or transitions) between program states. We exemplify
@@ -158,8 +158,8 @@ All rules are of the form
 \infrule[Rule name]
 {\text{precondition}}
 {S \rightarrow S'}
-Which basically says "if precondition holds then we can step from $S$
-to $S'$".  If there are no preconditions we just write
+This basically says {\it if precondition holds then we can step from $S$
+to $S'$}. If there are no preconditions we just write
 \infax[Rule name]
 {S \rightarrow S'}
 
@@ -208,19 +208,20 @@ to $S'$".  If there are no preconditions we just write
   \label{fig:while_sos}
 \end{figure}
 
-Most of the rules are very intuitive. For example, rules {\sc WhE-Decl1} and {\sc
+Most of the rules should be very intuitive. For example, rules {\sc WhE-Decl1} and {\sc
 WhE-Decl2} extends the state map $V$ with $x$ and a default value corresponding
 to the declared type. Rule {\sc WhE-Assign} evaluates the expression $e$ and
 maps $x$ to the result. Rules {\sc WhE-IfTrue} and {\sc WhE-IfFalse} evaluates
-its expression $e$ and if the result is $\WhTrue$ or $\WhFalse$ they prepend the
-code of the corresponding branch to the rest of the program. We can also see
+its expression $e$ and if the result is $\WhTrue$ or $\WhFalse$, the code of the
+corresponding branch is prepended to the rest of the program. We can also see
 that {\sc WhE-While} is just an expansion of a while loop into an if statement.
 Finally we note that we can not step from $\WhState{V, \varepsilon}$ which means
 that this is a halting state.
 
-The SOS rules of While heavily relies on the expression evaluation function
-$\WhEval{\cdot}(\cdot)$. This is a function which takes a state map $V$ and an
-expression $e$ and returns a value in $\WhVal$. We define this recursively as follows
+The SOS rules of While heavily relies on the expression \emph{evaluation
+function} $\WhEval{\cdot}(\cdot)$. This is a function which takes a state map
+$V$ and an expression $e$ and returns a value in $\WhVal$. We define this
+recursively as follows
 \begin{equation*}
   \begin{array}{lll}
     \WhEval{V}(v) &=& v \\
@@ -255,13 +256,13 @@ A type system is a mathematical construct that consists of elements called types
 and a set of rules that assign types to parts of a programming language, e.g.,
 statements, variables and expressions. Type systems are most commonly used to
 prevent programming errors such as feeding a data structure to a function for
-which it was not made, and this can be enforced both using static checking at
+which it was not made. This can be enforced both using static checking at
 compile time or dynamic checking at runtime. Type systems are found in many
 modern programming languages such as Java, Scala, Haskell, Python and C++.
 
 The focus here will be on static type systems. We will explain the basics using
 our previous example of the While language. Then some uses and extensions will be
-explained.
+discussed.
 
 \subsection{A Type System for While}
 \label{sub:a_type_system_for_while}
@@ -280,11 +281,11 @@ Our typing rules will define a relation of the form
 \end{equation}
 Here $\Gamma$ is a \emph{typing environment}, i.e. a partial map
 \begin{equation*}
-  \Gamma: \WhVar \rightharpoonup \WhTpe,
+  \Gamma: \WhVar \rightharpoonup \WhTpe.
 \end{equation*}
 $r$ is either code or an expression and $\tau \in \WhTpe$.
-Equation \eqref{eq:tpe_sys1} basically reads "$r$ is typed as $\tau$ under the
-typing environment $\Gamma$." A program $c$ is typeable if
+Equation \eqref{eq:tpe_sys1} basically reads: {\it $r$ is typeable as $\tau$ under the
+typing environment $\Gamma$}. A program $c$ is well typed if
 \begin{equation*}
   \emptyset \vdash c : \WhVoid
 \end{equation*}
@@ -292,8 +293,9 @@ where $\emptyset$ is the empty typing environment, i.e. $\emptyset(x)$ is
 undefined for all $x \in \WhVar$.
 
 \begin{notation}
-  Sometimes you would like to remap a key of, or extend a partial map $M$. One notation
-  for this commonly used is 
+  Sometimes you would like to remap a key of, or extend a partial map $M$. One
+  common notation
+  for this is 
   \begin{equation*}
     M[k \mapsto v],
   \end{equation*}
@@ -422,18 +424,17 @@ $\WhBool$ and that both branches should be typeable as $\WhVoid$.
 
 Finally the rules for typing expressions are found in
 Figure~\ref{fig:while_expr_tpe}. The possible types for an expression are
-$\WhInt$ and $\WhBool$. The rules themselves should not be difficult to
-understand.
+$\WhInt$ and $\WhBool$. The rules themselves should be quite self-explanatory.
 
 
 \subsection{Uses \& Extensions}
 \label{sub:uses_and_extensions}
 
-So what are type systems used for? As mentioned earlier, commonly they are put
+So what are type systems used for? As mentioned earlier, they are commonly put
 in place to prevent errors such as uncompatible data structures being fed as arguments
 to a function which cannot handle such properly. For example, in Java you cannot feed a
 List to a method which is denoted to take an Integer as an argument. This will
-result in a compiler error.
+result in a compile time error.
 
 \subsection{Preservation \& Progress}
 \label{sub:preservation_&_progress}
@@ -456,18 +457,18 @@ $\Gamma(V)$ be defined as
     \text{undefined} & \text{ otherwise }
   \end{cases}
 \]
-\begin{proposition}{(Preservation of While)} 
+\begin{proposition}[Preservation of While] 
   Let
   \begin{equation*}
     \WhState{V, c} \: \rightarrow \: \WhState{V', c'} \andalso \Gamma(V) \vdash
     c: \WhVoid.
   \end{equation*}
   Then 
-  \begin{equation}
+  \begin{equation*}
     \Gamma(V') \vdash c': \WhVoid
-  \end{equation}
+  \end{equation*}
 \end{proposition}
-\begin{proposition}{(Progress of While)}
+\begin{proposition}[Progress of While]
   Let $\WhState{V, c}$ be a state and let
   \begin{equation*}
     \Gamma(V) \vdash c: \WhVoid.
@@ -483,15 +484,15 @@ $\Gamma(V)$ be defined as
 \label{sub:extensions}
 
 The example type system for While is of course very simple. This is mostly due
-to the simplicity of the language itself, more complicated languages have more
-complicated type systems and a type system is oftenmost designed in together 
+to the simplicity of the language itself. More complicated languages have more
+complicated type systems and a type system is oftenmost designed together 
 with the language itself. 
 
 One common construct in type systems is \emph{subtyping}. This introduces a a
 (semi)-lattice with based on a partial order relation denoted $\stof$ between
 types and it oftenmost is used to say that "if $\sigma \stof \tau$ then values
 of type $\sigma$ can be used in the same way as values of type $\tau$". This is
-the case for Java where a class $C$ can extend a class $D$. This for simply
+the case for Java where a class $C$ can extend a class $D$. This simply
 stated means that the fields and methods of $D$ are also availible in $C$. We
 will see an example of how subtyping can be used in
 chapter~\ref{cha:core_language}. 
