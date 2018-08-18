@@ -1,0 +1,35 @@
+\chapter{Introduction}
+\label{cha:introduction}
+
+The main approach to achieving concurrency in general applications has long been
+to use locks and similar constructs in order to locally synchronize data
+accesses. The major drawback with this is that it demands a lot of effort from
+the programmer in order to achieve good parallelization, even of simple tasks.
+Furthermore the likelihood of concurrency related errors such as deadlocks, data
+races and livelocks naturally becomes higher. 
+
+Concurrent deterministic programs are concurrent programs which always produce
+the same results for the same inputs. This is attractive since it provides
+reproducible computations.  Deterministic-by-design concurrent programming
+models are systems which guarantees this property at compile time and thus
+significantly simplifies concurrent programming. This greatly eases effort
+from the programmer. 
+
+A novel deterministic-by-design model~\parencite{kuper2013lvars,
+kuper2014freeze} has been brought forward.  They use data types that fulfill the
+condition of being part of a lattice, or more explicitly having some partial
+order defined on its values. By defining a join operation on the values and only
+allowing writes to the data in form of this operation you can achieve concurrent
+determinism with very high parallelism using event based computation.  This is
+also the basic approach of the Reactive Async
+project~\parencite{conf/scala/HallerGES16} which has shown potential to speed up
+e.g.\ static analysis of source code. The main problem with this as of now is
+that it does not include any construct to ensure that data races between event
+handlers do not occur. Futhermore there are also more fundamental problems with
+callback spawning which could also lead to non-determinism.
+
+This thesis aims to construct a formal model which could later be adopted by
+future revisions of Reactive Async. Constructing a model similar to that
+of~\parencite{kuper2014freeze}, using concepts from computer security also
+utilized in previous work by~\parencite{conf/oopsla/HallerL16}, the final goal
+will be to prove a form of determinism for the system.
