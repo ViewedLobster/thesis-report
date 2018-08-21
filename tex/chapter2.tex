@@ -504,9 +504,6 @@ depending on the value of $a$.
 \section{The Object Capability Model}%
 \label{sec:the_object_capability_model}
 
-In this final background section the object capability (OCAP) model will be
-introduced.
-
 The object capability (OCAP) model is a computer security model that was
 introduced in 1966 by \textcite{Dennis-VanHorn66}. In this model, the access
 rights to an object are equivalent to a reference to the object itself. What
@@ -521,18 +518,18 @@ two types: Either a primitive object or an instance. A primitive object is
 for example data such as a character string or number. In a setting where
 communication with some outside world is modeled this could also be for example
 a device. An instance contains state and code. For example, a class
-object in a object oriented language could be modeled as an
+object in an object oriented language could be modeled as an
 instance.
 
 Instances can only interact by sending messages over references. This implies
 that for an instance to interact with another one, it needs a reference to the
 other. Continuing the example with the class object above, a message corresponds
-to a method call. That is, we specify what the object should do (specify the
+to a method call. In essence, we send a command (specify the
 method), together with some information (the method parameters). The message can
 only be called if we have a reference to the corresponding class object
 beforehand.
 
-In the OCAP model references can only be obtained in four ways:
+In the OCAP model, references can only be obtained in four ways:
 \begin{enumerate}
   \item Initial connectivity: The system must have some initial references in
     the connectivity graph.
@@ -544,10 +541,11 @@ In the OCAP model references can only be obtained in four ways:
     instance B, B gets all references A sends in the message (gives as
     parameters).
 \end{enumerate}
-We can model references and objects using a directed graph.  The above four
-rules imply that two disjoint components in a reference graph can never become
-connected~\parencite{Miller06b}.
+We can model references and objects using a directed graph. If object $A$ has
+has a reference to object $B$, then edge $(A, B)$ is part of the graph. The
+above four rules imply that two disjoint components in a reference graph can
+never become connected~\parencite{Miller06b}.
 
 A language implementing the OCAP model is called an OCAP language. Most common
-object oriented languages are not OCAP. This is because they allow global
+object oriented languages are not OCAP. This is partly because they allow global
 references, i.e. objects referable from all instances.
