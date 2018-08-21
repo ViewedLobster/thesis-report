@@ -19,7 +19,7 @@
 
 As noted in the introduction, achieving a high level of parallelization and
 ensuring determinism is a difficult task. The inherent non-determinism of
-concurrent operations leaves the programmer with a hard task, i.e. to consider
+concurrent operations leaves the programmer with the hard task of considering
 all paths of execution and making sure that they all lead to the same result.
 
 Systems like Reactive Async and LVish both have the ambition of moving this
@@ -28,192 +28,59 @@ however have problems. In this chapter we describe these problems in an informal
 way. As a running example we will use the lattice of integers $(\integers,
 \leq)$ with a bottom value of $-\infty$.
 
-\section{Problems of Reactive Async}%
-\label{sec:problems_of_reactive_async}
 
-Reactive Async has two main problems. To highlight these we use a similar
-example as the one in Figure~\ref{fig:ra_example}. Figure~\ref{fig:ra_example2}
-describes a dependency graph which is a little more complex.
+\section{Syntax Explanation}%
+\label{sec:operations}
+
+In order to construct examples we will use a language akin to Reactive Async and
+Scala. This will use a syntax similar to Scala function
+syntax~\parencite{scalabasics}. In this syntax we write a callback function as in
+Figure~\ref{fig:callback_syntax}. This takes a lattice value \ilc{l} as
+argument. In our example callback code we will use common programming language
+constructs such as conditionals (\ilc{if}-statements) and field accesses.
+Furthermore we will use two operations that will be explained below.
 
 \begin{figure}
   \centering
-  \begin{tikzpicture}
-    \node[circle,draw] (c1) at (0, 1) {$c_1$};
-    \node[circle,draw] (c2) at (0,-1) {$c_2$};
-    \node[circle,draw] (c3) at (2, 0) {$c_3$};
-    \node[circle,draw] (c4) at (4, 0) {$c_4$};
-    \draw[-{Latex[length=0.3cm]}] (c1) -- node[above] {$f_1$} (c3);
-    \draw[-{Latex[length=0.3cm]}] (c2) -- node[above] {$f_2$} (c3);
-    \draw[-{Latex[length=0.3cm]}] (c3) -- node[above] {$f_3$} (c4);
-  \end{tikzpicture}
-  \caption{Reactive Async dependency graph.}
-  \label{fig:ra_example2}
-\end{figure}
-
-\subsection{Sharing State}%
-\label{sub:sharing_state}
-
-The first problem of Reactive Async is that it is not prohibited for callbacks
-to share mutable state. To exemplify this let $f_1$ and $f_2$ be as in
-Figure~\ref{fig:ra_fun_shared_state}. This is written with Scala function syntax
-and could be seen as a simplified version of Reactive Async. Say both are
-scheduled to run and that the initial value of \ilc{Global.someInt} is $0$.
-Also, let the initial cell value of all cells be $0$.  
-
-Remember that, in Reactive Async the return value of a dependency function will
-be used to update the dependent cell with through a put operation. Then it
-should be clear that depending on the order in which $f_1$ and $f_2$ executes
-$c_3$ will have a different final cell value. This is due to that the callbacks
-share mutable state through the \ilc{Global} object.
-
-This problem can be remedied with the help of the OCAP model. By ensuring that
-callbacks threads are isolated in the reference graph we ensure that they do not
-share any state.
-
-\begin{figure}
-  \begin{subfigure}[b]{0.5\textwidth}
-    \begin{lstlisting}
+  \begin{minipage}{0.763\textwidth}
+    \begin{lstlisting}[]
 (l) => {
-  Global.someInt = 1
-  0
+  /* callback code here */
 }
     \end{lstlisting}
-    \caption{Code of $f_1$.}
-  \end{subfigure}
-  ~
-  \begin{subfigure}[b]{0.5\textwidth}
-    \begin{lstlisting}
-(l) => {
-  if (Global.someInt == 1)
-    1
-  else 0
-}
-    \end{lstlisting}
-    \caption{Code of $f_2$.}
-  \end{subfigure}
-  \caption{Two callback functions sharing state.}
-  \label{fig:ra_fun_shared_state}
+  \end{minipage}
+  \caption{Example of callback syntax.}
+  \label{fig:callback_syntax}
 \end{figure}
 
+\subsection{Cells}%
+\label{sub:cells}
 
-\subsection{Callback Spawning Semantics}%
-\label{sub:callback_spawning_semantics}
+An integral part of both LVish and Reactive Async is a data type that holds 
+the resulting value of a computation. Callbacks also needs to be
+registered somehow. Although the implementations differ, we will
+use a unified representation for our examples below. All examples should be
+constructable in their respective setting.
 
-Remedying the above problem does not however, yield a deterministic system.
-There is a flaw inherent in how Reactive Async decides to spawn a callback
-thread. A thread is only spawned when a cell value actually changes, which means
-that all put operations does not necessarily spawn a callback. To see that this
-is a problem, let $f_1$, $f_2$ and $f_3$ be as in
-Figure~\ref{fig:ra_fun_callback_spawn} and \ref{fig:ra_fun_callback_spawn}. Let
-all cells have an initial value of $0$, and let both $f_1$ and $f_2$ be
-scheduled to run.
+We call our data type a \emph{cell}, in alignment with Reactive Async. A cell
+holds two values: A lattice element (also called cell value below) and a freeze bit.
+This is similar to an LVar in LVish. Registration and spawning of callbacks will
+be explained for each example separately.
 
-Say $f_1$ runs before $f_2$. The result will be a put of $2$ to cell $c_3$.
-Since $2 \sqcup 0 = 2$, the cell value of $c_3$ will be changed to $2$. Thus it
-will spawn the callback $f_3(2)$. This callback will result in a put of $1$ to
-$c_4$, i.e., $c_4$ will have its cell value updated to $1$. Running $f_2$ now
-results in the value of $c_3$ being updated to $3$ which will spawn the callback
-$f_3(3)$. The resulting put of $0$ to $c_4$ will not update $c_4$ since $0 \leq
-1$. The final value of $c_4$ will in this case be $1$.
+\subsection{The \ilc{put} and \ilc{freeze} Statements}%
+\label{sub:the_put_statement}
 
-Now let $f_2$ execute before $f_3$. This results in a put of $3$ to $c_3$, which
-results in $c_3$ being updated to $3$. The callback $f_3(3)$ will be spawned and
-result in a put of $0$ to $c_4$. Since $0 \sqcup 0 = 0$ this will not change the
-value of $c_4$. Now, if $f_1$ executes, it will result in a put of $2$ to $c_3$.
-Since the cell value of $c_3$ is already $3$ and $2 \sqcup 3 = 3$, this will not
-result in an update of $c_3$. Thus the callback $f_3(2)$ is never spawned. The
-final cell value of $c_4$ for this execution order is $0$, clearly different
-from before.
-\begin{figure}
-  \begin{minipage}{0.5\textwidth}
-    \begin{subfigure}[b]{\linewidth}
-      \begin{lstlisting}
-(l) => 2
-      \end{lstlisting}
-      \caption{Code of $f_1$.}
-    \end{subfigure}
-    
-    \begin{subfigure}[b]{\linewidth}
-      \begin{lstlisting}
-(l) => 3
-      \end{lstlisting}
-      \caption{Code of $f_2$.}
-    \end{subfigure}
-  \end{minipage}
-  ~
-  \begin{minipage}{0.5\textwidth}
-    \begin{subfigure}[b]{\linewidth}
-      \begin{lstlisting}
-(l) => {
-  if (l == 2)
-    1
-  else 0
-}
-      \end{lstlisting}
-      \caption{Code of $f_3$.}
-    \end{subfigure}
-  \end{minipage}
-  \caption{Trivial callback functions breaking determinism using callback spawning semantics.}
-  \label{fig:ra_fun_callback_spawn}
-\end{figure}
-
-The problem of callback spawning can be remedied with the use of the threshold
-sets of LVish. Instead of only spawning a callback thead when a cell value
-changes, a callback will be spawned for each lattice value passed in the
-specified threshold set.
-
-% INTRO
-% As noted in the introduction, a 
-% there are problems inherent in both reactive async and LVish. 
-
-% TODO describe the reactive async problems first
-
-\section{LVish Freezing Problem}%
-\label{sec:a_problem_of_lvish}
-
-As hinted in the end of Section~\ref{sec:lvars}, the proof of quasi-determinism
-of LVish is flawed. While this leaves the quasi-determinism of LVish an open
-problem this is not really interesting. This is due to the fact that by adding a
-simple if-statement to the language, we can easily construct a counterexample.
-
-The core language of LVish is very minimal with a very implicit way to implement
-threads. We will therefore resort to writing the counterexample in a language
-more akin to the system of Reactive Async, with the modification of having all
-put operations being explicit in code and requiring all callbacks to have an
-associated threshold set, similar to LVish. It can easily be translated into a
-language and semantics of LVish (with the extension of an if-statement).
-
-Say we have two cells $c_1$ and $c_2$ and two callbacks $f_1$ and $f_2$. Let the
-lattice be $(\integers, \leq)$, let the initial cell values of both cells be 
-$0$ and let both associated freeze bits be $\LVarsFalse$. The
-callbacks are registered to some auxilliary cell $c$. 
-
-\begin{table}
-  \centering
-  \begin{tabular}{c|c|c}
-    Callback & Cell & Threshold Set \\
-    \hline
-    $f_1$ & $c$ & $\left\{ 0 \right\}$ \\
-    $f_2$ & $c$ & $\left\{ 0 \right\}$ \\
-  \end{tabular}
-  \caption{Cell registration and threshold sets for $f_1$ and $f_2$.}
-  \label{tab:cellreg}
-\end{table}
-
-The callback thread spawning semantics are as follows. If the value of a cell $c$
-with a registerered callback $f$ passes $l \in T$, $T$ being the threshold set
-assiciated with $f$, the callback $f(l)$ will be spawned eventually. This is
-equivalent with the semantics of LVish.
-
-There are two main operations used in our callback definitions. The freeze
+There are two main operations used in our examples below. The freeze
 statement \ilc{frz(...)} takes one argument of cell type and freezes the cell
 specified, i.e. sets its associated freeze bit to true. Furthermore it returns
-the associated cell value. The put operation \ilc{put(...)} takes two arguments,
+the associated cell value. The put statement \ilc{put(...)} takes two arguments,
 one of cell type and one lattice value. This updates the cell value with the
 specified one using the join operation. If the freeze bit is true and the join
 result is not the same as the current value, the put operation results in a step
 to $\Error$. The return value of \ilc{put} is the cell reference itself. We can
-see an example of both in Figure~\ref{fig:ex_cell_op}.
+see an example of both statements in Figure~\ref{fig:ex_cell_op}. We note that
+the behaviour of both operations mimic their LVish counterpart closely.
+
 
 % TODO change update to change above in callback spawning semantics.
 \begin{figure}
@@ -236,6 +103,208 @@ x = frz($c$)
   \caption{Example cell operations.}
   \label{fig:ex_cell_op}
 \end{figure}
+
+\section{Problems of Reactive Async}%
+\label{sec:problems_of_reactive_async}
+
+For Reactive Async, many put operations are implicit in code due to the
+programming framework structure~\parencite{conf/scala/HallerGES16}. However, in
+order to reduce complexity, all put operations in the examples below will be
+explicit.
+
+Reactive Async has two main problems. To highlight these we use a similar
+dependency graph, similar to the one in Figure~\ref{fig:ra_example}.
+Figure~\ref{fig:ra_example2} describes a dependency graph which is a little more
+complex. Here we have three callback functions $f_1, f_2$ and $f_3$ registered
+to cells $c_1, c_2$ and $c_3$ respectively. The arrows annotated with the above
+callbacks simply indicate to what cell the corresponding function will make a
+put operation.
+
+\subsection{Callback Spawning Semantics}%
+\label{sub:callback_spawning_semantics_ra}
+
+We now informally explain how callbacks are spawned in Reactive Async.  Let a
+callback $f$ be registered to a cell $c$, and say the cell value of $c$ changes
+to $l$. Then a new callback thread running $f(l)$, i.e. function $f$ with
+parameter $l$, will be spawned.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[circle,draw] (c1) at (0, 1) {$c_1$};
+    \node[circle,draw] (c2) at (0,-1) {$c_2$};
+    \node[circle,draw] (c3) at (2, 0) {$c_3$};
+    \node[circle,draw] (c4) at (4, 0) {$c_4$};
+    \draw[-{Latex[length=0.3cm]}] (c1) -- node[above] {$f_1$} (c3);
+    \draw[-{Latex[length=0.3cm]}] (c2) -- node[above] {$f_2$} (c3);
+    \draw[-{Latex[length=0.3cm]}] (c3) -- node[above] {$f_3$} (c4);
+  \end{tikzpicture}
+  \caption{Reactive Async dependency graph.}
+  \label{fig:ra_example2}
+\end{figure}
+
+\subsection{Problematic State Sharing}%
+\label{sub:sharing_state}
+
+The first problem of Reactive Async is that it is not prohibited for callbacks
+to share mutable state. To exemplify this let $f_1$ and $f_2$ from above be as
+in Figure~\ref{fig:ra_fun_shared_state}. Now say both $f_1$ and $f_2$ are
+scheduled to run and that the initial value of \ilc{Global.someInt} is $0$.  The
+lattice is $(\integers, \leq)$ and we let the initial cell value of all cells be
+$0$.  It should be clear that depending on the order in which $f_1$ and $f_2$
+are scheduled to execute, $c_3$ will have a different final cell value.  This is
+due to that the callbacks share mutable state through the \ilc{Global} object.
+
+This problem can be remedied using the OCAP model in a similar manner to LaCasa.
+By ensuring that callback threads are unconnected in the reference graph, we ensure
+that they do not share any state. We do this by ensuring that for each pair of
+threads, the intersection of their connected components will only contain cell
+objects. In chapter~\ref{cha:core_language}, the type system is used to enforce
+this property.
+
+\begin{figure}
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{lstlisting}
+(l) => {
+  Global.someInt = 1
+  put($c_3$,0)
+}
+    \end{lstlisting}
+    \caption{Code of $f_1$.}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{lstlisting}
+(l) => {
+  if (Global.someInt == 1)
+    put($c_3$, 1)
+  else put($c_3$,0)
+}
+    \end{lstlisting}
+    \caption{Code of $f_2$.}
+  \end{subfigure}
+  \caption{Two callback functions sharing state.}
+  \label{fig:ra_fun_shared_state}
+\end{figure}
+
+
+\subsection{Problematic Callback Spawning Semantics}%
+\label{sub:problematic_callback_spawning_semantics}
+
+Remedying the above problem does not however yield a deterministic system.
+There is a flaw inherent in how Reactive Async decides to spawn a callback
+thread. A thread is only spawned when a cell value actually changes, which means
+that all put operations does not necessarily spawn a callback. To see that this
+is a problem, let $f_1$, $f_2$ and $f_3$ from Figure~\ref{fig:ra_example2} be as in
+Figure~\ref{fig:ra_fun_callback_spawn}. As before, let the lattice be
+$(\integers, \leq)$ and all cells have an initial cell value of $0$. Furthermore
+let both $f_1$ and $f_2$ be scheduled to run.
+
+Say $f_1$ is scheduled to run before $f_2$. The result will be a put of $2$ to
+cell $c_3$.  Since $2 \sqcup 0 = 2$, the cell value of $c_3$ will be changed to
+$2$. Thus it will spawn the callback $f_3(2)$. This callback will result in a
+put of $1$ to $c_4$, i.e., $c_4$ will have its cell value updated to $1$ by $1
+\sqcup 0 = 1$.  Running $f_2$ now results in the value of $c_3$ being updated to
+$3$ which will spawn the callback $f_3(3)$. The resulting put of $0$ to $c_4$
+will not update $c_4$ since $0 \leq 1$. The final cell value of $c_4$ in this
+case will be $1$.
+
+Now let $f_2$ execute before $f_3$. This results in a put of $3$ to $c_3$, which
+results in $c_3$ being updated to $3$. The callback $f_3(3)$ will be spawned and
+result in a put of $0$ to $c_4$. Since $0 \sqcup 0 = 0$ this will not change the
+value of $c_4$. Now, if $f_1$ executes, it will result in a put of $2$ to $c_3$.
+Since the cell value of $c_3$ is already $3$ and $2 \sqcup 3 = 3$, this will not
+result in an update of $c_3$. Thus the callback $f_3(2)$ is never spawned. The
+final cell value of $c_4$ for this execution order is $0$, clearly different
+from before.
+\begin{figure}
+  \begin{minipage}{0.5\textwidth}
+    \begin{subfigure}[b]{\linewidth}
+      \begin{lstlisting}
+(l) => put($c_3$,2)
+      \end{lstlisting}
+      \caption{Code of $f_1$.}
+    \end{subfigure}
+    
+    \begin{subfigure}[b]{\linewidth}
+      \begin{lstlisting}
+(l) => put($c_3$,3)
+      \end{lstlisting}
+      \caption{Code of $f_2$.}
+    \end{subfigure}
+  \end{minipage}
+  ~
+  \begin{minipage}{0.5\textwidth}
+    \begin{subfigure}[b]{\linewidth}
+      \begin{lstlisting}
+(l) => {
+  if (l == 2)
+    put($c_4$,1)
+  else put($c_4$,0)
+}
+      \end{lstlisting}
+      \caption{Code of $f_3$.}
+    \end{subfigure}
+  \end{minipage}
+  \caption{Simple callback functions breaking determinism using callback
+  spawning semantics of Reactive Async.}
+  \label{fig:ra_fun_callback_spawn}
+\end{figure}
+
+The problem of callback spawning can be remedied with the use of the threshold
+sets of LVish. Instead of only spawning a callback thead when a cell value
+changes, a callback will be spawned for each lattice value passed in the
+specified threshold set.
+
+% INTRO
+% As noted in the introduction, a 
+% there are problems inherent in both reactive async and LVish. 
+
+% TODO describe the reactive async problems first
+
+\section{A Problem with LVish}%
+\label{sec:a_problem_of_lvish}
+
+As hinted in the end of Section~\ref{sec:lvars}, the proof of quasi-determinism
+of LVish is flawed. While this leaves the quasi-determinism of LVish an open
+problem this is not really interesting. This is due to the fact that by adding a
+simple if-statement to the language, we can easily construct a counterexample.
+
+\subsection{Callback Spawning Semantics}%
+\label{sub:callback_spawning_semantics_lvish}
+
+The callback thread spawning semantics of the below example are as follows. If
+the value of a cell $c$ with a registerered callback $f$ passes $l \in T$, $T$
+being the threshold set assiciated with $f$, the callback $f(l)$ will be spawned
+eventually. This is equivalent to the semantics of LVish.
+
+%The core language of LVish is very minimal with a very implicit way to implement
+%threads. We will therefore resort to writing the counterexample in a language
+%more akin to the system of Reactive Async, with the modification of having all
+%put operations being explicit in code and requiring all callbacks to have an
+%associated threshold set, similar to LVish. It can easily be translated into a
+%language and semantics of LVish (with the extension of an if-statement).
+
+\subsection{LVish Freezing Problem}%
+\label{sub:lvish_freezing_problem}
+
+Say we have two cells $c_1$ and $c_2$ and two callbacks $f_1$ and $f_2$. Let the
+lattice be $(\integers, \leq)$, let the initial cell values of both cells be 
+$0$ and let both associated freeze bits be $\LVarsFalse$. The
+callbacks are registered to some auxilliary cell $c$ according to
+Table~\ref{tab:cellreg}.
+
+\begin{table}
+  \centering
+  \begin{tabular}{c|c|c}
+    Callback & Cell & Threshold Set \\
+    \hline
+    $f_1$ & $c$ & $\left\{ 0 \right\}$ \\
+    $f_2$ & $c$ & $\left\{ 0 \right\}$ \\
+  \end{tabular}
+  \caption{Cell registration and threshold sets for $f_1$ and $f_2$.}
+  \label{tab:cellreg}
+\end{table}
 
 Now let $f_1$ and $f_2$ be as in Figure~\ref{fig:lvish_fun_breaking}.
 Furthermore let both $f_1$ and $f_2$ be scheduled (due to some put of integer
@@ -311,7 +380,7 @@ non-quasi-deterministic result.
 \end{table}
 
 This shows that as soon as we introduce the if-statement, a basic part of any
-programming language, we can easily break determinism. The problem is inherent
+programming language, we can easily break quasi-determinism. The problem is inherent
 in the freeze statement. By freezing a variable we could attain information
 about the value and freeze bit of another cell. In the example above, by
 freezing cell $c_1$ ($c_2$) and inspecting its value we can attain information
@@ -320,11 +389,7 @@ information, we can skip a put operation that would otherwise lead to an error.
 
 A simple solution to this problem is to simply remove the capability of freezing
 a cell and this is the approach of the system presented in
-chapter~\ref{cha:core_language}. It should be possible to add other
+chapter~\ref{cha:core_language}. It should however be possible to add other
 forms of freezing. This will be discussed in
 chapter~\ref{cha:discussion_and_conclusion}.
 
-
-% TODO then note that the LVish proof is flawed and even if you could find a
-% proof it is not really interesting since if you introduce the if statement you
-% could easily create counterexamples.

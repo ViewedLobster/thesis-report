@@ -98,8 +98,7 @@ relation.
 \end{proposition}
 
 A proof sketch of this can be found in Appendix~\ref{cha:proof_of_qd}.
-
-Similarly we can prove the following. The full proof can also be found in
+Similarly we can prove the following. A sketch can also be found in
 Appendix~\ref{cha:proof_of_qd}.
 \begin{proposition} \label{prop:eqrel_stateok}
   For any $S, S' \in \States$ such that $S \simeq S'$
@@ -131,7 +130,7 @@ We make the following observation
           references a fresh object identifier, i.e. $\ENew$ and $\ENewCell$.
         \item Thread id $\iota' \in \TIDs$ for the case where a fresh thread id is
           referenced, i.e. $\EWhen$.
-        \item $\smiley$ for all other cases.
+        \item $\smiley$, a default value for all other cases.
       \end{itemize}
   \end{itemize}
 \end{claim}
@@ -206,7 +205,7 @@ transition sequences. It can be seen as incrementally transforming $\bar{R'}$ to
 $\bar{R}$ by moving transition specifiers to positions specified by $\bar{R}$.
 Each intermediate sequence is shown to halt in the same state.
 
-Finally, this corollary follows from theorem~\ref{thm:qd} and
+Finally, the next corollary follows from theorem~\ref{thm:qd} and
 proposition~\ref{prop:uniq_trans}:
 \begin{corollary}[Quasi-Determinism]
   Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that

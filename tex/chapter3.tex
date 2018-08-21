@@ -96,30 +96,30 @@ chapter~\ref{cha:challenges}.
 
 \section{Reactive Async}\label{sec:reactive_async}
 
-% TODO add ref to scala language
-% TODO add ref to RA article or thesis.
-Reactive Async is a Scala~\parencite{} programming framework inspired by LVish. It is based
-around objects called \emph{cells}.  Cells are similar to the store locations
-from LVish: They hold a value from a lattice, the value is updated through a
-join operation and you are able to create dependencies between them using
-callbacks.
+Reactive Async~\parencite{conf/scala/HallerGES16} is a Scala language
+programming framework inspired by LVish. It is based around objects called
+\emph{cells}.  Cells are similar to the store locations from LVish: They hold a
+value from a lattice, the value is updated through a join operation and you are
+able to create dependencies between them using callbacks.
 
-Like in LVish the cells are updated through a put operation.  The cells and
+Similarly to LVish, the cells are updated through a put operation.  The cells and
 dependencies can be illustrated as a graph.  Figure~\ref{fig:ra_example} is a
 very simple example of a dependency graph.  There are two cells $c_1$ and $c_2$
-and a dependency callback $f$ between them. This should be interpreted as $c_2$
+and a dependency callback $f$ between them, which should be interpreted as $c_2$
 being dependent on $c_1$.  $f$ is a function which takes a lattice value and
 returns either nothing or a new lattice value.  As soon as the lattice value of
 $c_1$ is updated to a new lattice value $l$, the callback $f(l)$ runs. If $f(l)$
 returns a lattice value $l'$, $c_2$ is updated with $l'$ though a put operation.
-If the result of $f(l)$ is nothing, nothing is done with the lattice value of
-$c_2$.
+The return value of $f(l)$ can also be a special value \ilc{NoOutcome},
+representing no put operation should be done on $c_2$.
 
 If a programmer is not careful, there are several aspects of Reactive Async
 which can make a computation non-deterministic. This will be further discussed
-in chapter~\ref{cha:challenges}. This work aims to construct a formal model with
-proven determinism properties which could be used as a basis for future
-revisions of Reactive Async.
+in chapter~\ref{cha:challenges}. 
+
+%This thesis aims to construct a formal model with
+%proven determinism properties which could be used as a basis for future
+%revisions of Reactive Async.
 
 \begin{figure}
   \centering
@@ -134,10 +134,10 @@ revisions of Reactive Async.
 
 \section{LaCasa}\label{sec:lacasa}
 
-LaCasa\parencite{conf/oopsla/HallerL16} is a programming model for ensuring
-determinism in an actor model\parencite{actormodelref} setting. It draws
-parallels to the OCAP model to ensure isolation between threads.  In this
-section we give a brief introduction to the type system of LaCasa and the
+LaCasa~\parencite{conf/oopsla/HallerL16} is a programming model for ensuring
+determinism in an actor model~\parencite{Hewi73a} setting. It draws
+parallels to the OCAP model to ensure deterministic execution of threads. In
+this section we give a brief introduction to the type system of LaCasa and the
 intuition behind it.
 
 The formalization of LaCasa is based on a simple object oriented language.
@@ -153,14 +153,14 @@ calculations with it.
 A big part of ensuring isolation is requiring all objects encapsulated in boxes
 are of classes typed as \emph{ocap}. This basically means three things.
 \begin{enumerate}
-  \item The methods never access a global global object.
+  \item Methods never access global global objects.
   \item All field types are ocap.
-  \item Method can only create new instances of ocap classes.
+  \item Methods can only create new instances of ocap classes.
 \end{enumerate}
 To ensure this holds in the presence of a subtyping relation, superclasses are
 furthermore required to be ocap~\parencite{conf/oopsla/HallerL16}.
 
-These rules ensure that all references accuired by an ocap object will have been
+These rules ensure that all references acquired by an ocap class object will have been
 explicitly given to it. The ocap classification for classes will later be
 incorporated in the system presented in this thesis.
 
@@ -172,19 +172,20 @@ incorporated in the system presented in this thesis.
 % TODO add some references
 In recent years there has been an increasing demand for distributed and
 concurrent data processing. Highly concurrent or distributed frameworks like
-Akka and Spark have become more and more popular. As their popularity grow
-concerns have been raised over hazards that relate to closures, one of the basic
-and most important constructs in modern programming languages. A closure is
-basically the notion of capturing and using an external variable in a function
-definition. In a concurrent or distributed setting this could be fatal if, e.g.,
-we capture mutable or non-serializable references. 
+Akka~\parencite{akka} and Spark~\parencite{spark} have become more and more
+popular. As their popularity grow concerns have been raised over hazards that
+relate to closures, one of the basic and most important constructs in modern
+programming languages. A closure is basically the notion of capturing and using
+an external variable in a function definition. In a concurrent or distributed
+setting this could be fatal if, e.g., we capture mutable or non-serializable
+references~\parencite{conf/ecoop/MillerHO14}. 
 
 An experimental solution for Scala is
-\emph{spores}~\parencite{conf/ecoop/MillerHO14}. Basically, spores allow the
-programmer to clearly declare what is being captured and furthermore limit what
-types that can be captured. The use of spores can be forced in code by using the
-spore type instead of the normal function type when declaring methods and
-similar.
+\emph{spores}~\parencite{conf/ecoop/MillerHO14}. Basically, a spore allows the
+programmer to clearly declare what external objects are being captured by a
+closure and furthermore limit what types that can be captured. The use of spores
+can be forced by annotating code with the spore type instead of the normal
+Scala function type. 
 
 % Describe the basic ideas of spores: (dis)allow certain types of captures to
 % enforce certain properties
