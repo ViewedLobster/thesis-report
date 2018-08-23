@@ -22,7 +22,7 @@ and new values. This ensures that writes commute~\parencite{kuper2013lvars}.
 \subsection{Stores \& Lattice}%
 \label{sub:stores_and_lattice}
 
-At the foundation of the LVars system lays lattices. The values resulting from a
+At the foundation of the LVars system lie lattices. The values resulting from a
 computation are going to be elements from a lattice $\LVarsLat$, specified by the
 programmer. These lattice values are stored in a \emph{store}.  This is a set of
 pairs consisting of a location and a lattice element. For a location there is
@@ -41,7 +41,7 @@ The LVars model supports three main operations~\parencite{kuper2013lvars}.
     sets its value to $\bot_{\LVarsLat}$, the bottom element of $\LVarsLat$.
   \item Updating a store location, also called a \emph{put} operation. This
     operation takes a store location $r$ and a lattice value $l$. Given a store
-    $S$ this updates location $r$ with $l \sqcup S(r)$. To ensure determinism in
+    $S$, this is updated to $S[r \mapsto l\sqcup S(r)]$. To ensure determinism in
     conjunction with the next operation, any put operation that takes a store
     location to $\top_{\LVarsLat}$ results in an error.
   \item A LVar read operation, also referred to as \emph{get}. This operation is
@@ -70,14 +70,14 @@ changed. If a put operation tries to modify a freezed store location, the
 computation ends up in the error state $\Error$.
 
 As mentioned, LVish also permits the programmer to create dependencies between
-store locations. To do this the programmer specifies a location together with a
+store locations. To do this, the programmer specifies a location together with a
 set of threshold lattice values and a callback function. The callback is
 executed as soon as the given location passes a threshold value. Upon execution
-the callback is given access to the threshold passed. Unlike the threshold sets
-for the get operation, the elements do not have to be incompatible. 
+the callback is given access to the threshold value passed. Unlike the threshold
+sets for the get operation, the elements do not have to be incompatible. 
 
 With the introduction of freezing, a program could take different execution
-paths where one halts in $\Error$ and the other halts in a non-erroneos state.
+paths where one halts in $\Error$ and the other halts in a non-erroneous state.
 It is thus obvious that the LVish system is no longer deterministic. Therefore
 the authors introduce \emph{quasi-determinism}, a weaker form of
 determinism. Instead of requiring the same computation result for all execution
@@ -147,8 +147,8 @@ determinism all data interchanged between processes must be encapsulated in
 \emph{boxes}. A box is a container for a class reference with some accompanying
 methods to access and perform calculations with the encapsulated object. The
 type system ensures that all calculations made with objects encapsulated in a box
-are isolated, i.e., that at most one thread can access the data and perform
-calculations with it.
+are isolated, i.e., that at any given time, at most one thread can access the
+data and perform calculations with it.
 
 A big part of ensuring isolation is requiring all objects encapsulated in boxes
 are of classes typed as \emph{ocap}. This basically means three things.
@@ -173,7 +173,7 @@ incorporated in the system presented in this thesis.
 In recent years there has been an increasing demand for distributed and
 concurrent data processing. Highly concurrent or distributed frameworks like
 Akka~\parencite{akka} and Spark~\parencite{spark} have become more and more
-popular. As their popularity grow concerns have been raised over hazards that
+popular. As their popularity grow, concerns have been raised over hazards that
 relate to closures, one of the basic and most important constructs in modern
 programming languages. A closure is basically the notion of capturing and using
 an external variable in a function definition. In a concurrent or distributed

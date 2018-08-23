@@ -13,7 +13,7 @@ The language which we shall call Reactive Async Core Language (RACL) has a big
 similarity with the core language from LaCasa. Many expressions are the same
 except for a few removals and additions. The language grammar is defined in
 Figure~\ref{fig:racl_grammar}. It is a simple object oriented language which is
-parameterized on the lattice \LatVals{}.
+parameterized on the lattice $(\LatVals, \sqsubseteq)$.
 
 \begin{figure}
   \centering
@@ -64,30 +64,29 @@ More complicated inputs can be constructed using a container class.
 
 The type specifiers $\sigma$ and $\tau$ can take on the values as specified.
 Note that we have the special \CellType{} and \LatType{} types which are meant
-to represent the cells of reactive async and values from the used lattice. Types
-will be discussed more in Section~\ref{sec:type_system}.
+to represent the cells of reactive async and values from the used lattice
+respectively. Types will be discussed more in Section~\ref{sec:type_system}.
 
-As with LaCasa, the terms of RACL are written in A-normal form (i.e.\ every
+As in LaCasa, the terms of RACL are written in A-normal form (i.e.\ every
 subexpression is named). Most of the expressions should be self-explanatory.
 However, note for example that we have a separate instance creation expression
 for cells, an expression for updating the value of a cell aswell as an
 expression for creating dependencies between cells. The dependency creation
 expression is probably the most interesting since it mimics the syntax of
 spores~\parencite{conf/ecoop/MillerHO14}. All captured variables are clearly
-stated in the sequence of captures $\overline{cap}$. The semantics of 
-expressions will be explained next.
+stated in the sequence of captures $\overline{cap}$. 
 
 \section{Semantics}%
 \label{sec:semantics}
 
-In this section the semantics of \RACL{} will be introduced. First a brief
-overview is made and then a few of the more interesting or non-standard
-execution rules will be explained.
+In this section the small-step operational semantics of \RACL{} will be
+introduced. First a brief overview is made and then a few of the more
+interesting or non-standard execution rules will be explained.
 
 In short, the following definitions says that the state of the execution of a
 \RACL{} program consists of a \emph{heap} and a \emph{thread set}. The heap is
 represented by a partial map from object identifiers $\OIDs$ to objects
-$\Objects$. The thread set is a set of threads each of which consists of call
+$\Objects$. The thread set is a set of threads, each of which consisting of call
 frame stacks. Each call frame holds a local variable environment and a term to
 be executed. Steps between states can be made accoring to rules on either frame,
 frame stack or thread set level. All steps taken on lower levels are propagated

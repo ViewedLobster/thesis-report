@@ -33,7 +33,7 @@ way. As a running example we will use the lattice of integers $(\integers,
 \label{sec:operations}
 
 In order to construct examples we will use a language akin to Reactive Async and
-Scala. This will use a syntax similar to Scala function
+Scala. This will have a syntax similar to Scala function
 syntax~\parencite{scalabasics}. In this syntax we write a callback function as in
 Figure~\ref{fig:callback_syntax}. This takes a lattice value \ilc{l} as
 argument. In our example callback code we will use common programming language
@@ -57,10 +57,10 @@ Furthermore we will use two operations that will be explained below.
 \label{sub:cells}
 
 An integral part of both LVish and Reactive Async is a data type that holds 
-the resulting value of a computation. Callbacks also needs to be
+the resulting value of a computation. Callbacks also need to be
 registered somehow. Although the implementations differ, we will
 use a unified representation for our examples below. All examples should be
-constructable in their respective setting.
+reconstructable in their respective setting of Reactive Async or LVish.
 
 We call our data type a \emph{cell}, in alignment with Reactive Async. A cell
 holds two values: A lattice element (also called cell value below) and a freeze bit.
@@ -72,10 +72,11 @@ be explained for each example separately.
 
 There are two main operations used in our examples below. The freeze
 statement \ilc{frz(...)} takes one argument of cell type and freezes the cell
-specified, i.e. sets its associated freeze bit to true. Furthermore it returns
+specified, i.e., sets its associated freeze bit to true. Furthermore it returns
 the associated cell value. The put statement \ilc{put(...)} takes two arguments,
 one of cell type and one lattice value. This updates the cell value with the
-specified one using the join operation. If the freeze bit is true and the join
+specified one, using the join operation, similar to how an LVar is
+updated~\parencite{kuper2013lvars}. If the freeze bit is true and the join
 result is not the same as the current value, the put operation results in a step
 to $\Error$. The return value of \ilc{put} is the cell reference itself. We can
 see an example of both statements in Figure~\ref{fig:ex_cell_op}. We note that
@@ -90,15 +91,15 @@ the behaviour of both operations mimic their LVish counterpart closely.
 x = put($c$, l)
     \end{lstlisting}
     \caption{Example put operation. We put the lattice value assigned to \ilc{l} into
-    cell $c$.}
+    cell $c$. This may result in an error.}
   \end{subfigure}
   \quad
   \begin{subfigure}[t]{0.4\textwidth}
     \begin{lstlisting}[numbers=none,mathescape=true]
 x = frz($c$)
     \end{lstlisting}
-    \caption{Example freeze operation. We freeze the cell $c$ and assigns its cell
-    value in variable \ilc{x}}
+    \caption{Example freeze operation. We freeze the cell $c$ and assign its cell
+    value to variable \ilc{x}.}
   \end{subfigure}
   \caption{Example cell operations.}
   \label{fig:ex_cell_op}
@@ -117,7 +118,7 @@ dependency graph, similar to the one in Figure~\ref{fig:ra_example}.
 Figure~\ref{fig:ra_example2} describes a dependency graph which is a little more
 complex. Here we have three callback functions $f_1, f_2$ and $f_3$ registered
 to cells $c_1, c_2$ and $c_3$ respectively. The arrows annotated with the above
-callbacks simply indicate to what cell the corresponding function will make a
+callbacks indicate to what cell the corresponding function will make a
 put operation.
 
 \subsection{Callback Spawning Semantics}%
@@ -125,7 +126,7 @@ put operation.
 
 We now informally explain how callbacks are spawned in Reactive Async.  Let a
 callback $f$ be registered to a cell $c$, and say the cell value of $c$ changes
-to $l$. Then a new callback thread running $f(l)$, i.e. function $f$ with
+to $l$. Then a new callback thread running $f(l)$, i.e., function $f$ with
 parameter $l$, will be spawned.
 
 \begin{figure}
@@ -148,12 +149,15 @@ parameter $l$, will be spawned.
 
 The first problem of Reactive Async is that it is not prohibited for callbacks
 to share mutable state. To exemplify this let $f_1$ and $f_2$ from above be as
-in Figure~\ref{fig:ra_fun_shared_state}. Now say both $f_1$ and $f_2$ are
-scheduled to run and that the initial value of \ilc{Global.someInt} is $0$.  The
-lattice is $(\integers, \leq)$ and we let the initial cell value of all cells be
-$0$.  It should be clear that depending on the order in which $f_1$ and $f_2$
-are scheduled to execute, $c_3$ will have a different final cell value.  This is
-due to that the callbacks share mutable state through the \ilc{Global} object.
+in Figure~\ref{fig:ra_fun_shared_state}. We ignore $f_3$ and $c_4$ for now. 
+Say both $f_1$ and $f_2$ are scheduled to run and that the initial value of
+\ilc{Global.someInt} is $0$.  The lattice is $(\integers, \leq)$ and we let the
+initial cell value of all cells be $0$.  It should be clear that depending on
+the order in which $f_1$ and $f_2$ are scheduled to execute, $c_3$ will have 
+different final cell values. If $f_1$ runs first $c_3$ will have a final cell
+value of $1$. If $f_2$ runs first, $c_3$ will have a final value of $0$. This is
+due to that the callbacks share mutable state through the \ilc{Global} object
+and that put operations updates a cell using the join operation.
 
 This problem can be remedied using the OCAP model in a similar manner to LaCasa.
 By ensuring that callback threads are unconnected in the reference graph, we ensure
@@ -275,7 +279,7 @@ simple if-statement to the language, we can easily construct a counterexample.
 
 The callback thread spawning semantics of the below example are as follows. If
 the value of a cell $c$ with a registerered callback $f$ passes $l \in T$, $T$
-being the threshold set assiciated with $f$, the callback $f(l)$ will be spawned
+being the threshold set associated with $f$, the callback $f(l)$ will be spawned
 eventually. This is equivalent to the semantics of LVish.
 
 %The core language of LVish is very minimal with a very implicit way to implement
@@ -288,10 +292,10 @@ eventually. This is equivalent to the semantics of LVish.
 \subsection{LVish Freezing Problem}%
 \label{sub:lvish_freezing_problem}
 
-Say we have two cells $c_1$ and $c_2$ and two callbacks $f_1$ and $f_2$. Let the
+Say we have two cells $c_1$ and $c_2$, and two callbacks $f_1$ and $f_2$. Let the
 lattice be $(\integers, \leq)$, let the initial cell values of both cells be 
 $0$ and let both associated freeze bits be $\LVarsFalse$. The
-callbacks are registered to some auxilliary cell $c$ according to
+callbacks $f_1$ and $f_2$ are registered to some auxilliary cell $c$ according to
 Table~\ref{tab:cellreg}.
 
 \begin{table}
@@ -384,7 +388,7 @@ programming language, we can easily break quasi-determinism. The problem is inhe
 in the freeze statement. By freezing a variable we could attain information
 about the value and freeze bit of another cell. In the example above, by
 freezing cell $c_1$ ($c_2$) and inspecting its value we can attain information
-about wether $c_2$ ($c_1$) has been frozen or not. By conditioning on this
+about whether $c_2$ ($c_1$) has been frozen or not. By conditioning on this
 information, we can skip a put operation that would otherwise lead to an error.
 
 A simple solution to this problem is to simply remove the capability of freezing
