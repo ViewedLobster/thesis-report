@@ -36,16 +36,22 @@ It is easy to show that if a least upper bound exists, it is unique.
 \end{definition}
 From now on we will refer to a join-semilattice simply as a \emph{lattice}.
 \begin{definition}
-  A \emph{partial function} or \emph{partial map}
+  A \emph{partial function} or \emph{partial map} $f$ from $A$ to $B$, written
   \begin{equation*}
-    f: A \rightharpoonup B
+    f\in A \rightharpoonup B
   \end{equation*}
-  is a function is a function defined on some subset of $A$, i.e.
+  is a function defined on some subset of $A$, i.e.
   \begin{equation*}
-    f: A' \to B \andalso A' \subseteq A
+    f \in A' \to B \andalso A' \subseteq A.
   \end{equation*}
 \end{definition}
 
+\begin{notation}
+  If a map $g\in A \to B$ is a bijection we write
+  \begin{equation*}
+    g \in A \hookrightarrow B.
+  \end{equation*}
+\end{notation}
 
 
 \section{Language Syntax} \label{sec:language_syntax}

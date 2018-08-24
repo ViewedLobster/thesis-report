@@ -15,7 +15,7 @@
 
 \begin{definition}[Graph Reachability]
   We say an object $o'$ is reachable from $o$ in graph $G = (V,
-  E)$, $\reach{(G, o, o')}$ if there is a finite sequence $o_0, \dots,
+  E)$, written $\reach{(G, o, o')}$ if there is a finite sequence $o_0, \dots,
   o_n \in V$ such that $o = o_0, o_n = o'$ and
   \begin{equation}
     \forall i = 1,\dots, n-1. \: \exists f \in \FieldNames \text{ s.t. } (o_i,
@@ -54,12 +54,6 @@
     &\ocrloc{(FS, H)} &\\
     &\iff &\\
     &\begin{aligned}
-    \forall o, q &\in \dom{(H)}. \\
-    & \accRoot{(o, FS, H)} \land \reach{(H, o, q)} \implies \\
-    & \ocap{(\typeOf{(o, H)})} 
-    \end{aligned}&\\
-    &\iff &\\
-    &\begin{aligned}
     \forall q &\in \reachable{{(\accRoots{(FS,H)}, \Graph{(H)})}}. \notag\\
     & \ocap{(\typeOf{(q, H)})}
     \end{aligned}&
@@ -67,7 +61,7 @@
 \end{proposition}
 
 \begin{proof}
-  Follows from definition of $\accRoot$, $\accRoots$ and $\reachable$.
+  Follows from definition of $\ocrloc$, $\accRoots$ and $\reachable$.
 \end{proof}
 
 \begin{proposition} \label{prop:csep_eq}
@@ -92,8 +86,8 @@
       definition of $\csep{(H, o, o')}$ we have $\typeOf{(q, H)} \stof \CellType$.
     \item[Case $\impliedby$:] Take any $q, q'\in \dom{(H)}$ such that
       $\reach{(H, o, q)}$ and $\reach{(H, o', q')}$. If $q \neq q$ we are done.
-      Otherwise $q = q'$ and by definition of $\reachable$ $q \in R \cap R'$.
-      Finally $\typeOf{(q, H)} \stof \CellType$ by assumption.
+      Otherwise $q = q'$ and by definition of $\reachable$, $q \in R \cap R'$.
+      By assumption $\typeOf{(q, H)} \stof \CellType$.
   \end{description}
 \end{proof}
 
@@ -113,7 +107,7 @@
   We let 
   \begin{equation*}
     \begin{gathered}
-      R = \reachable(\accRoots(FS, H), \Graph(H)) 
+      R = \reachable(\accRoots(FS, H), \Graph(H))  \\
       R' = \reachable(\accRoots(HS, H), \Graph(H))  
     \end{gathered}
   \end{equation*}
@@ -125,31 +119,26 @@
       \end{equation*}
       such that
       \begin{equation*}
-        q \in \reachable(\{o\}, \Graph(H)) \cap \reachable(\{o'\}, \Graph(H))
+        q \in \reachable(\{o\}, \Graph(H)) \cap \reachable(\{o'\}, \Graph(H)).
       \end{equation*}
-      By definition of $\accRoots$ we have
-      \begin{equation*}
-        \accRoot(o, FS, H) \land \accRoot(o', HS, H)
-      \end{equation*}
-      and thus by $\isolated(H, FS, HS)$ we have $\csep(H, o, o')$. 
+      Thus by $\isolated(H, FS, HS)$ we have $\csep(H, o, o')$. 
       Proposition~\ref{prop:csep_eq} yields $\typeOf(q, H) \stof \CellType$.
-    \item[Case $\impliedby$:] Take any $o, o' \in \dom(H)$ such that
+    \item[Case $\impliedby$:] Take any $o, o'$ such that
       \begin{equation*}
-        \accRoot(o, FS, H) \land \accRoot(o', HS).
+        o \in \accRoots(FS, H) \andalso o' \in \accRoots(HS, H).
       \end{equation*}
-      Clearly then $o \in \accRoots(FS, H)$ and $o \in \accRoots(HS, H)$.
-      Moreover
+      By definition
       \begin{gather*}
         \reachable(\{o\}, \Graph(H)) \subseteq R \\
-        \reachable(\{o'\}, \Graph(H)) \subseteq R'
+        \reachable(\{o'\}, \Graph(H)) \subseteq R'.
       \end{gather*}
-      By assumption then
+      Thus by assumption 
       \begin{align*}
         \forall q \in &\reachable(\{o\}, \Graph(H)) \cap \reachable(\{o'\},
         \Graph(H)). \\ 
-        &\typeOf(q, H) \stof \CellType
+        &\typeOf(q, H) \stof \CellType.
       \end{align*}
-      and by proposition~\ref{prop:csep_eq} we have $\csep(H, o, o')$. Since
+      Finally by proposition~\ref{prop:csep_eq}, we have $\csep(H, o, o')$. Since
       $o, o'$ arbitrary we are done.
   \end{description}
 \end{proof}
@@ -178,11 +167,11 @@
 \begin{proof}
   We prove that 
   \begin{equation*}
-    \forall \text{ distinct } HS|_a^\iota, GS|_b^{\iota'} \in P'.\; a = \ocap \lor b = \ocap \implies
+    \forall \text{ distinct } HS|_b^{\iota'}, GS|_c^{\iota''} \in P'.\; b = \ocap \lor c = \ocap \implies
     \isolated(H', HS, GS).
   \end{equation*}
   This implies $\isolation(H', P')$ by rule {\sc ISO-Procs}.
-  Take any distinct $HS|_b^{\iota'}, GS|_c^{\iota''} \in P$. Then by assumption 3, 4 and basic set
+  Thus take any distinct $HS|_b^{\iota'}, GS|_c^{\iota''} \in P'$. Then by assumption 3, 4 and basic set
   properties
   \begin{equation} \label{eq:reachinclusion1}
     \begin{gathered}
@@ -193,8 +182,8 @@
       \Graph(H)).
     \end{gathered}
   \end{equation}
-  By this, proposition~\ref{prop:2.6} and $\isolation(H, HS, GS)$ we have
-  $\isolation(H', HS, GS)$. By \eqref{eq:reachinclusion1} and assumption 5
+  By this, Proposition~\ref{prop:2.6}, $\isolation(H, HS, GS)$ and assumption 5, we have
+  $\isolation(H', HS, GS)$. By \eqref{eq:reachinclusion1} and assumption 3,4 and 5
   we have $H' \vdash P' \tsep \ocr$.
 \end{proof}
 
@@ -212,22 +201,39 @@
 \end{corollary}
 
 \begin{proof}
-  Assumption 2 and 3 implies assumption 2 and 3 of
+  Assumption 2,3 and 4 implies assumption 2,3 and 4 of
   proposition~\ref{prop:2.11}
 \end{proof}
 
 \begin{definition} \label{def:ptilde}
-  Let $FS_g$ be any framestack where 
+  Let $FS_g$ be any frame stack where 
   \begin{equation*}
-    \accRoots(FS_g, H) = \left\{ o_g \right\}.
+    \accRoots(FS_g, H) = \left\{ o_g \right\}
   \end{equation*}
-  I.e., $FS_g$ only has the global object as an accessible root.  Then for
-  any thread set $P$, let $\tilde{P}$ be the thread set
+  Furthermore let $H; \nocap \vdash FS_g$.
+  $FS_g$ thus is any well typed frame stack that only has the global object as
+  an accessible root.  Now, for any thread set $P$, let $\tilde{P}$ be the
+  thread set
   \begin{equation*}
     \tilde{P} = P \cup \left\{ FS_g|_{\nocap}^\iota \right\}
   \end{equation*}
-  for some valid $\iota$.
+  for some fresh $\iota$.
 \end{definition}
+
+\begin{proposition} \label{prop:ocrtilde_eq}
+  For any $H, P$ we have
+  \begin{equation*}
+    H \vdash P \tsep \ocr \iff H \vdash \tilde{P} \tsep \ocr
+  \end{equation*}
+  and
+  \begin{equation*}
+    H \vdash P  \iff H \vdash \tilde{P}. 
+  \end{equation*}
+\end{proposition}
+\begin{proof}
+  Follows almost immediately from Proposition~\ref{prop:2.13} and the
+  definitions of OCAP reachability and $\tilde{P}$.
+\end{proof}
 
 \begin{proposition} \label{prop:2.8}
   For any heap $H$ and thread set $P$
@@ -245,13 +251,13 @@
 
 We state the following without proof.
 \begin{proposition} \label{prop:tilde_trans}
-  Let $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$. Then $H, \tilde{P}
-  \Rrightarrow^{R^{\alpha, \beta}} H', \tilde{P'}$
+  Let $H, P \Rrightarrow^{R^{\iota, \beta}} H', P'$. Then $H, \tilde{P}
+  \Rrightarrow^{R^{\iota, \beta}} H', \tilde{P'}$
 \end{proposition}
 
 \begin{proposition} \label{prop:2.9}
   For any $H, H', P, P'$ such that $\vdash H, H \vdash P$, $H \vdash P \tsep
-  \ocr$ and $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$, if
+  \ocr$ and $H, P \Rrightarrow^{R^{\iota, \beta}} H', P'$, if
   \begin{equation*}
       \isolation(H, P) 
       \implies 
@@ -264,9 +270,9 @@ We state the following without proof.
 \end{proposition}
 
 \begin{proof}
-  By proposition~\ref{prop:tilde_trans} $H, \tilde{P} \Rrightarrow^{R^{\alpha,
-  \beta}} H', \tilde{P'}$. It is easy to see that $\vdash H$ and $H \vdash
-  \tilde{P}$.
+  By proposition~\ref{prop:tilde_trans}, $H, \tilde{P} \Rrightarrow^{R^{\iota,
+  \beta}} H', \tilde{P'}$. It is easy to see that $\vdash H$, $H \vdash
+  \tilde{P}$ and $H \vdash \tilde{P} \tsep \ocr$.
   Since the assumption of the proposition refers to any $H, H', P, P'$ for which
   these three properties hold the statement also holds for $H, H',
   \tilde{P}, \tilde{P'}$.
@@ -274,11 +280,12 @@ We state the following without proof.
 
 \begin{remark}
   This proposition may seem a bit circular, but what it does is allow us to get
-  the global separation property for free in most cases in the proof of
-  preservation by combining it with proposition~\ref{prop:2.8}. We state
-  this in the following corollary. In particular we can for example use this in
-  all cases where we can also use proposition~\ref{prop:2.11} or its corollary
-  \ref{cor:2.11}.
+  the global separation property for free in any case of the proof of
+  Theorem~\ref{thm:preservation} where we do not rely on the global separation
+  property in order to prove preservation of isolation. This ends up to be a
+  substantial number of cases. We state this in the following corollary and it
+  can be proven by combining Proposition~\ref{prop:2.9} with
+  proposition~\ref{prop:2.8}. 
 \end{remark}
 
 \begin{corollary} \label{cor:2.9}
@@ -298,6 +305,10 @@ We state the following without proof.
     \end{gathered}
   \end{equation*}
 \end{corollary}
+\begin{remark}
+  In particular we can use this corollary in all cases where we can also use
+  proposition~\ref{prop:2.11} or its corollary \ref{cor:2.11}.
+\end{remark}
 
 % TODO define \Values set
 \begin{proposition} \label{prop:2.12}
@@ -343,7 +354,6 @@ We state the following without proof.
   \end{description}
 \end{proof}
 
-% TODO define heap
 \begin{proposition} \label{prop:2.14}
   Let $H, H'$ be heaps such that $\dom{(H)} \subseteq \dom{(H')}$ and 
   \begin{equation*}
@@ -375,31 +385,17 @@ We state the following without proof.
   \vdash \Gamma; L$ from proposition \ref{prop:2.19}. Applying rule {\sc T-FS2}
   yields $H'; a \vdash^{x: \sigma} FS$.
 
-  Now we prove \eqref{eq:fs_impl_typing1}. Similarly assuming $H; a \vdash^{x:
-  \tau} FS$ we have two cases. If $FS = \varepsilon$ we are done by {\sc
-  T-FSEmpty1}. If $FS = F \circ GS$ we by {\sc T-FS1} have
+  Now we prove \eqref{eq:fs_impl_typing1}. Similarly assuming $H; a \vdash FS$
+  we have two cases. If $FS = \varepsilon$ we are done by {\sc T-FSEmpty1}. If
+  $FS = F \circ GS$ we by {\sc T-FS1} have
   \begin{equation*}
     F = \xframe{L, t}^{x} \andalso H \vdash \Gamma; L \andalso
     \TypeRel{\Gamma}{a}{t}{\tau} \andalso H; a \vdash^{x: \sigma} GS.
   \end{equation*}
-  By \eqref{eq:fs_impl_typing1} $H'; a \vdash^{x: \sigma} GS$ and
-  proposition~\ref{prop:2.19} yields $H' \vdash \Gamma; L$. Applying rule {\sc
+  By \eqref{eq:fs_impl_typing2}, $H'; a \vdash^{x: \sigma} GS$. 
+  Proposition~\ref{prop:2.19} then yields $H' \vdash \Gamma; L$. Applying rule {\sc
   T-FS1} gives us $H'; a \vdash FS$.
 \end{proof}
-
-The following propositions are stated without proof, but they should not be hard
-to show.
-\begin{proposition} \label{prop:ocr_eq}
-  For any $H, P$ we have
-  \begin{equation*}
-    \begin{gathered}
-      H \vdash P \tsep \ocr \\
-      \iff \\
-      \forall HS|_b^{\iota'} \in P. \quad
-         b = \ocap \implies \ocrloc(HS, H)
-    \end{gathered}
-  \end{equation*}
-\end{proposition}
 
 \begin{proposition} \label{prop:ocrloc_eq}
   For any $H, HS$ we have
@@ -414,16 +410,9 @@ to show.
     \end{gathered}
   \end{equation*}
 \end{proposition}
-
-\begin{proposition} \label{prop:ocrtilde_eq}
-  For any $H, P$ we have
-  \begin{equation*}
-    H \vdash P \tsep \ocr \iff H \vdash \tilde{P} \tsep \ocr
-  \end{equation*}
-\end{proposition}
 \begin{proof}
-  Follows immediately from proposition~\ref{prop:ocr_eq} and the definition of
-  $\tilde{P}$.
+  Follows immediately from reachability equivalence and the definition of
+  $\ocrloc$.
 \end{proof}
 
 
@@ -453,23 +442,24 @@ to show.
       \uniqMain(P).
     \end{gathered}
   \end{equation*}
-  We easily see that $\uniqMain(P')$ must hold since no rule changes the OCAP
-  status of threads, and the only rule which spawns new threads is {\sc E-Spawn}
-  which spawns an OCAP thread.
+  We easily see that $\uniqMain(P')$ must hold since no reduction rule changes
+  the OCAP status of threads, and the only rule which spawns new threads is {\sc
+  E-Spawn} which spawns an OCAP thread.
 
   To prove everything else we proceed by cases.
   \begin{description}
-    \item[Case {\sc E-FSProp}:] According to this rule $P = Q \cup_D \left\{
-        FS|_a^\iota \right\}$ and $P' = Q \cup \left\{ FS'|_a^\iota \right\}$. We proceed by cases.
+    \item[Case {\sc E-FSProp}:] The \EFSProp{} rule definition says $P =
+      Q \cup_D \left\{ FS|_a^\iota \right\}$ and $P' = Q \cup \left\{
+        FS'|_a^\iota \right\}$. We proceed by cases.
       \begin{description}
-        \item[Case {\sc E-FProp}:] By the rule definition $FS|_a^\iota = F \circ
-          GS|_a^\iota$ and $FS'|_a^\iota = F' \circ GS|_a^\iota$. Furthermore we can assume
+        \item[Case {\sc E-FProp}:] By \EFProp{} rule definition, $FS = F \circ
+          GS$ and $FS' = F' \circ GS$. Furthermore we can assume
           that $F = \sframe{L, t}$ and $F' = \sframe{L', t'}$.
           We proceed by cases.
           \begin{description}
             \item[Case {\sc E-Null}:] By this rule we have $t =
               \Let{x}{\NullVal}{t'}$, $H = H'$ and $L' = L[x \mapsto \NullVal]$.
-              Immediatelly we have $\vdash H'$.
+              Immediatelly we have $\vdash H'$ by $H = H'$.
 
               By {\sc T-Procs} and proposition~\ref{prop:2.13} we have 
               \begin{equation} \label{eq:enull1}
@@ -495,27 +485,26 @@ to show.
               \end{equation}
               By {\sc T-FS1}, \eqref{eq:enull2}, \eqref{eq:enull3} and \eqref{eq:enull4}
               \begin{equation}\label{eq:enull5}
-                H;a \vdash FS'
+                H';a \vdash FS'
               \end{equation}
               By \eqref{eq:enull5}, {\sc T-Procs} and $H = H'$ we get  
               \begin{equation}
                 H' \vdash P'
               \end{equation}
               $H' \vdash P' \tsep \ocr$ and $\isolation{(H', P')}$ follows from
-              the corollary of proposition~\ref{prop:2.11}. Then $H' \vdash P'
-              \tsep \gsep$ follows from propositions~\ref{prop:2.8}
-              and~\ref{prop:2.9} since we never use the $\gsep$ property to
-              prove isolation.
+              the Corollary~\ref{cor:2.11}. Then $H' \vdash P'
+              \tsep \gsep$ follows from Corollary~\ref{cor:2.9} (see remarks
+              for Proposition~\ref{prop:2.9} and Corollary~\ref{cor:2.9}).
 
             \item[Case {\sc E-LVal}:] Similarly.
 
             \item[Case {\sc E-Var}:] First, by rule {\sc E-Var} we have
-              \begin{equation*} 
+              \begin{equation} 
                 \begin{gathered}
                   F = \sframe{L, t} \andalso t = \Let{x}{y}{t'} \\ 
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(y)].
                 \end{gathered}
-              \end{equation*}
+              \end{equation}
               Also
               \begin{equation} \label{eq:evar1}
                 H = H'
@@ -540,32 +529,32 @@ to show.
               \end{equation}
               By $H \vdash \Gamma; L$, \eqref{eq:evar1}, \eqref{eq:evar5}, and
               rules {\sc WF-EnvVar}, {\sc WF-Env}
-              \begin{equation*}
+              \begin{equation} \label{eq:evar8}
                 \typeOf(L'(x), H') = \typeOf(L(y), H) \stof \Gamma(y) =
                 \Gamma'(x).
-              \end{equation*}
+              \end{equation}
               From definitions of $\Gamma', L'$ and $H \vdash \Gamma;L$ we also have 
-              \begin{equation*}
+              \begin{equation} \label{eq:evar9}
                 \begin{aligned}
                   \forall z \in &\dom(\Gamma') \text{ s.t. } z \neq x. \\
                   & \typeOf(L'(z), H') \leq \Gamma'(z).
                 \end{aligned}
-              \end{equation*}
-              Thus
+              \end{equation}
+              Thus by {\sc WF-EnvVar}, {\sc WF-Env}, \eqref{eq:evar8} and
+              \eqref{eq:evar9} 
               \begin{equation} \label{eq:evar6}
                 H' \vdash \Gamma'; L'
               \end{equation}
-              by utilizing rules {\sc WF-EnvVar} and {\sc WF-Env}.
-              By {\sc T-FS1}, \eqref{eq:evar3}, \eqref{eq:evar5},
+              By {\sc T-FS1}, \eqref{eq:evar3}, \eqref{eq:evar5} and
               \eqref{eq:evar6} we have
               \begin{equation} \label{eq:evar7}
                 H'; a \vdash FS'.
               \end{equation}
-              By proposition \ref{prop:2.13} and $H \vdash P$ we get
+              By Proposition \ref{prop:2.13} and $H \vdash P$ we get
               \begin{equation*} 
                 \forall HS|_b^{\iota'} \in Q. \: H; b \vdash HS.
               \end{equation*}
-              By this, \eqref{eq:evar1} and proposition \ref{prop:2.13}
+              By this, \eqref{eq:evar1} and Proposition \ref{prop:2.13}
               \begin{equation*}
                 H' \vdash Q
               \end{equation*}
@@ -577,12 +566,12 @@ to show.
 
               We now move on to OCAP reachability, isolation and global object
               separation. We note that all preconditions of
-              corollary~\ref{cor:2.11} holds. Thus we immediately have 
+              Corollary~\ref{cor:2.11} holds. Thus we immediately have 
               \begin{equation*}
                 H' \vdash P' \tsep \ocr \andalso \isolation(H', P').
               \end{equation*}
-              $H' \vdash P' \tsep \gsep$ immediately follows by corollary to
-              proposition \ref{prop:2.9}.
+              $H' \vdash P' \tsep \gsep$ immediately follows by
+              Corollary~\ref{cor:2.9}.
 
             \item[Case {\sc E-Select}:] By rule {\sc E-Select}
               \begin{equation} \label{eq:eselect1}
@@ -598,7 +587,7 @@ to show.
               \begin{equation} \label{eq:eselect2}
                 \typeOf(FM(f), H) \stof \ftype(f, C).
               \end{equation}
-              $H \vdash P$, propositions \ref{prop:2.13}, \ref{prop:2.14} yields
+              $H \vdash P$ and propositions \ref{prop:2.13} and \ref{prop:2.14} yields
               $H \vdash Q$ and thus $H' \vdash Q$.
               $H \vdash P$ and proposition \ref{prop:2.13} gives 
               \begin{equation} \label{eq:eselect3}
@@ -611,7 +600,7 @@ to show.
                   \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS.
                 \end{gathered}
               \end{equation}
-              $\TypeRel{\Gamma}{a}{t}{\sigma}$ together with rule {\sc T-Let}
+              $\TypeRel{\Gamma}{a}{t}{\sigma'}$ together with rule {\sc T-Let}
               gives
               \begin{equation} \label{eq:eselect5}
                 \TypeRel{\Gamma}{a}{\FSel{y}{f}}{\gamma} \andalso
@@ -656,7 +645,7 @@ to show.
               \begin{equation*}
                 H' \vdash P' \tsep \ocr \andalso \isolation(H', P')
               \end{equation*}
-              Again using corollary \ref{cor:2.9} we get
+              Again using Corollary~\ref{cor:2.9} similarly to previous cases, we get
               \begin{equation*}
                 H' \vdash P' \tsep \gsep.
               \end{equation*}
@@ -667,13 +656,13 @@ to show.
                 \begin{gathered}
                   F = \sframe{L, t} \andalso t = \Let{x}{\FAss{y}{f}{z}}{t'} \\
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(z)] \\
-                  L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)
+                  L(y) = o_y \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)
                   \\
                   FM' = FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, FM'}]
                 \end{gathered}
               \end{equation}
               We begin by proving $\vdash H'$. First we note
-              that only change from $H$ to $H'$ is in what object $o$ maps to.
+              that only change from $H$ to $H'$ is in what object $o_y$ maps to.
               Clearly from \eqref{eq:eassign1} we have
               \begin{equation} \label{eq:eassign2}
                 \forall o \in \dom(H) = \dom(H'). \: \typeOf(o, H) = \typeOf(o,
@@ -684,16 +673,16 @@ to show.
                 \forall k \in \Values. \: \typeOf(k, H) = \typeOf(k,
                 H')
               \end{equation}
-
               \begin{addmargin}[1em]{1em}
                 \begin{remark}
-                  This means that immediately it is clear that the conditions for
-                  $\vdash H'$ holds for all $o' \in \dom(H')$ s.t. $o' \neq o$.
-                  See \eqref{eq:defwth1} and \eqref{eq:defwth2} in the
-                  definition of a well typed heap.
+                  This means that immediately it is clear that the conditions
+                  for $\vdash H'$ (see equations \eqref{eq:defwth1} and
+                  \eqref{eq:defwth2}) holds for all $o' \in \dom(H')$ s.t. $o'
+                  \neq o_y$.
                 \end{remark}
               \end{addmargin}
 
+              \vspace{2em}
               By $\vdash H$, definition of $H'$ and \eqref{eq:eassign3}
               \begin{equation} \label{eq:eassign4}
                 \begin{aligned}
@@ -701,7 +690,7 @@ to show.
                                  &\typeOf(FM'(f'), H') \stof \ftype(f, C)
                 \end{aligned}
               \end{equation}
-              By $H \vdash P$ and prop. \ref{prop:2.13}
+              By $H \vdash P$ and Proposition \ref{prop:2.13}
               \begin{equation} \label{eq:eassign5}
                 H;a \vdash FS.
               \end{equation}
@@ -770,14 +759,15 @@ to show.
               state the following lemma.
 
               \begin{lemma} \label{lem:2.15}
-                Let $HS|_b^{\iota'} \in Q$ and $L(z) \in \dom(H)$. Then
+                We let everything be as in case \EAssign{} above. Furthermore we
+                let $L(z) \in \dom(H)$. Then
                 \begin{equation} \label{eq:lem2.15a}
                   \begin{aligned}
                     &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
                     &\reachable(\accRoots(FS, H), \Graph(H))
                   \end{aligned}
                 \end{equation}
-                and
+                If $HS|_b^{\iota'} \in Q$
                 \begin{equation}\label{eq:lem2.15b}
                   \begin{aligned}
                     &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
@@ -797,26 +787,31 @@ to show.
               \begin{proof}
                 Let $\Graph(H) = (V_H, E_H)$. Then clearly
                 \begin{equation}
-                  \Graph(H') = \left(V_H, E_H \setminus \{(o_y, FM(f))_f \} \cup
-                  \{(o_y, o_z)_f \} \right)
+                  \begin{gathered}
+                    \Graph(H') = (V_H, E_{H'}) \\
+                    E_{H'} = (E_H \setminus \{(o_y, FM(f))_f \}) \cup \{(o_y,
+                    o_z)_f \}
+                  \end{gathered}
                 \end{equation}
-                Let $L(y) = o_y$. We prove each part separately. 
-                We begin with \eqref{eq:lem2.15a}.  Let
+                We prove each part separately.  We begin with
+                \eqref{eq:lem2.15a}.  Let
                 \begin{equation*}
                   q \in \reachable(\accRoots(FS', H'), \Graph(H')).
                 \end{equation*}
                 Because of reachability equivalence (proposition
-                \ref{prop:reacheq}) this means
+                \ref{prop:reacheq}) this means there is an $o \in \accRoots(FS',
+                H')$ such that
                 \begin{equation}
-                  \begin{aligned}
-                    \exists o &\in \accRoots(FS', H'). \\
-                    & \exists \text{ path } o_0, \dots, o_n \in \Graph(H')
-                    \text{ s.t. } o_0 = o, o_n = q
-                  \end{aligned}
+                  \exists \text{ path } o_0, \dots, o_n \in \Graph(H')
+                  \text{ s.t. } o_0 = o, o_n = q
                 \end{equation}
-                Let $f_i$ the associated field names from which the path is
+                Let $f_i$ be the associated field names from which the path is
                 formed, i.e. $(o_i, o_{i+1})_{f_i} \in \Graph(H')$.
-                Clearly $o \in \accRoots(FS, H)$ by \eqref{eq:eassign1}. 
+                By \eqref{eq:eassign1}
+                \begin{equation}
+                  \accRoots(FS', H') \subseteq \accRoots(FS, H).
+                \end{equation}
+                Clearly $o \in \accRoots(FS, H)$.
 
                 There are two cases:
                 \begin{enumerate}
@@ -847,15 +842,13 @@ to show.
                 \begin{equation}
                   q \in \reachable(\accRoots(HS, H'), \Graph(H')).
                 \end{equation}
-                Similarly to before
+                Similarly to before there is an $o \in \accRoots(HS,H')$ such
+                that
                 \begin{equation}
-                  \begin{aligned}
-                    \exists o &\in \accRoots(HS, H'). \\
-                    & \exists \text{ path } o_0, \dots, o_n \in \Graph(H')
-                    \text{ s.t. } o_0 = o, o_n = q
-                  \end{aligned}
+                  \exists \text{ path } o_0, \dots, o_n \in \Graph(H')
+                  \text{ s.t. } o_0 = o, o_n = q
                 \end{equation}
-                We let $f_i$ be as before.
+                We let $f_i$ be the corresponding field names as before.
                 We have exactly the same cases. For case 1 we let $i$ be the last
                 such index. Then similarly to before we get that $o_{i+1} \in
                 \accRoots(FS, H)$ and $q \in \reachable(\accRoots(FS, H),
@@ -876,35 +869,31 @@ to show.
                   \exists \text{ path } o_0, \dots, o_n \in \Graph(H') \text{ s.t. } o_0 = o,
                   o_n = q
                 \end{equation}
-                with related field names $f_i$. We get the exact same cases as
-                above, but we instead let $i$ be the first index with the
-                properties described. As noted this means we have the edge
+                with related field names $f_i$ as before. We get the exact same
+                cases as above. For case 1 we instead let $i$ be the first index with
+                the properties described. As noted this means we have the edge
                 $(o_y, o_z)_f$ as part of our path. Specifically this means
                 \begin{equation}\label{eq:lemma2.15-p3-1}
                   o_y \in \reachable(\accRoots(HS, H), \Graph(H))
                 \end{equation}
-                since $o_0, \cdot, o_i$ is a path in \Graph from $o$ to $o_y$.
-                Moreover
+                since $o_0, \dots, o_i$ is a path in $\Graph(H)$ from $o$ to
+                $o_y$, due to the way $i$ was chosen.  Moreover
                 \begin{equation}\label{eq:lemma2.15-p3-2}
                   o_y \in \reachable(\accRoots(FS, H), \Graph(H))
                 \end{equation}
-                since $(y \mapsto o_y) \in L$. From the {\sc E-Assign} rule
-                definition it is clear that
+                since $(y \mapsto o_y) \in L$. From \eqref{eq:eassign1} it is clear that
                 \begin{equation}\label{eq:lemma2.15-p3-3}
                   \typeOf(o_y, H) \not\stof \CellType.
                 \end{equation}
                 Now \eqref{eq:lemma2.15-p3-1}, \eqref{eq:lemma2.15-p3-2} and
-                \eqref{eq:lemma2.15-p3-3} contradicts isolation. To see this
-                first note that $H \vdash P$ together with $a = \ocap$ or $b =
-                \ocap$ implies $\isolated(H, FS, HS)$. Then apply
-                proposition~\ref{prop:2.6}. Since this case contradicts
-                isolation it is impossible.
+                \eqref{eq:lemma2.15-p3-3} contradicts $\isolation(H, P)$ since $b =
+                \ocap$. Since case 1 leads to a contradiction, it is impossible.
                 
-                For the second case it is clear that $o_0, \dots, o_n$ is also a
-                path from $o$ to $q$ in $\Graph(H)$ which immediately implies
-                $q \in \reachable(\accRoots(HS, H), \Graph(H))$.
-
-                This concludes the proof of the lemma.
+                For case 2 it is clear that $o_0, \dots, o_n$ is also a
+                path from $o$ to $q$ in $\Graph(H)$ which immediately implies 
+                \begin{equation}
+                  q \in \reachable(\accRoots(HS, H), \Graph(H)).
+                \end{equation}
               \end{proof}
 
               Continuing with the proof of case {\sc E-Assign} first off we use
@@ -912,40 +901,40 @@ to show.
               $HS|_b^{\iota'} \in Q$. Studying the $\ocr$ rules it is clear that we can
               prove that $H'; b \vdash HS \tsep \ocr$ holds trivially for any
               thread $HS|_b^{\iota'}$ for which $b = \nocap$. Therefore we from now on
-              assume that $b = \ocap$.  Using proposition \ref{prop:ocr_eq} we
-              note that $H \vdash P \tsep \ocr$ iff $H;b \vdash HS \tsep
-              \ocr$ which in using proposition \ref{prop:ocrloc_eq} in turn is
-              equivalent to  
+              assume that $b = \ocap$.  By $H \vdash P \tsep \ocr$, $H; b \vdash
+              FS \tsep \ocr$. By Proposition~\ref{prop:ocrloc_eq} and $b =
+              \ocap$,
               \begin{equation}\label{eq:eassign14}
                 \begin{aligned}
                   \forall o &\in \reachable(\accRoots(HS, H), H). \\
                             &\ocap(\typeOf(o, H)).
                 \end{aligned}
               \end{equation}
-              Similarly it is also clear that $H';b \vdash HS \tsep \ocr$ if
+              Lemma~\ref{lem:2.15} (equation \eqref{eq:lem2.15c}) and equations
+              \eqref{eq:eassign2} and \eqref{eq:eassign14} means 
               \begin{equation}
                 \begin{aligned}
                   \forall o &\in \reachable(\accRoots(HS, H'), \Graph(H')). \\
                             &\ocap(\typeOf(o, H')).
                 \end{aligned}
               \end{equation}
-              Equations \eqref{eq:eassign14} and \eqref{eq:eassign2} combined
-              with the last statement of lemma~\ref{lem:2.15}  makes it clear
-              that this is in fact the case.
+              But this is equivalent to $H';b \vdash HS \tsep \ocr$ by
+              Proposition~\ref{prop:ocrloc_eq}. 
 
               In order to prove $H' \vdash P' \tsep \ocr$ the only thing that
               remains is to show $H';a \vdash FS' \tsep \ocr$. This is anologous
-              to the above proof of $H';b \vdash HS~\ocr$ using
+              to the above reasoning about $H';b \vdash HS~\ocr$ using
               \eqref{eq:lem2.15a} instead. Thus we have
               \begin{equation*}
                 H' \vdash P' \tsep \ocr.
               \end{equation*}
 
-              Finally $\isolation(H', P')$ follows immediately from
-              proposition~\ref{prop:2.6}, lemma~\ref{lem:2.15} and applying rule
-              {\sc ISO-Procs}. We also note that nowhere have we relied on the
-              fact that $H~\vdash~P~\tsep~\gsep$ so using
-              corollary~\ref{cor:2.9} we also have $H'~\vdash~P'~\tsep~\gsep$.
+              $\isolation(H', P')$ follows immediately from $\isolation(H, P)$,
+              Proposition~\ref{prop:2.6}, Lemma~\ref{lem:2.15}, equation
+              \eqref{eq:eassign2} and applying rule {\sc ISO-Procs}. We also
+              note that nowhere have we relied on the fact that
+              $H~\vdash~P~\tsep~\gsep$ so using Corollary~\ref{cor:2.9} we also
+              have $H'~\vdash~P'~\tsep~\gsep$.
 
             % TODO add definition of \default, maybe \fdecls also
             \item[Case {\sc E-New}:] According to rule {\sc E-New}
@@ -954,7 +943,7 @@ to show.
                   F = \sframe{L, t} \andalso t = \Let{x}{\New{C}}{t'} \\
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto o_x] \\
                   o_x \text{ fresh object reference } \\
-                  FM = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in
+                  FM = [f \mapsto \default(\sigma) \mid (\VarDecl{f}{\sigma}) \in
                   \fdecls(C)] \\
                   H' = H[o_x \mapsto \Obj{C, FM}]
                 \end{gathered}
@@ -971,11 +960,14 @@ to show.
                 \end{aligned}
               \end{equation}
               Also
-              \begin{gather}
-                \forall o \in \dom(H). \: H(o) = H'(o) \label{eq:enew-h2}\\
+              \begin{equation}
+                \forall o \in \dom(H). \: H(o) = H'(o) \label{eq:enew-h2},
+              \end{equation}
+              and thus
+              \begin{equation}
                 \forall o \in \dom(H). \: \typeOf(o, H) = \typeOf(o, H').
                 \label{eq:enew-h3}
-              \end{gather}
+              \end{equation}
               Using the definition of a well typed heap together with
               \eqref{eq:enew-h1}, \eqref{eq:enew-h2} and \eqref{eq:enew-h3} we
               can easily show that $\vdash H'$.
@@ -1025,25 +1017,26 @@ to show.
                 H' \vdash P'.
               \end{equation}
 
-              Moving on to OCAP reachability. It is easy to prove that
+              Moving on to OCAP reachability. For any $HS|_b^{\iota'} \in Q$ it
+              is easy to prove that
               \begin{equation} \label{eq:enew-ocr1}
                 \begin{aligned}
-                  &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
+                  &\reachable(\accRoots(HS, H'), \Graph(H')) = \\
                   &\reachable(\accRoots(HS, H), \Graph(H)) 
                 \end{aligned}
               \end{equation}
               and
               \begin{equation} \label{eq:enew-ocr2}
                 \begin{aligned}
-                  &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
+                  &\reachable(\accRoots(FS', H'), \Graph(H')) = \\
                   &\reachable(\accRoots(FS, H), \Graph(H)) \cup \left\{ o_x
                   \right\}.
                 \end{aligned}
               \end{equation}
               Clearly $\typeOf(o_x, H') = C$. Using this fact together with
               \eqref{eq:enew-h3}, \eqref{eq:enew-typing5}, \eqref{eq:enew-ocr1},
-              \eqref{eq:enew-ocr2} and propositions \ref{prop:ocr_eq} and
-              \ref{prop:ocrloc_eq} it is easily shown that
+              \eqref{eq:enew-ocr2}, {\sc OCR-P}, $H \vdash P \tsep \ocr$ and
+              Proposition~\ref{prop:ocrloc_eq} it is easily shown that
               \begin{equation}
                 H' \vdash P' \tsep \ocr.
               \end{equation}

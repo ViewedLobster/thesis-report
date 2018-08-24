@@ -54,24 +54,7 @@ Having prooved soundness of the type system, the next thing to proove is
 quasi-determinism. In order to state this more formally, we need some
 definitions.
 
-The following is one way to define the concept of a fresh object\slash thread
-identifier.
-\begin{definition}
-  For each state $S = H, P$ there are two related sets of currently used object
-  identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$.
-  Respectively these contain all object and thread identifiers occuring in $H$
-  and $P$. 
-  %We call an object
-  %identifier $o$ (reference identifier $d$) \emph{fresh} if $o \not\in \mathcal{O}(S)$ ($d \not\in
-  %\mathcal{D}(S)$).
-\end{definition}
-
-\begin{definition}
-  We say that an object (thread) identifier $o$ ($d$) is \emph{fresh} at a state $S$ if
-  $o \not\in \OIDs(S)$ ($d \not\in \TIDs(S)$).
-\end{definition}
-
-Now we define a relation on states and show that this is an equivalence
+We first define a relation on states and show that this is an equivalence
 relation.
 \begin{definition} \label{def:eqrel}
   Let $\simeq$ be a binary relation on the set of states $\States$.
@@ -83,14 +66,18 @@ relation.
   \begin{equation}
     S = H, P \andalso S' = H', P'
   \end{equation}
-  and there exists bijections $g: \OIDs \to \OIDs, h: \TIDs \to \TIDs$
-  such that
+  and there exists bijections $g \in \OIDs \hookrightarrow \OIDs, h \in \TIDs
+  \hookrightarrow \TIDs$ such that
   \begin{equation}
     H' = \pi(H, g) \andalso P' = \rho(P, g, h)
   \end{equation}
   
-  The functions $\pi$ and $\rho$ are defined in definition~\ref{def:pirho}.
+  The functions $\pi$ and $\rho$ replaces all object and thread identifiers
+  occuring in $H$ or $P$ according to the bijections $g$ and $h$. They are
+  explicitly defined in Definition~\ref{def:pirho},
+  Appendix~\ref{cha:proof_of_qd}.
 \end{definition}
+
 
 
 \begin{proposition} \label{prop:eqrel}
@@ -98,16 +85,15 @@ relation.
 \end{proposition}
 
 A proof sketch of this can be found in Appendix~\ref{cha:proof_of_qd}.
-Similarly we can prove the following. A sketch can also be found in
-Appendix~\ref{cha:proof_of_qd}.
+Similarly we can prove the following. 
 \begin{proposition} \label{prop:eqrel_stateok}
   For any $S, S' \in \States$ such that $S \simeq S'$
   \begin{equation}
     \vdash S \tsep \stateok \iff \vdash S' \tsep \stateok
   \end{equation}
 \end{proposition}
-
-We make the following observation
+A proof sketch can also be found in Appendix~\ref{cha:proof_of_qd}.
+We can also make the following observation
 \begin{claim}
   A transition between two states can be uniquely identified by
   \begin{itemize}
@@ -148,7 +134,7 @@ Because of this claim we can make the following definition
 \end{definition}
 
 \begin{remark}
-  Actually the rule name $R$ in the above definition is redundant since this is
+  The rule name $R$ in the above definition is actually redundant since this is
   completely decided by the state $S$ and thread identifier $\iota$.
 \end{remark}
 
@@ -158,8 +144,8 @@ To simplify notation we make the following definition.
   A \emph{transition sequence} $\bar{R}$ is a finite length sequence of
   transition identifiers
   \begin{equation*}
-    R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n,
-    \beta_n}.
+    \bar{R} = R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2}, \dots,
+    R_n^{\iota_n, \beta_n}.
   \end{equation*}
   The application of this sequence to a state $S$ is the consecutive application
   of
@@ -177,7 +163,8 @@ To simplify notation we make the following definition.
   \end{equation*}
 \end{definition}
 
-We state the following proposition without proof.
+We state the following proposition without proof, just for reference. This
+follows from the observations made in the claim above.
 \begin{proposition} \label{prop:uniq_trans}
   Let $H, P \Rrightarrow H', P'$. Then there is a unique transition identifier
   $R^{\alpha, \beta}$ such that $H, P \Rrightarrow^{R^{\alpha, \beta}} H', P'$.
@@ -190,11 +177,10 @@ We are now ready to state the last main theorem.
   \begin{equation*}
     \begin{gathered}
       S \simeq S' \\
-      S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T'.
+      S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T',
     \end{gathered}
   \end{equation*}
-  Furthermore we assume that neither $T$ or $T'$ can make a step.
-  Then
+  and neither $T$ or $T'$ can make a step.  Then
   \begin{equation*}
     T \simeq T'.
   \end{equation*}
@@ -202,7 +188,7 @@ We are now ready to state the last main theorem.
 
 The proof of theorem~\ref{thm:qd} is based on induction on the length of the two
 transition sequences. It can be seen as incrementally transforming $\bar{R'}$ to
-$\bar{R}$ by moving transition specifiers to positions specified by $\bar{R}$.
+$\bar{R}$ by moving transition identifiers to positions specified by $\bar{R}$.
 Each intermediate sequence is shown to halt in the same state.
 
 Finally, the next corollary follows from theorem~\ref{thm:qd} and
@@ -212,11 +198,10 @@ proposition~\ref{prop:uniq_trans}:
   \begin{equation*}
     \begin{gathered}
       S \simeq S' \\
-      S \Rrightarrow^* T \andalso S' \Rrightarrow^* T'.
+      S \Rrightarrow^* T \andalso S' \Rrightarrow^* T',
     \end{gathered}
   \end{equation*}
-  Furthermore we assume that neither $T$ or $T'$ can make a step.
-  Then
+  and neither $T$ or $T'$ can make a step.  Then
   \begin{equation*}
     T \simeq T'.
   \end{equation*}
