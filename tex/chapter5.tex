@@ -124,7 +124,7 @@ describe the execution rules in more detail.
   $\Obj{C, FM}$ is a \emph{class object} where $C$ is a class name. The \emph{field
   map} $FM$ is a partial map
   \begin{equation*}
-    FM: \FieldNames \rightharpoonup \Values.
+    FM \in \FieldNames \rightharpoonup \Values.
   \end{equation*}
   In $\Cell{DEP, l}$ is a \emph{cell object} where $l \in \LatVals$. The
   \emph{dependency set} $DEP$ is a set of elements of the form
@@ -139,7 +139,7 @@ describe the execution rules in more detail.
 \begin{definition}
   A \emph{heap} $H$ is a partial map
   \begin{equation*}
-    H: \OIDs \rightharpoonup \Objects.
+    H \in \OIDs \rightharpoonup \Objects.
   \end{equation*}
   A heap must always contain the global object as specified in
   definition~\ref{def:state_zero}.
@@ -148,7 +148,7 @@ describe the execution rules in more detail.
 \begin{definition}
   A \emph{local environment} $L$ is a partial map
   \begin{equation*}
-    L: \VarNames \rightharpoonup \Values.
+    L \in \VarNames \rightharpoonup \Values.
   \end{equation*}
 \end{definition}
 
@@ -189,7 +189,7 @@ describe the execution rules in more detail.
 \end{definition}
 
 \begin{definition}
-  The \emph{default value function} $\default: \ValidTypes \to \Values$ is
+  The \emph{default value function} $\default \in \ValidTypes \to \Values$ is
   defined as follows.
   \begin{equation*}
     \default(\tau) =
@@ -207,7 +207,7 @@ describe the execution rules in more detail.
   \begin{equation*}
     \begin{gathered}
       H_0 = [o_g \mapsto \Obj{C_g, FM_g}] \\
-      FM_g = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in \overline{vd}]
+      FM_g = [f \mapsto \default(\sigma) \mid (\VarDecl{f}{\sigma}) \in \overline{vd}]
     \end{gathered}
   \end{equation*}
   where $o_g$ is a reserved object identifier for the \emph{global object} $\Obj{C_g,
@@ -364,7 +364,7 @@ execution.
 
   \scrule{E-When}
   {L(y) = o \andalso H(o) = \Cell{DEP, l} \andalso L(z) = l' \\
-  L_{\text{env}} = [u \mapsto L(u') : (\Capt{u}{u'}) \in \overline{cap}]
+  L_{\text{env}} = [u \mapsto L(u') \mid (\Capt{u}{u'}) \in \overline{cap}]
   \andalso cb = (L_{\text{env}}, w \Rightarrow t') \\
   \iota\text{ fresh thread identifier } \andalso DEP' = DEP \cup (l', cb)^\iota \\
   H' = H[o \mapsto \Cell{DEP', l}] }
@@ -663,7 +663,7 @@ captured variables and $z: \LatType$.
     \scrule{T-When}
     {\TypeRel{\Gamma}{a}{x}{\CellType} \andalso \TypeRel{\Gamma}{a}{y}{\LatType} \\
     \forall \Capt{u}{u'} \in \overline{cap}. \; \TypeRel{\Gamma}{a}{u'}{\CellType}\\
-    \Gamma_{\text{cells}} = [u \mapsto \CellType : \Capt{u}{u'} \in \overline{cap}]\\
+    \Gamma_{\text{cells}} = [u \mapsto \CellType \mid (\Capt{u}{u'}) \in \overline{cap}]\\
     \TypeRel{\Gamma_{\text{cells}}, z : \LatType}{\ocap}{t}{\sigma}}
     { \TypeRel{\Gamma}{a}{\When{x}{y}{ \CB{\overline{cap}}{z}{t}}}{\CellType} }
 
@@ -816,7 +816,7 @@ following.
 \begin{definition}
   The typing environment $\Gamma_{\CellType}(L)$ is defined as follows:
   \begin{equation}
-    \Gamma_{\CellType}(L) = \left[(x: \CellType) : x \in \dom(L)\right]
+    \Gamma_{\CellType}(L) = \left[(x: \CellType) \mid x \in \dom(L)\right]
   \end{equation}
 \end{definition}
 Next comes the definition of a well typed heap. To say that a heap is

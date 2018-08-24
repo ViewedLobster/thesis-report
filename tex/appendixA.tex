@@ -8,7 +8,7 @@
   The induced graph of heap $H$, written $\Graph{(H)}$ is the directed graph
   $(V, E)$ such that $V = \dom{(H)}$ and 
   \begin{equation}
-    E = \left\{ (o, o')_f \in \dom{(H)}^2 \times \FieldNames: 
+    E = \left\{ (o, o')_f \in \dom{(H)}^2 \times \FieldNames \mid
       H(o) = \Obj{C, FM} \text{ and } FM(f) = o' \right\}
   \end{equation}
 \end{definition}
@@ -18,8 +18,8 @@
   E)$, written $\reach{(G, o, o')}$ if there is a finite sequence $o_0, \dots,
   o_n \in V$ such that $o = o_0, o_n = o'$ and
   \begin{equation}
-    \forall i = 1,\dots, n-1. \: \exists f \in \FieldNames \text{ s.t. } (o_i,
-    o_{i+1})_f \in E.
+    \forall i = 1,\dots, n-1. \: \exists f_i \in \FieldNames \text{ s.t. } (o_i,
+    o_{i+1})_{f_i} \in E.
   \end{equation}
   The sequence $o_0, \dots, o_n$ is called a \emph{path}.
 \end{definition}
@@ -138,7 +138,7 @@
         \Graph(H)). \\ 
         &\typeOf(q, H) \stof \CellType.
       \end{align*}
-      Finally by proposition~\ref{prop:csep_eq}, we have $\csep(H, o, o')$. Since
+      Finally by Proposition~\ref{prop:csep_eq}, we have $\csep(H, o, o')$. Since
       $o, o'$ arbitrary we are done.
   \end{description}
 \end{proof}
@@ -202,7 +202,7 @@
 
 \begin{proof}
   Assumption 2,3 and 4 implies assumption 2,3 and 4 of
-  proposition~\ref{prop:2.11}
+  Proposition~\ref{prop:2.11}
 \end{proof}
 
 \begin{definition} \label{def:ptilde}
@@ -270,7 +270,7 @@ We state the following without proof.
 \end{proposition}
 
 \begin{proof}
-  By proposition~\ref{prop:tilde_trans}, $H, \tilde{P} \Rrightarrow^{R^{\iota,
+  By Proposition~\ref{prop:tilde_trans}, $H, \tilde{P} \Rrightarrow^{R^{\iota,
   \beta}} H', \tilde{P'}$. It is easy to see that $\vdash H$, $H \vdash
   \tilde{P}$ and $H \vdash \tilde{P} \tsep \ocr$.
   Since the assumption of the proposition refers to any $H, H', P, P'$ for which
@@ -285,7 +285,7 @@ We state the following without proof.
   property in order to prove preservation of isolation. This ends up to be a
   substantial number of cases. We state this in the following corollary and it
   can be proven by combining Proposition~\ref{prop:2.9} with
-  proposition~\ref{prop:2.8}. 
+  Proposition~\ref{prop:2.8}. 
 \end{remark}
 
 \begin{corollary} \label{cor:2.9}
@@ -307,7 +307,7 @@ We state the following without proof.
 \end{corollary}
 \begin{remark}
   In particular we can use this corollary in all cases where we can also use
-  proposition~\ref{prop:2.11} or its corollary \ref{cor:2.11}.
+  Proposition~\ref{prop:2.11} or its corollary \ref{cor:2.11}.
 \end{remark}
 
 % TODO define \Values set
@@ -382,7 +382,7 @@ We state the following without proof.
     \sigma}{a}{t}{\tau} \andalso H; a \vdash^{y: \tau} GS.
   \end{equation*}
   By induction hypothesis we then have $H'; a \vdash^{y: \tau} GS$. We get $H'
-  \vdash \Gamma; L$ from proposition \ref{prop:2.19}. Applying rule {\sc T-FS2}
+  \vdash \Gamma; L$ from Proposition \ref{prop:2.19}. Applying rule {\sc T-FS2}
   yields $H'; a \vdash^{x: \sigma} FS$.
 
   Now we prove \eqref{eq:fs_impl_typing1}. Similarly assuming $H; a \vdash FS$
@@ -461,7 +461,7 @@ We state the following without proof.
               \Let{x}{\NullVal}{t'}$, $H = H'$ and $L' = L[x \mapsto \NullVal]$.
               Immediatelly we have $\vdash H'$ by $H = H'$.
 
-              By {\sc T-Procs} and proposition~\ref{prop:2.13} we have 
+              By {\sc T-Procs} and Proposition~\ref{prop:2.13} we have 
               \begin{equation} \label{eq:enull1}
                H \vdash Q  \andalso H; a \vdash FS 
               \end{equation}
@@ -510,7 +510,7 @@ We state the following without proof.
                 H = H'
               \end{equation}
               so $\vdash H'$.
-              By $H \vdash P$, {\sc T-FS1} and proposition \ref{prop:2.13}
+              By $H \vdash P$, {\sc T-FS1} and Proposition \ref{prop:2.13}
               \begin{equation} \label{eq:evar3}
                 \begin{gathered}
                   H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
@@ -589,7 +589,7 @@ We state the following without proof.
               \end{equation}
               $H \vdash P$ and propositions \ref{prop:2.13} and \ref{prop:2.14} yields
               $H \vdash Q$ and thus $H' \vdash Q$.
-              $H \vdash P$ and proposition \ref{prop:2.13} gives 
+              $H \vdash P$ and Proposition \ref{prop:2.13} gives 
               \begin{equation} \label{eq:eselect3}
                 H; a \vdash FS
               \end{equation}
@@ -640,7 +640,7 @@ We state the following without proof.
               \end{equation*}
               
               Moving on to OCAP reachability, isolation and global object
-              separation we can easily see that the preconditions of proposition
+              separation we can easily see that the preconditions of Proposition
               \ref{prop:2.11} holds and thus we immediately get
               \begin{equation*}
                 H' \vdash P' \tsep \ocr \andalso \isolation(H', P')
@@ -668,7 +668,7 @@ We state the following without proof.
                 \forall o \in \dom(H) = \dom(H'). \: \typeOf(o, H) = \typeOf(o,
                 H')
               \end{equation}
-              Thus by proposition \ref{prop:2.12} 
+              Thus by Proposition \ref{prop:2.12} 
               \begin{equation} \label{eq:eassign3}
                 \forall k \in \Values. \: \typeOf(k, H) = \typeOf(k,
                 H')
@@ -753,7 +753,7 @@ We state the following without proof.
 
               We now move on to OCAP reachability, isolation and global object
               separation.  Note that the only insteresting case is if $L(z)$ is
-              an object refence, since otherwise the preconditions to corollary
+              an object refence, since otherwise the preconditions to Corollary
               \ref{cor:2.11} holds and we are done similarly to previous cases.
               Therefore we assume $L(z) \in \dom(H)$.  To help our efforts we
               state the following lemma.
@@ -798,7 +798,7 @@ We state the following without proof.
                 \begin{equation*}
                   q \in \reachable(\accRoots(FS', H'), \Graph(H')).
                 \end{equation*}
-                Because of reachability equivalence (proposition
+                Because of reachability equivalence (Proposition
                 \ref{prop:reacheq}) this means there is an $o \in \accRoots(FS',
                 H')$ such that
                 \begin{equation}
@@ -972,7 +972,7 @@ We state the following without proof.
               \eqref{eq:enew-h1}, \eqref{eq:enew-h2} and \eqref{eq:enew-h3} we
               can easily show that $\vdash H'$.
 
-              By proposition~\ref{prop:2.13}
+              By Proposition~\ref{prop:2.13}
               \begin{equation} 
                 H \vdash Q \andalso H; a \vdash FS.
               \end{equation}
@@ -1002,7 +1002,7 @@ We state the following without proof.
               \begin{equation} \label{eq:enew-typing3}
                 H' \vdash \Gamma'; L'.
               \end{equation}
-              By proposition \ref{prop:2.14}
+              By Proposition \ref{prop:2.14}
               \begin{equation} \label{eq:enew-typing4}
                 H';a \vdash^{s: \sigma} GS.
               \end{equation}
@@ -1017,15 +1017,15 @@ We state the following without proof.
                 H' \vdash P'.
               \end{equation}
 
-              Moving on to OCAP reachability. For any $HS|_b^{\iota'} \in Q$ it
-              is easy to prove that
+              Moving on to OCAP reachability. For any $HS|_b^{\iota'} \in Q$,
+              we see that
               \begin{equation} \label{eq:enew-ocr1}
                 \begin{aligned}
                   &\reachable(\accRoots(HS, H'), \Graph(H')) = \\
                   &\reachable(\accRoots(HS, H), \Graph(H)) 
                 \end{aligned}
               \end{equation}
-              and
+              and furthermore that
               \begin{equation} \label{eq:enew-ocr2}
                 \begin{aligned}
                   &\reachable(\accRoots(FS', H'), \Graph(H')) = \\
@@ -1033,19 +1033,19 @@ We state the following without proof.
                   \right\}.
                 \end{aligned}
               \end{equation}
-              Clearly $\typeOf(o_x, H') = C$. Using this fact together with
+              Clearly $\typeOf(o_x, H') = C$. Combining this with
               \eqref{eq:enew-h3}, \eqref{eq:enew-typing5}, \eqref{eq:enew-ocr1},
               \eqref{eq:enew-ocr2}, {\sc OCR-P}, $H \vdash P \tsep \ocr$ and
-              Proposition~\ref{prop:ocrloc_eq} it is easily shown that
+              Proposition~\ref{prop:ocrloc_eq} we see that
               \begin{equation}
                 H' \vdash P' \tsep \ocr.
               \end{equation}
 
-              Similarly it is easy to show $\isolation(H', P')$ using
-              \eqref{eq:enew-ocr1}, \eqref{eq:enew-ocr2} together with
-              proposition~\ref{prop:2.6}. Since the isolation proof never relies
-              on $H \vdash P \tsep \gsep$ we can apply
-              corollary~\ref{cor:2.9}. Thus we have proved
+              Similarly it is easy to show $\isolation(H', P')$ using equations
+              \eqref{eq:enew-h3}, \eqref{eq:enew-ocr1} and \eqref{eq:enew-ocr2}
+              together with Proposition~\ref{prop:2.6} and {\sc ISO-Procs}.
+              Since the isolation proof never relies on $H \vdash P \tsep \gsep$
+              we can apply Corollary~\ref{cor:2.9}.
               \begin{equation}
                 \isolation(H', P') \andalso H' \vdash P' \tsep \gsep
               \end{equation}
@@ -1072,18 +1072,20 @@ We state the following without proof.
                   l'}].
                 \end{gathered}
               \end{equation}
-              Since the only change is $l$ being updated to $l \sqcup l'$, by
-              studying the definition for a well typed heap and using $\vdash H$
-              it is easy to conclude that
+              Since the only change to the heap is $l$ being updated to $l
+              \sqcup l'$, by inspecting the definition for a well typed heap and
+              using $\vdash H$ it is easy to conclude that
               \begin{equation}
                 \vdash H'.
               \end{equation}
               The proof of $H' \vdash P'$ follows similar to case {\sc E-Var}.
-              The preconditions of corollary~\ref{cor:2.11} clearly holds and we
-              can thus also apply corollary~\ref{cor:2.9} to get
+              The preconditions of Corollary~\ref{cor:2.11} clearly hold. Thus 
               \begin{equation}
-                H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
-                \vdash P' \tsep \gsep
+                H' \vdash P' \tsep \ocr \andalso \isolation(H', P').
+              \end{equation}
+              We apply Corollary~\ref{cor:2.9} to get
+              \begin{equation}
+                H' \vdash P' \tsep \gsep
               \end{equation}
 
             \item[Case {\sc E-When}:] From rule {\sc E-When} we know
@@ -1093,29 +1095,17 @@ We state the following without proof.
                   t = \Let{x}{\When{y}{z}{\CB{\overline{cap}}{w}{t''}}}{t'} \\
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(y)] \\
                   L(y) = o_y \andalso H(o_y) = \Cell{DEP, l} \andalso L(z) = l' \\
-                  L_{\text{env}} = [u \mapsto L(u'): (\Capt{u}{u'}) \in
+                  L_{\text{env}} = [u \mapsto L(u') \mid (\Capt{u}{u'}) \in
                   \overline{cap}] \andalso cb = (L_{\text{env}}, w \Rightarrow
                   t'') \\
                   \iota \text{ fresh thread id} \andalso DEP' = DEP \cup (l',
                   cb)^\iota
                   \\
-                  H' = H[o \mapsto \Cell{DEP', l}].
+                  H' = H[o_y \mapsto \Cell{DEP', l}].
                 \end{gathered}
               \end{equation}
-              Since only object on heap changed is $H(o_y)$ we have shown
-              $\vdash H'$ if we can show that
-              \begin{equation}
-                \begin{aligned}
-                  \forall (l^{\text{cb}}&, (L^{\text{cb}}_{\text{env}}, z^{\text{cb}} \Rightarrow t^{\text{cb}}))^{d^{\text{cb}}} \in
-                  DEP'. \\
-                  &\forall (x \mapsto k) \in L^{\text{cb}}_{\text{env}}.\: \typeOf{(k, H')} \stof
-                  \CellType \: \land \\
-                  &\TypeRel{\Gamma_{\CellType{}}(L^{\text{cb}}_{\text{env}}), z^{\text{cb}}:
-                  \LatType}{\ocap}{t^{\text{cb}}}{\gamma} .
-                \end{aligned}
-              \end{equation}
               We note that $\dom(H) = \dom(H')$ and that
-              \begin{equation}
+              \begin{equation} \label{eq:ewhen-h5}
                 \begin{aligned}
                   \forall o &\in \dom(H).  \\
                     &\typeOf(o, H) = \typeOf(o, H'),
@@ -1128,22 +1118,23 @@ We state the following without proof.
                     &\typeOf(k, H) = \typeOf(k, H').
                 \end{aligned}
               \end{equation}
-              Because of this
+              Combining this with the fact that the only object on heap changed
+              is $H(o_y)$ we have shown $\vdash H'$ if we can show that
               \begin{equation}
                 \begin{aligned}
                   \forall (l^{\text{cb}}&, (L^{\text{cb}}_{\text{env}},
-                  z^{\text{cb}} \Rightarrow t^{\text{cb}}))^{d^{\text{cb}}} \in
-                  DEP' \text{ s.t. }  \\
-                  &(l^{\text{cb}}, (L^{\text{cb}}_{\text{env}}, z^{\text{cb}}
-                  \Rightarrow t^{\text{cb}}))^{d^{\text{cb}}} \neq
-                  (l', cb)^\iota. \\
+                  z^{\text{cb}} \Rightarrow t^{\text{cb}}))^{\iota^{\text{cb}}} \in
+                  DEP'. \\
                   &\forall (x \mapsto k) \in L^{\text{cb}}_{\text{env}}.\: \typeOf{(k, H')} \stof
                   \CellType \: \land \\
                   &\TypeRel{\Gamma_{\CellType{}}(L^{\text{cb}}_{\text{env}}), z^{\text{cb}}:
-                  \LatType}{\ocap}{t^{\text{cb}}}{\gamma}.
+                  \LatType}{\ocap}{t^{\text{cb}}}{\gamma} .
                 \end{aligned}
               \end{equation}
-              Thus what remains to prove $\vdash H'$ is to show that
+              It is simple to see that, because of $\vdash H$ and that the only
+              difference between $DEP$ and $DEP'$ is the addition of $(l',
+              (L_{\text{env}}, w \Rightarrow t''))$, we have proved $\vdash H'$
+              if we can prove
               \begin{equation} \label{eq:ewhen-h1}
                 \forall (x \mapsto k) \in L_{\text{env}}.\: \typeOf{(k, H')} \stof
                 \CellType
@@ -1153,8 +1144,9 @@ We state the following without proof.
                 \TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), w:
                 \LatType}{\ocap}{t''}{\gamma}.
               \end{equation}
-              Similarly to earlier cases, using typing rules we can easily prove
-              that
+              Similarly to earlier cases, using $H \vdash P$ together with
+              typing rules such as {\sc T-Let} and {\sc T-When} we can easily
+              get
               \begin{equation}\label{eq:ewhen-h3}
                 H \vdash \Gamma; L \andalso \forall (\Capt{u}{u'}) \in
                 \overline{cap}. \: \TypeRel{\Gamma}{a}{u'}{\CellType} 
@@ -1162,20 +1154,22 @@ We state the following without proof.
               and
               \begin{equation} \label{eq:ewhen-h4}
                 \begin{gathered}
-                  \Gamma_{\text{cells}} = [u \mapsto \CellType: (\Capt{u}{u'}) \in
+                  \Gamma_{\text{cells}} = [u \mapsto \CellType \mid (\Capt{u}{u'}) \in
                   \overline{cap}] \\
                   \TypeRel{\Gamma_{\text{cells}}, w:
                   \LatType}{\ocap}{t''}{\gamma'}.
                 \end{gathered}
               \end{equation}
               \eqref{eq:ewhen-h4} is just a different formulation of
-              \eqref{eq:ewhen-h2} since the actual value of $\gamma'$ does not
-              matter. Moreover with \eqref{eq:ewhen-h3} we can easily show
-              \eqref{eq:ewhen-h2} by using the definitions of {\sc WF-EnvVar}
-              and {\sc WF-Env}. Thus we are done and have
+              \eqref{eq:ewhen-h2} since the actual value of $\gamma$ does not
+              matter. Moreover, using equations \eqref{eq:ewhen-h5} and
+              \eqref{eq:ewhen-h3} it is simple to prove \eqref{eq:ewhen-h1} with
+              the help of rules {\sc WF-EnvVar}, {\sc WF-Env} and {\sc T-Var}.
+              Thus we are done and have
               \begin{equation}
                 \vdash H'.
               \end{equation}
+
               Proof of $H' \vdash P'$ is similar to case {\sc E-Var} and
               similarly to other cases we can apply corollaries \ref{cor:2.11}
               and \ref{cor:2.9} to get
@@ -1207,8 +1201,8 @@ We state the following without proof.
           \begin{equation*}
             \vdash H'.
           \end{equation*}
-          By propositions~\ref{prop:2.13} and~\ref{prop:2.14}, $H = H'$ and
-          $H \vdash P$ we have
+          By $H = H'$, $H \vdash P$ and propositions~\ref{prop:2.13},
+          and \ref{prop:2.14},  we have
           \begin{equation}
             \begin{gathered}
               H' \vdash Q \andalso H;a \vdash FS.
@@ -1251,12 +1245,18 @@ We state the following without proof.
 
           Now, $a$ can be either $\nocap$ or $\ocap$. We first assume that $a =
           \nocap$.
-          By well typedness of classes together with the above we must have a
-          class $C''$ s.t. $C \stof C'' \stof C'$ where such that
+          By our program and thus by extension our classes being well formed, together
+          with $C \stof C'$, we must have a class $C''$ s.t. $C \stof C'' \stof
+          C'$ such that the the class definition of $C''$ includes the method
+          definition
+          \begin{equation*}
+            \MethodDef{m}{u}{\gamma}{\tau}{t'}.
+          \end{equation*}
+          By $C''$ being well formed
           \begin{equation}
-            C'' \vdash \MethodDef{m}{u}{\gamma}{\tau}{t'}
+            C'' \vdash \MethodDef{m}{u}{\gamma}{\tau}{t'}.
           \end{equation}
-          which by $C''$ being well typed in turn means that
+          By {\sc WF-Method} this means that
           \begin{equation} \label{eq:ecall-hp4}
             \TypeRel{\Gamma_0,\This: C'', u: \gamma}{\nocap}{t'}{\tau'}
             \andalso \tau' \stof \tau.
@@ -1287,7 +1287,7 @@ We state the following without proof.
           \begin{equation}
             \ocrloc(FS, H)
           \end{equation}
-          and thus by proposition~\ref{prop:ocrloc_eq}
+          and thus by Proposition~\ref{prop:ocrloc_eq}
           \begin{equation}
             \begin{aligned}
               \forall q &\in \reachable(\accRoots(FS, H), \Graph(H)) \\
@@ -1296,20 +1296,27 @@ We state the following without proof.
           \end{equation}
           
           Of course this means that $\ocap(\typeOf(L(y), H))$ or equivalently
-          $\ocap(C)$. The rest is similar to the case where $a = \nocap$
+          $\ocap(C)$. Proceeding similarly to the case $a = \nocap$ we
+          additionally have $\ocap(C'')$ due to rule {\sc OCAP-Class}, which
+          demands that parent classes to $C$ should be ocap aswell. Again using
+          {\sc OCAP-Class}, we get that 
+          \begin{equation}
+            C'' \vdash_{\ocap} \MethodDef{m}{u}{\gamma}{\tau}{t'}.
+          \end{equation}
+          By {\sc OCAP-Method} we get that 
+          \begin{equation} \label{eq:ecall-hp9}
+            \TypeRel{\This: C'', u: \gamma}{\nocap}{t'}{\tau'}
+            \andalso \tau' \stof \tau.
+          \end{equation}
+          The rest is similar to the case where $a = \nocap$,
           replacing $\Gamma_{\nocap}'$ with 
           \begin{equation}
             \Gamma'_{\ocap} = \This: C'', u: \gamma.
           \end{equation}
-          This can be done because of the OCAP typing rules in
-          Figure~\ref{fig:ocap_typing} which demands that: all parent classes of
-          $C$ must also be OCAP typed which means $\ocap(C'')$, and thus that
-          all $C''$s methods are typed in an environment without $\Gamma_0$.
-          Hence the difference between $\Gamma'_{\nocap}$ and $\Gamma'_{\ocap}$.
 
           We now prove isolation, OCAP reachability and global object
           separation. Instead of working with $P$ directly we instead use
-          $\tilde{P}$. It is clear from propositions~\ref{prop:2.8} and
+          $\tilde{P}$. It is clear from Propositions~\ref{prop:2.8} and
           \ref{prop:ocrtilde_eq} that in order to show 
           \begin{equation}
             H' \vdash P' \tsep \ocr \andalso \isolation(H', P') \andalso H'
@@ -1331,8 +1338,7 @@ We state the following without proof.
             \tilde{P'} = \tilde{Q} \cup_D \left\{ FS'|_a^\iota \right\}.
           \end{equation}
 
-          We first assume that $a = \ocap$. It is very
-          easy to see that
+          We first assume that $a = \ocap$. It is easy to see that
           \begin{equation}
             \accRoots(FS', H') \subseteq \accRoots(FS, H)
           \end{equation}
@@ -1343,14 +1349,14 @@ We state the following without proof.
               &\accRoots(HS, H') = \accRoots(HS, H).
             \end{aligned}
           \end{equation}
-          Clearly then the preconditions to corollary~\ref{cor:2.11} holds and
+          Clearly then, the preconditions to Corollary~\ref{cor:2.11} holds and
           we have $\isolation(H', \tilde{P'})$ and $H' \vdash \tilde{P'} \tsep
           \ocr$. Thus we are done.
 
           Now instead assume $a = \nocap$. Since $\isolation(H, \tilde{P})$ we have
           $\isolated(H, HS_1, HS_2)$ for any two distinct $HS_1|_b^{\iota'},
           HS_2|_c^{\iota''}
-          \in \tilde{Q}$ such that $b = \ocap$ or $c = \ocap$. Therefore since $H = H'$
+          \in \tilde{Q}$ such that $b = \ocap$ or $c = \ocap$. Therefore, since $H = H'$
           \begin{equation}
             \begin{aligned}
               \forall &\text{ distinct } HS_1|_b^{\iota'}, HS_2|_c^{\iota''} \in \tilde{Q}. \\ 
@@ -1366,31 +1372,32 @@ We state the following without proof.
           \end{equation}
           since $a = \nocap$. To prove this implication we take any
           $HS|_b^{\iota'} \in
-          \tilde{Q}$ such that $b = \ocap$. Because of $a = \nocap$ and the
-          definition of $L'$ in \eqref{eq:ecall1}
+          \tilde{Q}$ such that $b = \ocap$. Note that this implies $HS \neq
+          FS_g$. Because of $a = \nocap$ and the definition of $L'$ in
+          \eqref{eq:ecall1}
           \begin{equation} \label{eq:ecall-iso1}
             \accRoots(FS', H') = \accRoots(FS, H) \cup \left\{ o_g \right\}.
           \end{equation}
-          Since $\isolation(H, \tilde{P})$ we have
+          By $\isolation(H, \tilde{P})$  and $b = \ocap$,
           \begin{equation} \label{eq:ecall-iso2}
-            \isolation(H, HS, FS_g).
+            \isolated(H, HS, FS_g)
+          \end{equation}
+          and
+          \begin{equation} \label{eq:ecall-iso4}
+            \isolated(H, FS, HS).
           \end{equation}
           By definition
           \begin{equation} \label{eq:ecall-iso3}
             \accRoots(FS_g, H) = \left\{o_g \right\}.
           \end{equation}
-          By $\isolation(H, \tilde{P})$ 
-          \begin{equation} \label{eq:ecall-iso4}
-            \isolated(H, FS, HS).
-          \end{equation}
           By inspecting \eqref{eq:ecall-iso1}, \eqref{eq:ecall-iso2},
           \eqref{eq:ecall-iso3} and \eqref{eq:ecall-iso4} and considering
-          proposition~\ref{prop:2.6} it is fairly easy to show
+          Proposition~\ref{prop:2.6} it is fairly easy to show
           \begin{equation}
             \isolated(H, FS', HS).
           \end{equation}
-          To show this, assume for a contradiction that we do not have
-          $\isolated(H, FS', HS)$. This would entail that
+          Specifically, to show this, assume for a contradiction that we do not
+          have $\isolated(H, FS', HS)$. This would entail that
           \begin{equation}
             \begin{aligned}
               \exists q &\in \dom(H), o \in \accRoots(HS, H), o' \in
@@ -1400,7 +1407,7 @@ We state the following without proof.
             \end{aligned}
           \end{equation}
           If $o' = o_g$ this immediately contradicts $\isolated(H, HS, FS_g)$ by
-          proposition~\ref{prop:2.6}. If we instead have $o' \neq o_g$ then by
+          Proposition~\ref{prop:2.6}. If we instead have $o' \neq o_g$ then by
           \eqref{eq:ecall-iso1} we must have
           \begin{equation}
             o' \in \accRoots(FS, H).
@@ -1411,8 +1418,8 @@ We state the following without proof.
             \isolation(H', \tilde{P'}).
           \end{equation}
 
-          By $H \vdash \tilde{P} \tsep \ocr$ and
-          proposition~\ref{prop:ocrtilde_eq} we get
+          By $H \vdash \tilde{P} \tsep \ocr$, $H = H'$ and
+          Proposition~\ref{prop:ocrtilde_eq} we get
           \begin{equation} \label{eq:ecall-ocr1}
             H \vdash \tilde{Q} \tsep \ocr.
           \end{equation}
@@ -1420,9 +1427,8 @@ We state the following without proof.
           \begin{equation} \label{eq:ecall-ocr2}
             H'; a \vdash FS' \tsep \ocr 
           \end{equation} 
-          follows vacuously. Using rule {\sc OCR-P} in
-          Figure~\ref{fig:def_ocapreach} together with \eqref{eq:ecall-ocr1} and
-          \eqref{eq:ecall-ocr2} we get
+          follows vacuously. Using rule {\sc OCR-P} together with
+          \eqref{eq:ecall-ocr1} and \eqref{eq:ecall-ocr2} we get
           \begin{equation}
             H' \vdash \tilde{P'} \tsep \ocr.
           \end{equation}  
@@ -1437,7 +1443,7 @@ We state the following without proof.
               H = H'.
             \end{gathered}
           \end{equation}
-          By $H \vdash P$ and proposition~\ref{prop:2.13} we have
+          By $H \vdash P$ and Proposition~\ref{prop:2.13} we have
           \begin{equation} \label{eq:eret-hp0}
             H \vdash Q \andalso H; a \vdash FS.
           \end{equation}
@@ -1461,7 +1467,7 @@ We state the following without proof.
             \end{gathered}
           \end{equation}
           We let $\Gamma'' = \Gamma', x : \tau$. By $H = H'$, $H \vdash \Gamma;
-          L$ and $\tau' \stof \tau$ it should be obvious that
+          L$ and $\tau' \stof \tau$, it is obvious that
           \begin{equation} \label{eq:eret-hp3}
             \typeOf(L''(x), H') = \typeOf(L(z), H') \stof \tau.
           \end{equation}
@@ -1508,7 +1514,7 @@ We state the following without proof.
       \begin{equation}
         \vdash H'
       \end{equation}
-      since we have only removed an element from $DEP$. 
+      since the only heap change is a removal of an element from $DEP$. 
 
 
       We note that
@@ -1557,8 +1563,8 @@ We state the following without proof.
       \begin{equation} \label{eq:espawn-ocr0}
         \Graph(H') = \Graph(H).
       \end{equation}
-      Because of this, \eqref{eq:espawn-hp0} and propositions \ref{prop:ocr_eq}
-      and \ref{prop:ocrloc_eq}
+      Because of this, $H \vdash P \tsep \ocr$, \eqref{eq:espawn-hp0} and
+      Proposition~\ref{prop:ocrloc_eq},
       \begin{equation}
         H' \vdash P \tsep \ocr.
       \end{equation}
@@ -1584,25 +1590,25 @@ We state the following without proof.
       \end{equation}
       The only objects of type \CellType{} on the heap are cell objects 
       whose exact type are \CellType{}, which is $\ocap$ by {\sc OCAP-Cell}.
-      Thus
+      Combined with \eqref{eq:espawn-ocr2} this yields
       \begin{equation}
         \begin{aligned}
           \forall o &\in \reachable(\accRoots(FS', H'), \Graph(H')). \\
             &\ocap(\typeOf(o, H')).
         \end{aligned}
       \end{equation}
-      By proposition \ref{prop:ocrloc_eq} we have shown \eqref{eq:espawn-ocr1}.
+      By Proposition \ref{prop:ocrloc_eq} we have shown \eqref{eq:espawn-ocr1}.
 
-      Continuing with showing isolation we note that by \eqref{eq:espawn-hp0},
+      Continuing by showing isolation we note that by \eqref{eq:espawn-hp0},
       \eqref{eq:espawn-ocr0} and \ref{prop:2.6} we have that
       \begin{equation}
         \isolation(H', P).
       \end{equation}
-      Thus by proposition \ref{prop:2.6} we are done if we can prove 
+      Thus by Proposition \ref{prop:2.6} we are done if we can prove 
       \begin{equation}
         HS|_b^{\iota'} \in P. \: \isolated(H', FS', HS).
       \end{equation}
-      Again using proposition~\ref{prop:2.6} we are done if we show
+      Again using Proposition~\ref{prop:2.6} we are done if we show
       \begin{equation}
         \begin{aligned}
           \forall q \in \: &\reachable(\accRoots(FS', H'), \Graph(H')) \cap \\
@@ -1616,11 +1622,11 @@ We state the following without proof.
         \isolation(H', P').
       \end{equation} 
       Furthermore we never relied on the fact that $H \vdash P \tsep \gsep$ to
-      prove this and thus can get
+      prove this and thus get
       \begin{equation}
         H' \vdash P' \tsep \gsep 
       \end{equation}
-      for free using corollary~\ref{cor:2.9}.
+      for free using Corollary~\ref{cor:2.9}.
 
     \item[Case {\sc E-Term}:] Trivial.
   \end{description}
@@ -1649,18 +1655,18 @@ We state the following without proof.
       where $P \neq \emptyset$.
     \item $S \neq \Error$.
   \end{enumerate}
-  We have two cases: Either $S = H, \emptyset$ and $\noSpawn(H)$ does not hold,
+  This gives us two cases: Either $S = H, \emptyset$ and $\noSpawn(H)$ does not hold,
   or $S = H, P$ and $P \neq \emptyset$.
 
   We begin with the case where $S = H, \emptyset$ and $\noSpawn(H)$ does not
   hold. Looking at the definition of $\noSpawn$ this means that there is at
-  least one $o \in \dom(H)$ such that, for $H(o) = \Cell{DEP, l}$
+  least one $o \in \dom(H)$ such that $H(o) = \Cell{DEP, l}$ and
   \begin{equation*}
     \exists (l', cb)^\iota \in DEP. \: l' \sqsubseteq l.
   \end{equation*}
-  This clearly satisfies the preconditions of execution rule {\sc E-Spawn} to
-  find another state $S' = H', P'$ such that $S \Rrightarrow S'$. But this
-  contradicts statement 1 above.
+  This clearly satisfies the preconditions of execution rule {\sc E-Spawn} and
+  thus there is another state $S' = H', P'$ such that $S \Rrightarrow S'$. But
+  this contradicts statement 1 above.
 
   We proceed with the case where $S = H, P$ and $P \neq \emptyset$. This means
   that
@@ -1671,7 +1677,7 @@ We state the following without proof.
   \begin{equation*}
     H \vdash P.
   \end{equation*}
-  By proposition \ref{prop:2.13} this means that 
+  By Proposition \ref{prop:2.13} this means that 
   \begin{equation*}
     H;a \vdash FS.
   \end{equation*}
@@ -1684,17 +1690,18 @@ We state the following without proof.
   \end{equation}
   We proceed by cases on the form of $t$. 
   
-  \begin{remark}
-    Note that we only state which "base rule" is used for each step found below.
+  \begin{note}
+    Note that we only state which \emph{base rule} is used for each step found below.
     This means that if, e.g., the rule used is a frame reduction rule (one of the
-    rules defined in Figure~\ref{fig:frame_red_rules})the application of {\sc
-    E-FProp} and {\sc E-FSProp} is implied.
-  \end{remark}
+    rules defined in Figure~\ref{fig:frame_red_rules}) the application of {\sc
+    E-FProp} and {\sc E-FSProp} is implied. We will use the symbol \lightning to
+    indicate a contradiction.
+  \end{note}
 
   \begin{description}
     \item[Case $t = x$:] 
       If $GS = \varepsilon$ then we can make a step to $S' = H, Q$ by applying
-      rule {\sc E-Term}.
+      rule {\sc E-Term}. \contradiction
 
       Otherwise we have that $GS = \xframe{L', t'}^{s'} \circ HS$. This means we
       can step to $S' = H, P'$ where
@@ -1703,9 +1710,8 @@ We state the following without proof.
           P' = Q \cup_D \left\{ FS'|_a^\iota \right\} \andalso FS' = \xframe{L'',
           t'}^{s'} \circ HS \\ 
           L'' = L'[s \mapsto L(x)],
-        \end{gathered}
-      \end{equation*}
-      by base rule {\sc E-Ret}. \contradiction
+        \end{gathered} \end{equation*}
+      by base rule {\sc E-Ret}. $L(x)$ is defined by $H \vdash \Gamma; L$. \contradiction
     
     \item[Case $t = \Let{x}{e}{t'}$:]
       We proceed on cases of $e$.
@@ -1741,7 +1747,7 @@ We state the following without proof.
               L' = L[x \mapsto L(y)]
             \end{gathered}
           \end{equation*}
-          by rule {\sc E-Var}. \contradiction
+          by rule {\sc E-Var}. $L(y)$ is defined by $H \vdash \Gamma;L$. \contradiction
 
         \item[Case $e = \FSel{y}{f}$:]
           By \eqref{eq:prog_tbase}, {\sc T-Let}, {\sc T-Select} and {\sc T-Var}
@@ -1766,7 +1772,8 @@ We state the following without proof.
           \begin{equation*}
             L(y) = o_y \andalso H(o_y) = \Obj{C', FM}
           \end{equation*}
-          Since $C' \stof C$ and $\ftype(f, C) = \tau$
+          By $C' \stof C$, $\ftype(f, C) = \tau$ and well-formedness of
+          classes,
           \begin{equation*}
             f \in \fields(C') \andalso \ftype(f, C') = \tau.
           \end{equation*}
@@ -1810,7 +1817,7 @@ We state the following without proof.
           \begin{equation*}
             L(y) = o_y \andalso H(o_y) = \Obj{C', FM}.
           \end{equation*}
-          By $C' \stof C$ and $\ftype(f, C) = \tau$
+          By $C' \stof C$, $\ftype(f, C) = \tau$ and well-formedness of classes
           \begin{equation*}
             f \in \fields(C') \andalso \ftype(f, C') = \tau.
           \end{equation*}
@@ -1827,7 +1834,7 @@ We state the following without proof.
               H' = H[o_y \mapsto \Obj{C', FM'}]
             \end{gathered}
           \end{equation*}
-          \contradiction
+          $L(z)$ is defined by $H \vdash \Gamma; L$. \contradiction
 
         \item[Case $e = \New{C}$:]
           By \eqref{eq:prog_tbase}, {\sc T-Let} and {\sc T-New}
@@ -1865,8 +1872,10 @@ We state the following without proof.
         \item[Case $e = \Call{y}{m}{z}$:]
           By \eqref{eq:prog_tbase}, {\sc T-Let}, {\sc T-Call} and {\sc T-Var}
           \begin{equation*}
-            \Gamma(y) = C \andalso \mtype(m, C) = \gamma \to \tau \\
-            \Gamma(z) = \gamma' \andalso \gamma' \stof \gamma.
+            \begin{gathered}
+              \Gamma(y) = C \andalso \mtype(m, C) = \gamma \to \tau \\
+              \Gamma(z) = \gamma' \andalso \gamma' \stof \gamma.
+            \end{gathered}
           \end{equation*}
           By $H \vdash \Gamma;L$ 
           \begin{equation*}
@@ -1904,7 +1913,7 @@ We state the following without proof.
               L'' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)].
             \end{gathered}
           \end{equation*}
-          \contradiction
+          $L(z)$ is defined by $H \vdash \Gamma; L$. \contradiction
 
         \item[Case $e = \Put{y}{z}$:]
           By \eqref{eq:prog_tbase}, {\sc T-Let}, {\sc T-Put} and {\sc T-Var}
@@ -1951,7 +1960,7 @@ We state the following without proof.
             \begin{gathered}
               \Gamma(y) = \CellType \andalso \Gamma(z) = \LatType \\
               \forall(\Capt{u}{u'}) \in \overline{cap}. \: \Gamma(u') = \CellType \\
-              \Gamma_{\text{cells}} = [(u: \CellType): (\Capt{u}{u'}) \in
+              \Gamma_{\text{cells}} = [(u: \CellType) \mid (\Capt{u}{u'}) \in
               \overline{cap}] \\
               \TypeRel{\Gamma_{\text{cells}}, w: \LatType}{\ocap}{t}{\gamma}.
             \end{gathered}
@@ -1965,7 +1974,7 @@ We state the following without proof.
           \begin{equation*}
             L(z) = l' \andalso l' \in \LatVals.
           \end{equation*}
-          Also
+          Also, either
           \begin{equation*}
             \typeOf(L(y), H) = \CellType
           \end{equation*}
@@ -1989,7 +1998,8 @@ We state the following without proof.
             \begin{gathered}
               P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
               t'} \\
-              L' = L[x \mapsto L(y)] \andalso L_{\text{env}} = [u \mapsto L(u'):
+              L' = L[x \mapsto L(y)] \andalso L_{\text{env}} = [u \mapsto L(u')
+              \mid
               (\Capt{u}{u'}) \in \overline{cap}] \\
               cb = ( L_{\text{env}}, w \Rightarrow t'' ) \andalso DEP' = DEP
               \cup (l', cb)^\iota \\
@@ -1997,17 +2007,11 @@ We state the following without proof.
               l}].
             \end{gathered}
           \end{equation*}
-          \contradiction
+          $L(u')$ is defined for all $u'$s by $H \vdash \Gamma; L$. \contradiction
       \end{description}
       {\bf This concludes the case $t = \Let{x}{e}{t'}$.}
   \end{description}
   Clearly all cases for $t$ leads to a contradiction and therefore we are done.
 \end{proof}
-
-
-
-
-
-
 
 

@@ -4,21 +4,30 @@
 \section{Preliminaries}
 \label{sec:preliminaries}
 
-\begin{notation}
-  We denote a partial function/map $f$ from $A$ to $B$ as
+\begin{definition}
+  Let $M: A \rightharpoonup B, g: B \hookrightarrow B$. Then $\delta(M, g): A
+  \rightharpoonup B$ and is defined as follows for any element $a \in A$.
   \begin{equation*}
-    f: A \rightharpoonup B.
+    \delta(M, g)(a) = g(M(a))
   \end{equation*}
-  If a map $g: A \to B$ is a bijection we write
+\end{definition}
+
+\begin{definition}
+  Let $g, h$ be as in definition \ref{def:pirho}. 
   \begin{equation*}
-    g: A \hookrightarrow B.
+    \eta(DEP, g, h) = \left\{ (l, (\delta(L_{\text{env}}, g), z \Rightarrow
+    t))^{h(\iota)} \mid (l,
+    (L_{\text{env}}, z \Rightarrow t))^\iota \in DEP \right\}
   \end{equation*}
-\end{notation}
+  I.e. we replace all object identifiers occuring in callback environments
+  according to the replacement map $g$, and change the corresponding thread
+  identifier $\iota$ to $h(\iota)$.
+\end{definition}
 
 \begin{definition} \label{def:pirho}
   Let $S = H, P$ and let 
   \begin{equation*}
-    g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs \hookrightarrow \TIDs .
+    g \in \OIDs \hookrightarrow \OIDs \andalso h \in \TIDs \hookrightarrow \TIDs .
   \end{equation*}
   Then 
   \begin{equation}
@@ -56,30 +65,11 @@
   \end{equation*}
 \end{definition}
 
-\begin{note}
-  The $\pi$ and $\rho$ functions more or less just replaces object and thread
-  identifiers as specified by $g$ and $h$.
-\end{note}
-
-\begin{definition}
-  Let $M: A \rightharpoonup B, g: B \hookrightarrow B$. Then $\delta(M, g): A
-  \rightharpoonup B$ and is defined as follows for any element $a \in A$.
-  \begin{equation*}
-    \delta(M, g)(a) = g(M(a))
-  \end{equation*}
-\end{definition}
-
-\begin{definition}
-  Let $g, h$ be as in definition \ref{def:pirho}. 
-  \begin{equation*}
-    \eta(DEP, g, h) = \left\{ (l, (\delta(L_{\text{env}}, g), z \Rightarrow
-    t))^{h(\iota)}: (l,
-    (L_{\text{env}}, z \Rightarrow t))^\iota \in DEP \right\}
-  \end{equation*}
-  I.e. we replace all object identifiers occuring in callback environments
-  according to the replacement map $g$, and change the corresponding thread
-  identifier $\iota$ to $h(\iota)$.
-\end{definition}
+\begin{remark}
+  As noted earlier in Chapter~\ref{cha:properties_of_racl}, the $\pi$ and $\rho$
+  functions more or less just replaces object and thread identifiers as
+  specified by $g$ and $h$.
+\end{remark}
 
 
 \begin{proof}{(Proposition~\ref{prop:eqrel}, sketch)} 
@@ -87,25 +77,26 @@
   reflexivity, symmetry and transitivity.
   \begin{description}
     \item[Reflexivity:] Let $S$ be a state. If $S = \Error$ then reflexivity
-      follows trivially. Thus let $S = H, P$. We need to prove that there are $g: 
-      \OIDs \hookrightarrow \OIDs, h: \TIDs \hookrightarrow \TIDs$
-      such that $H = \pi(H, g, h)$ and $P = \rho(P, g, h)$. This is easy since
+      follows trivially. Thus let $S = H, P$. We need to prove that there are $g
+      \in \OIDs \hookrightarrow \OIDs, h \in \TIDs \hookrightarrow \TIDs$ such
+      that $H = \pi(H, g, h)$ and $P = \rho(P, g, h)$. This is easy since the
+      identity functions
       \begin{equation*}
         g = \Id_{\OIDs} \andalso h = \Id_{\TIDs}
       \end{equation*}
       can be seen to fulfill this.
 
     \item[Symmetry:] Let $S \simeq S'$. If $S = \Error$ then $S' = \Error$ and
-      we have $S' \simeq S$. If $S = H, P; S' = H', P'$ we must have
+      we have $S' \simeq S$. If $S = H, P$ and $S' = H', P'$, we must have
       \begin{equation*}
-        g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs
+        g \in \OIDs \hookrightarrow \OIDs \andalso h \in \TIDs
         \hookrightarrow \TIDs
       \end{equation*}
       such that
       \begin{equation*}
         H' = \pi(H, g, h) \andalso P' = \rho(P, g, h).
       \end{equation*}
-      It can easily be verified that $g^{-1}$ and $h^{-1}$ are bijections such that
+      It can be verified that $g^{-1}$ and $h^{-1}$ are bijections such that
       \begin{equation*}
         H = \pi(H', g^{-1}, h^{-1}) \andalso P = \rho(P', g^{-1}, h^{-1}).
       \end{equation*}
@@ -116,9 +107,9 @@
       We must have
       \begin{equation*}
         \begin{gathered}
-          g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs
+          g\in \OIDs \hookrightarrow \OIDs \andalso h\in \TIDs
           \hookrightarrow \TIDs \\
-          g': \OIDs \hookrightarrow \OIDs \andalso h': \TIDs
+          g'\in \OIDs \hookrightarrow \OIDs \andalso h'\in \TIDs
           \hookrightarrow \TIDs
         \end{gathered}
       \end{equation*}
@@ -145,11 +136,11 @@
   \begin{equation}
     \vdash S \tsep \stateok.
   \end{equation}
-  Letting $S = H, P; S' = H', P'$ we need to show
+  Letting $S = H, P$ and $S' = H', P'$, we need to show
   \begin{equation} 
     \begin{gathered}
       \vdash H' \andalso H' \vdash P' \andalso H' \vdash P' \tsep \ocr \\
-      \isolation(H', P') \andalso H' \vdash P \tsep \gsep.
+      \isolation(H', P') \andalso H' \vdash P' \tsep \gsep \andalso \uniqMain(P').
     \end{gathered}
   \end{equation}
   Since the application of $\pi$ to $H$ amounts only to a renaming of the object
@@ -165,13 +156,12 @@
   $H' \vdash P' \tsep \ocr$ follows from the graph equivalence mentioned above
   and \eqref{eq:eqrel_stateok1}. Using the same properties we can show
   $\isolation(H', P')$ and $H' \vdash P' \tsep \gsep$.
+
+  Finally, since $\rho$ does not modify OCAP status of a thread, it is clear
+  $\uniqMain(P')$ holds.
 \end{proof}
 
-\begin{proof}{(Proposition~\ref{prop:eqrel_stateok})}
-  Follows from the fact that applying $\pi$ and $\rho$ to a state is simply a
-  renaming of object and thread identifiers.
-\end{proof}
-
+\newpage
 \section{Proof of Quasi-Determinism}
 \label{sec:proof_of_quasi_determinism}
 
@@ -201,28 +191,27 @@
 \end{lemma}
 
 \begin{proof}
-  All execution rules are of the form
-  \begin{equation*}
-    H, P_0 \cup_D P_1 \Rrightarrow H', P_0 \cup_D P'_1
-  \end{equation*}
-  where $P_1$ and $P'_1$ are sets of 0 or 1 threads. Moreover, by rule
-  inspection, if $|P_1| = 1$ and $P'_1 = 1$ then
-  \begin{equation*}
-    P_1 =  \left\{ FS|_a^\iota \right\} \andalso P'_1 = \left\{ FS'|_a^\iota
-    \right\}.
-  \end{equation*}
-  Also there is no rule such that $|P_1| = |P'_1| = 0$.
-  Therefore since $\iota_1 \neq \iota_2$ and the fact that all threads or
-  callbacks have unique IDs it is simple to verify that both $\bar{R_1}$ and
-  $\bar{R_2}$ are applicable to $S$. Since there are a large abundance of cases
-  this is not done here.
+  %All execution rules are of the form
+  %\begin{equation*}
+  %  H, P_0 \cup_D P_1 \Rrightarrow H', P_0 \cup_D P'_1
+  %\end{equation*}
+  %where $P_1$ and $P'_1$ are sets of 0 or 1 threads. Moreover, by rule
+  %inspection, if $|P_1| = 1$ and $P'_1 = 1$ then
+  %\begin{equation*}
+  %  P_1 =  \left\{ FS|_a^\iota \right\} \andalso P'_1 = \left\{ FS'|_a^\iota
+  %  \right\}.
+  %\end{equation*}
+  %Also there is no rule such that $|P_1| = |P'_1| = 0$.
+  %Therefore since $\iota_1 \neq \iota_2$ and the fact that all threads or
+  %callbacks have unique IDs it is simple to verify that both $\bar{R_1}$ and
+  %$\bar{R_2}$ are applicable to $S$. Since there are a large abundance of cases
+  %this is not done here.
 
-  The only thing remaining is to verify that $S'_1 = S'_2$. There are very many
-  cases, most of which are very to verify. Thus we are only going to do
-  a few here to convince the reader. The others can be done similarly.  We
-  proceed by cases on the value of $R_1$ and $R_2$. One thing to note is that
-  the proofs are symmetric in $R_1$ and $R_2$, meaning that if we prove case
-  $R_1 = R, R_2 = R'$ we have also proven case $R_1 = R', R_2 = R$.
+  The can be done by cases on $R_1$ and $R_2$. However, there are a big number
+  of cases, most of which are easy to verify. Thus we are only going to do a few
+  here to convince the reader. The others can be done similarly. One thing to
+  note is that the proofs are symmetric in $R_1$ and $R_2$, meaning that if we
+  prove case $R_1 = R, R_2 = R'$ we have also proven case $R_1 = R', R_2 = R$.
 
   \begin{description}
     \item[Case $R_1 = \EAssign, R_2 = \EAssign$:] We note that this means that
@@ -294,7 +283,8 @@
       \begin{remark}
         The main point made here is that the two transition identifiers operate
         on different parts of the heap because of isolation of threads. Thus all
-        cases where we have this property follow similarly.
+        cases where we have this property, e.g., $R_1 = \ESelect, R_2 =
+        \EAssign$ follow similarly.
       \end{remark}
     \item[Case $R_1 = \EVar, R_2 = \EAssign$:] We first note that
       \begin{equation*}
@@ -554,23 +544,8 @@
         makes the removal and addition to the dependency set $DEP$ commute.
       \end{remark}
   \end{description}
-  All other cases follow similarly to these and it should not be hard to verify
-  them.
+  It should not be hard to verify the other cases in a similar manner.
 \end{proof}
-
-\begin{definition} \label{def:betacompat}
-  Let $R^{\iota, \beta}$ be a transition
-  identifier. We call $\beta$ \emph{compatible} to a state $S$ if either
-  \begin{equation*}
-    \beta = \smiley \text{ or } \beta \text{ fresh at } S
-  \end{equation*}
-\end{definition}
-\begin{remark}
-  Note that $\beta$ being compatible to $S$ is a necessary condition of
-  $R^{\iota, \beta}$ being applicable at $S$. Furthermore if a $\beta$ is
-  compatible to $S$ it will be compatible to all states preceeding $S$ in the
-  computation.
-\end{remark}
 
 \begin{definition}
   Let $R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2}$ be two transition
@@ -580,27 +555,27 @@
   \end{equation*}
 \end{definition}
 
-
 \begin{lemma} \label{lem:lemma2}
   Let $S$ be a state. Let
   \begin{equation*}
     \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n} \andalso
     S \Rrightarrow^{\bar{R}} S_{\bar{R}}
   \end{equation*}
-  Let $R^{\iota, \beta}$ be a transition such that
-  \begin{equation} \label{eq:lemma2_1}
-    \iota \neq \iota_i \andalso \forall i \in \left\{ 1, \dots, n \right\},
-  \end{equation}
-  and
+  Let $R^{\iota, \beta}$ be a transition such that it is applicable at both $S$
+  and $S_{\bar{R}}$, i.e.,
   \begin{equation*}
     S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}} \andalso
-    S_{\bar{R}} \Rrightarrow^{R^{\iota, \beta}} S'.
+    S_{\bar{R}} \Rrightarrow^{R^{\iota, \beta}} S',
   \end{equation*}
+  and
+  \begin{equation} \label{eq:lemma2_1}
+    \forall i \in \left\{ 1, \dots, n \right\}. \quad \iota \neq \iota_i  .
+  \end{equation}
   Furthermore let $\beta$ be compatible with $\beta_i$ for all $i = 1, \dots,
   n$.
   Then
   \begin{equation*}
-    S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
+    S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
   \end{equation*}
 \end{lemma}
 
@@ -608,109 +583,117 @@
 \begin{proof}
   By induction on $n$, the length of $\bar{R}$.
   \begin{description}
-    \item[Case $n = 1$:] Follows immediately from lemma~\ref{lem:lemma1}.
+    \item[Case $n = 1$:] Follows immediately from Lemma~\ref{lem:lemma1}.
     \item[Case $n = i+1, i \geq 1$:] Let
       \begin{equation*}
-        \bar{R_2} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n}.
+        \bar{R}_{\geq 2} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n}.
       \end{equation*}
       Since $\bar{R}$ applicable to $S$ we have 
       \begin{equation}
-        S \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_1.
+        S \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_1,
       \end{equation}
-      Then clearly
+      for some state $S_1$. Clearly
       \begin{equation}
-        S_1 \Rrightarrow^{\bar{R_2}} S_{\bar{R}}.
+        S_1 \Rrightarrow^{\bar{R}_{\geq 2}} S_{\bar{R}}.
       \end{equation}
       
-      Since $R^{\iota, \beta}$ is applicable at $S$, \eqref{eq:lemma2_1} and
-      the compatibility of $\beta$ it is not hard to see that
-      $R^{\iota, \beta}$ is applicable at $S_1$, i.e.
+      By \eqref{eq:lemma2_1}, thread $\iota$ never executes in the sequence
+      specified by $\bar{R}$. Combining this with $R^{\iota, \beta}$ being
+      applicable at $S$ and the compatibility of $\beta$, it is not hard to see
+      that $R^{\iota, \beta}$ is applicable at $S_1$, i.e.,
       \begin{equation}
-        S_1 \Rrightarrow^{R^{\iota, \beta}} S_{1,R^{\iota, \beta}}.
+        S_1 \Rrightarrow^{R^{\iota, \beta}} S_{1,R^{\iota, \beta}}
       \end{equation}
-      Then, by induction hypothesis
+      for some state $S_{1,R^{\iota, \beta}}$. Then, by induction hypothesis
       \begin{equation} \label{eq:lemma2_2}
-        S_{1,R^{\iota, \beta}} \Rrightarrow^{\bar{R_2}} S'.
+        S_1 \Rrightarrow^{R^{\iota, \beta}} S_{1,R^{\iota, \beta}} \Rrightarrow^{\bar{R}_{\geq 2}} S'.
       \end{equation}
-      By lemma~\ref{lem:lemma1} 
+      Furthermore, $R_1^{\iota_1, \beta_1}$ and $R^{\iota, \beta}$ fulfills
+      preconditions of Lemma~\ref{lem:lemma1}. Using this lemma we get
       \begin{equation} \label{eq:lemma2_3}
         S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}}
         \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_{1, R^{\iota, \beta}}.
       \end{equation}
       But then combining \eqref{eq:lemma2_2} and \eqref{eq:lemma2_3} we have
       \begin{equation}
-        S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
+        S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
       \end{equation}
   \end{description}
 \end{proof}
 
 \begin{proposition}
-  Let $S = H, P \simeq H', P' = S'$ and let $g, h$ be the bijections such that
+  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ and let $g, h$ be the bijections such that
   \begin{equation} \label{eq:propnewgh1}
-    H' = \pi(H, g, h) \andalso P' = \eta(P, g, h).
+    H_2 = \pi(H_1, g, h) \andalso P_2 = \rho(P_1, g, h).
   \end{equation}
-  Let $o, o' \in \OIDs$ be fresh at $S, S'$ respectively.
-  Let $\iota, \iota' \in \TIDs$ be fresh at $S, S'$ respectively.
+  Let $o_1, o_2 \in \OIDs$ be fresh at $S_1, S_2$ respectively.
+  Let $\iota_1, \iota_2 \in \TIDs$ be fresh at $S_1, S_2$ respectively.
   Then there are bijections
   \begin{equation*}
-    g': \OIDs \hookrightarrow \OIDs \andalso h': \TIDs \hookrightarrow \TIDs
+    g' \in \OIDs \hookrightarrow \OIDs \andalso h' \in \TIDs \hookrightarrow \TIDs
   \end{equation*}
   such that 
   \begin{equation} \label{eq:propnewgh2}
-    g'(o) = o', h'(\iota) = \iota'
+    g'(o_1) = o_2 \andalso h'(\iota_1) = \iota_2
   \end{equation} 
   and
   \begin{equation} \label{eq:propnewgh3}
-    H' = \pi(H, g', h') \andalso P' = \eta(P, g', h').
+    H_2 = \pi(H_1, g', h') \andalso P_2 = \rho(P_1, g', h').
   \end{equation}
 \end{proposition}
 
 \begin{proof}
-  By the definition of the identifiers being fresh
+  The role of $g$ and $h$ is merely to define a renaming of identifiers in
+  $\OIDs(S_1)$ and $\TIDs(S_1)$ to identifiers in $\OIDs(S_2)$ and $\TIDs(S_2)$.
+  Thus it should not be hard to see that
   \begin{equation*}
-    o, o' \not\in \OIDs \andalso \iota, \iota' \not\in \TIDs.
+    \forall o \in \OIDs(S_1). \quad g(o) \in \OIDs(S_2)
   \end{equation*}
-  The role of $g$ and $h$ is merely to define a renaming of references in
-  $\OIDs(S)$ and $\TIDs(S)$ respectively. Thus it should be clear that whether
-  \eqref{eq:propnewgh1} holds or not only depends on what what values
-  $g$ and $h$ takes for the identifiers in $\OIDs(S)$ and $\TIDs(S)$
-  respectively. Since clearly our fresh identifiers are not in these sets it should
-  be clear that the following bijections are well defined and satisfies the
-  result of our proposition.
+  and similarly for $\TIDs(S_1)$ and $\TIDs(S_2)$.
+  Since $g$ and $h$ are bijections,
   \begin{equation*}
     \begin{gathered}
-      g'(o_{0}) =
+      g(o_1) \neq \OIDs(S_2) \andalso h(\iota_1) \neq \TIDs(S_2) \\
+      g^{-1}(o_2) \neq \OIDs(S_1) \andalso h^{-1}(\iota_2) \neq \TIDs(S_1).
+    \end{gathered}
+  \end{equation*}
+  Because of the above, it should be clear that the following functions are well
+  defined, are bijections and satisfy both \eqref{eq:propnewgh2} and
+  \eqref{eq:propnewgh3}.
+  \begin{equation*}
+    \begin{gathered}
+      g'(o) =
       \begin{cases}
-        o' & \text{ if } o_0 = o \\
-        g(o) &\text{ if } g(o_0) = o' \\
-        g(o_{0}) & \text{ otherwise.} 
+        o_2 & \text{ if } o = o_1 \\
+        g(o_1) &\text{ if } g(o) = o_2 \\
+        g(o) & \text{ otherwise.} 
       \end{cases} \\
-      h'(\iota_0) =
+      h'(\iota) =
       \begin{cases}
-        \iota' & \text{ if } \iota_0 = \iota \\
-        h(\iota) & \text{ if } h(\iota_0) = \iota' \\
-        h(\iota_0) & \text{ otherwise.} 
+        \iota_2 & \text{ if } \iota = \iota_1 \\
+        h(\iota_1) & \text{ if } h(\iota) = \iota_2 \\
+        h(\iota) & \text{ otherwise.} 
       \end{cases}
     \end{gathered}
   \end{equation*}
 \end{proof}
 
-Because of this proposition the following is well defined.
+Because of this proposition, the following is well defined.
 
 \begin{definition} \label{def:bijectionmod}
-  Let $S = H, P \simeq H', P' = S'$ and let $g, h$ be the bijections such that
+  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ and let $g, h$ be the bijections such that
   \begin{equation} 
-    H' = \pi(H, g, h) \andalso P' = \eta(P, g, h).
+    H_2 = \pi(H_1, g, h) \andalso P_2 = \rho(P_1, g, h).
   \end{equation}
-  Let $o, o' \in \OIDs$ be fresh at $S, S'$ respectively.
-  Let $\iota, \iota' \in \TIDs$ be fresh at $S, S'$ respectively.
+  Let $o_1, o_2 \in \OIDs$ be fresh at $S_1, S_2$ respectively.
+  Let $\iota_1, \iota_2 \in \TIDs$ be fresh at $S_1, S_2$ respectively.
   Then define
   \begin{equation}
-    g[o \mapsto o']: \OIDs \hookrightarrow \OIDs 
-    \andalso h[\iota \mapsto \iota']: \TIDs \hookrightarrow \TIDs
+    g[o_1 \mapsto o_2] \in \OIDs \hookrightarrow \OIDs 
+    \andalso h[\iota_1 \mapsto \iota_2] \in \TIDs \hookrightarrow \TIDs
   \end{equation}
   as any bijections satisfying \eqref{eq:propnewgh2} and \eqref{eq:propnewgh3}
-  with $g' = g[o \mapsto o'], h' = h[\iota \mapsto \iota']$.
+  with $g' = g[o_1 \mapsto o_2], h' = h[\iota_1 \mapsto \iota_2]$.
 \end{definition}
 
 \begin{lemma} \label{lem:lemma3}
@@ -736,19 +719,19 @@ Because of this proposition the following is well defined.
         \begin{gathered}
           \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_{i+1}^{\iota_{i+1},
           \beta_{i+1}} \\
-          \bar{R_i} = R_1^{\iota_1, \beta_1}, \dots, R_{i}^{\iota_{i},
+          \bar{R}_{\leq i} = R_1^{\iota_1, \beta_1}, \dots, R_{i}^{\iota_{i},
           \beta_{i}}
         \end{gathered}
       \end{equation*}
       By assumption
       \begin{equation*}
-        S \Rrightarrow^{\bar{R_i}} S_i \Rrightarrow^{R_{i+1}^{\iota_{i+1},
+        S \Rrightarrow^{\bar{R}_{\leq i}} S_i \Rrightarrow^{R_{i+1}^{\iota_{i+1},
         \beta_{i+1}}} T
       \end{equation*}
-      for some state $S_i$. By induction hypothesis there is $\bar{R'_i}, S'_i$
+      for some state $S_i$. By induction hypothesis there is $\bar{R'}_{\leq i}, S'_i$
       such that
       \begin{equation}
-        S' \Rrightarrow^{\bar{R'_i}} S'_i \andalso S_i \simeq S'_i.
+        S' \Rrightarrow^{\bar{R'}_{\leq i}} S'_i \andalso S_i \simeq S'_i.
       \end{equation}
       Since $S_i$ can take another step
       \begin{equation*}
@@ -758,7 +741,7 @@ Because of this proposition the following is well defined.
       Now consider $R_{i+1}^{\iota_{i+1}, \beta_{i+1}}$. Since $S_i \simeq
       S'_i$ there are
       \begin{equation*}
-        g: \OIDs \hookrightarrow \OIDs \andalso h: \TIDs \hookrightarrow \TIDs
+        g \in \OIDs \hookrightarrow \OIDs \andalso h \in \TIDs \hookrightarrow \TIDs
       \end{equation*}
       such that
       \begin{equation*}
@@ -845,12 +828,12 @@ Because of this proposition the following is well defined.
   \end{equation*}
 \end{lemma}
 
-\begin{proof}
+\begin{proof}{(Sketch)}
   This is obvious from these two facts:
   \begin{itemize}
     \item There are infinitely many elements in both $\OIDs$ and $\TIDs$ and
       only finitely many in $\OIDs(S)$ and $\TIDs(S)$. This follows from
-      definition of these sets.
+      the definition of $\OIDs(S)$ and $\TIDs(S)$.
     \item All choices of fresh identifiers results in equivalent states. I.e.
       for any state $S$, and transition identifiers $R^{\iota, \beta},
       R^{\iota, \beta'}$ such that 
@@ -866,7 +849,7 @@ Because of this proposition the following is well defined.
   \end{itemize}
 \end{proof}
 
-Finally we restate and prove theorem~\ref{thm:qd}.
+Finally we restate and prove Theorem~\ref{thm:qd}.
 \begin{theorem*}
   Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
   \begin{equation*}
@@ -882,8 +865,8 @@ Finally we restate and prove theorem~\ref{thm:qd}.
   \end{equation*}
 \end{theorem*}
 
-\begin{proof}{(Theorem~\ref{thm:qd}, Quasi-Determinism)}
-  If $S \neq S'$ by lemma~\ref{lem:lemma3} there is a state $T''$ and a
+\begin{proof}
+  If $S \neq S'$ by Lemma~\ref{lem:lemma3} there is a state $T''$ and a
   transition sequence $\bar{R''}$ such that
   \begin{equation}
     S \Rrightarrow^{\bar{R''}} T'' \andalso T' \simeq T''.
@@ -895,7 +878,7 @@ Finally we restate and prove theorem~\ref{thm:qd}.
   $\bar{R'}$ respectively.
   \begin{description}
     \item[Case $n, n' \leq 1$:] Clearly $n = n'$. Otherwise, when considering
-      lemma~\ref{lem:lemma3} we would have a contradiction with the assumption
+      Lemma~\ref{lem:lemma3} we would have a contradiction with the assumption
       that neither $T$ or $T'$ can take another step .
       If $n = n' = 0$ we are done since $T = S \simeq S' = T'$. Thus we assume
       that $n = n' = 1$. We let
@@ -910,7 +893,7 @@ Finally we restate and prove theorem~\ref{thm:qd}.
       then we are done since this implies $T = T'$.  Otherwise let $g, h$ be the
       bijections that witnesses the relation $S \simeq S$. Because of
       \eqref{eq:qd_1} we must have that either $\beta, \beta' \in \OIDs$ or
-      $\beta, \beta' \in \TIDs$. In the first case 
+      $\beta, \beta' \in \TIDs$. In the first case, the bijections
       \begin{equation}
         g[\beta \mapsto \beta'] \andalso h
       \end{equation}
@@ -930,21 +913,22 @@ Finally we restate and prove theorem~\ref{thm:qd}.
       \end{equation*}
       Furthermore let
       \begin{equation*}
-        \bar{R}_{>1} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n} \\
+        \bar{R}_{\geq 2} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n} \\
       \end{equation*}
       Consider the first tranisition identifier of $\bar{R}$. We let
-      Let $k$ be such
+      $k$ be such
       that ${R'_k}^{\iota'_k, \beta'_k}$ is the first transition identifier in
       $\bar{R'}$ for which 
-      \begin{equation*}
+      \begin{equation} \label{eq:qd1}
         \iota_1 = \iota'_k = \iota.
-      \end{equation*} 
-      This $k$ must exist since
-      otherwise $T'$ can take another step. By the remark following
-      definition~\ref{def:trans_id} we have 
-      \begin{equation*}
+      \end{equation} 
+      This $k$ must exist since otherwise $T'$ can take another step. This is
+      due to that thread $\iota$ can execute at $S$ and if it never executes
+      before $T'$, it will still be able to execute, thus generating another
+      step.  By the remark following definition~\ref{def:trans_id} we have 
+      \begin{equation} \label{eq:qd2}
         R_1 = R'_k = R.
-      \end{equation*} 
+      \end{equation} 
       We let
       \begin{equation*}
         \begin{gathered}
@@ -954,13 +938,19 @@ Finally we restate and prove theorem~\ref{thm:qd}.
           {R'_{n'}}^{\iota'_{n'}, \beta'_{n'}}.
         \end{gathered}
       \end{equation*}
+      We can thus write
+      \begin{equation} \label{eq:qd4}
+        S \Rrightarrow^{\bar{R'}_{<k}} S'_{k-1} \Rrightarrow^{R^{\iota,
+        \beta'_k}} S'_k \Rrightarrow^{\bar{R'}_{>k}} T'.
+      \end{equation}
 
       WLOG we can assume that
-      \begin{equation*}
+      \begin{equation} \label{eq:qd3}
         \beta_1 = \beta'_k = \beta
-      \end{equation*}
-      since otherwise we could just reassign $\beta_1, \dots, \beta_n, \beta'_1, \dots,
-      \beta'_n$, in accordance with lemma~\ref{lem:lemma4}.
+      \end{equation}
+      and that $\beta$ is compatible with $\beta'_i$ for all $i = 1, \dots,
+      k-1$.  Otherwise we could just reassign $\beta_1, \dots, \beta_n,
+      \beta'_1, \dots, \beta'_n$, in accordance with Lemma~\ref{lem:lemma4}.
 
 %      By lemma~\ref{lem:lemma3} we can (using similar reasoning as before) WLOG
 %      assume that $\beta'_k$ is compatible with $\beta'_i$ for all $i = 1,
@@ -973,18 +963,24 @@ Finally we restate and prove theorem~\ref{thm:qd}.
 %      lemma~\ref{lem:lemma3}. This makes $R^{\iota, \beta'_k}$
 %      applicable at $S$.
 
-      Then by lemma~\ref{lem:lemma2} we have
+      Then by \eqref{eq:qd4}, the choice of $k$ and Lemma~\ref{lem:lemma2} we have
       \begin{equation*}
         S \Rrightarrow^{{R}^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R'}_{<k}}
-        S_2 \Rrightarrow^{\bar{R'}_{>k}} T'
+        S'_k,
       \end{equation*}
-      Furthermore, by $\bar{R}$ being applicable at $S$ we have
+      which combined with \eqref{eq:qd4} yields
       \begin{equation*}
-        S \Rrightarrow^{R^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R}_{>1}}
+        S \Rrightarrow^{{R}^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R'}_{<k}}
+        S'_k \Rrightarrow^{\bar{R'}_{>k}} T'.
+      \end{equation*}
+      Furthermore, by $\bar{R}$ being applicable at $S$ and equations
+      \eqref{eq:qd1}, \eqref{eq:qd2}, \eqref{eq:qd3} we have
+      \begin{equation*}
+        S \Rrightarrow^{R^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R}_{\geq 2}}
         T.
       \end{equation*}
       Both transition sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and
-      $\bar{R}_{>1}$ are of length less than or equal to $i$.  Thus by the
+      $\bar{R}_{\geq 2}$ are of length less than or equal to $i$.  Thus by the
       induction hypothesis $T \simeq T'$.
   \end{description}
 \end{proof}
