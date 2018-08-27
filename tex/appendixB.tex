@@ -621,6 +621,47 @@
   \end{description}
 \end{proof}
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S) at (0,0) {};
+    \node[below left] at (S) {$S$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Sk) at (0,5) {};
+    \node[below left] at (Sk) {$S_{\bar{R}}$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (T) at (0,6) {};
+    \node[above left, red] at (T) {$S'$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Tmod) at (1,6) {};
+    \node[above right, red] at (Tmod) {$S'$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Siotabeta) at (1,1) {};
+    \node[below right] at (Siotabeta) {$S_{R^{\iota,\beta}}$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S1) at (0,1) {};
+    \node[above left] at (S1) {$S_{1}$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S1iotabeta) at (1,2) {};
+    \node[above right] at (S1iotabeta) {$S_{1,R^{\iota,\beta}}$};
+    \draw[-{Latex[length=0.2cm]}] (S1) -- node[left] {$\bar{R}_{\geq 2}$} (Sk);
+    \draw[-{Latex[length=0.2cm]},blue] (Sk) -- node[left] {$R^{\iota, \beta}$}
+    (T);
+    \draw[-{Latex[length=0.2cm]},blue] (S)-- node[below right] {$R^{\iota, \beta}$}
+    (Siotabeta);
+    \draw[-{Latex[length=0.2cm]}] (Siotabeta) -- node[right] {$\bar{R}_{\geq 2}$} (Tmod);
+    \draw[-{Latex[length=0.2cm]}] (S) -- node[left] {$R_1^{\iota_1, \beta_1}$} (S1);
+    \draw[-{Latex[length=0.2cm]}] (Siotabeta) -- node[right] {$R_1^{\iota_1,
+    \beta_1}$} (S1iotabeta);
+    \draw[-{Latex[length=0.2cm]},blue] (S1) -- node[above left] {$R^{\iota,
+    \beta}$} (S1iotabeta);
+    %\draw[-{Latex[length=0.3cm]}] (c1) -- node[above] {$f_1$} (c3);
+    \draw[decoration={brace,raise=40pt,amplitude=10pt},decorate,grey] (S) --
+    node[left=50pt]
+    {$\bar{R}$} (Sk);
+    \draw[decoration={brace,raise=40pt,amplitude=10pt,mirror},decorate,grey] (Siotabeta) --
+    node[right=50pt]
+    {$\bar{R}$} (Tmod);
+  \end{tikzpicture}
+  \caption{some caption}
+  \label{fig:thm_qd_pf}
+\end{figure}
+
+
 \begin{proposition}
   Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ and let $g, h$ be the bijections such that
   \begin{equation} \label{eq:propnewgh1}
