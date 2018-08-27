@@ -985,6 +985,50 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
   \end{description}
 \end{proof}
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S) at (0,0) {};
+    \node[below left] at (S) {$S$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spk1) at (0,3) {};
+    \node[below left] at (Spk1) {$S'_{k-1}$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spk2) at (0,4) {};
+    \node[above left, red] at (Spk2) {$S'_{k}$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Tp) at (0,7) {};
+    \node[above] at (Tp) {$T'$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spmodk) at (1,3) {};
+    \node[right, red] at (Spmodk) {$S'_{k}$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Tpmod) at (1,6) {};
+    \node[above] at (Tpmod) {$T'$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S1) at (1,0) {};
+    \node[below right] at (S1) {$S_{1}$};
+    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (T) at (7,0) {};
+    \node[right] at (T) {$T$};
+    \draw[-{Latex[length=0.2cm]}] (S) -- node[left] {$\bar{R'}_{<k}$} (Spk1);
+    \draw[-{Latex[length=0.2cm]},blue] (Spk1) -- node[left] {$R^{\iota, \beta}$}
+    (Spk2);
+    \draw[-{Latex[length=0.2cm]}] (Spk2)-- node[left] {$\bar{R'}_{>k}$} (Tp);
+    \draw[-{Latex[length=0.2cm]},blue] (S)-- node[below,blue] {$R^{\iota, \beta}$}
+    (S1);
+    \draw[-{Latex[length=0.2cm]}] (S1)-- node[below] {$\bar{R}_{\geq 2}$} (T);
+    \draw[-{Latex[length=0.2cm]}] (S1) -- node[right] {$\bar{R'}_{<k}$} (Spmodk);
+    \draw[-{Latex[length=0.2cm]}] (Spmodk)-- node[right] {$\bar{R'}_{>k}$} (Tpmod);
+    \draw[decoration={brace,raise=30pt,amplitude=10pt},decorate,grey] (S) --
+    node[left=40pt]
+    {$\bar{R'}$} (Tp);
+    \draw[decoration={brace,raise=30pt,amplitude=10pt,mirror},decorate,grey] (S) --
+    node[below=40pt]
+    {$\bar{R}$} (T);
+    %\draw[-{Latex[length=0.3cm]}] (c1) -- node[above] {$f_1$} (c3);
+  \end{tikzpicture}
+  \caption{We transform $\bar{R'}$ by moving $R^{\iota, \beta}$ to the beginning
+  of the sequence. The halting state is the same because of
+  Lemma~\ref{lem:lemma2}. The new sequence $R^{\iota,\beta}, \bar{R'}_{<k},
+  \bar{R'}_{>k}$ begins with the same step as $\bar{R}$. Thus we can examine the
+  two shorter sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and $\bar{R}_{\geq 2}$
+  and conclude that $T \simeq T'$ by the induction hypothesis.}
+  \label{fig:thm_qd_pf}
+\end{figure}
 
 
 % TODO add figures to the lemmas and theorem proofs
