@@ -84,8 +84,7 @@ here, with the addition of a very simple type system which will be explained in
 Section~\ref{sec:type_systems}.The grammar is presented in
 Figure~\ref{fig:while_grammar}.
 
-
-\begin{figure}[h]
+\begin{figure}[]
   \centering
   $\begin{array}{lll@{\hspace{4mm}}l}
     c &::= &  & \mbox{Program code} \\
@@ -171,7 +170,18 @@ to $S'$}. If there are no preconditions we just write
 \infax[Rule name]
 {S \rightarrow S'}
 
-\begin{figure}[h]
+All rules for state transistions are defined in Figure~\ref{fig:while_sos} and
+most of them should be intuitive. For example, rules {\sc WhE-Decl1} and {\sc
+WhE-Decl2} extends the state map $V$ with $x$ and a default value corresponding
+to the declared type. Rule {\sc WhE-Assign} evaluates the expression $e$ and
+maps $x$ to the result. Rules {\sc WhE-IfTrue} and {\sc WhE-IfFalse} evaluates
+its expression $e$ and if the result is $\WhTrue$ or $\WhFalse$, the code of the
+corresponding branch is prepended to the rest of the program. We can also see
+that {\sc WhE-While} is just an expansion of a while loop into an if statement.
+Finally we note that we can not step from $\WhState{V, \varepsilon}$ which means
+that this is a halting state.
+
+\begin{figure}[]
   \centering
   \infax[WhE-Decl1]
   {\WhState{V, \WhDecl{x}{\WhInt};c} \: \rightarrow \: \WhState{V[ x \mapsto 0],
@@ -215,17 +225,6 @@ to $S'$}. If there are no preconditions we just write
   \caption{Small-step operational semantics for While}
   \label{fig:while_sos}
 \end{figure}
-
-All rules for state transistions are defined in Figure~\ref{fig:while_sos} and
-most of them should be intuitive. For example, rules {\sc WhE-Decl1} and {\sc
-WhE-Decl2} extends the state map $V$ with $x$ and a default value corresponding
-to the declared type. Rule {\sc WhE-Assign} evaluates the expression $e$ and
-maps $x$ to the result. Rules {\sc WhE-IfTrue} and {\sc WhE-IfFalse} evaluates
-its expression $e$ and if the result is $\WhTrue$ or $\WhFalse$, the code of the
-corresponding branch is prepended to the rest of the program. We can also see
-that {\sc WhE-While} is just an expansion of a while loop into an if statement.
-Finally we note that we can not step from $\WhState{V, \varepsilon}$ which means
-that this is a halting state.
 
 The SOS rules of While heavily relies on the expression \emph{evaluation
 function} $\WhEval{\cdot}(\cdot)$. This is a function which takes a state map
@@ -321,7 +320,16 @@ undefined for all $x \in \WhVar$.
   which is equivalent to $\Gamma(x) = \tau$.
 \end{notation}
 
-\begin{figure}[h]
+Typing rules for program code are defined in Figure~\ref{fig:while_code_tpe}.
+Generally While program code can only be typed as $\WhVoid$. Intuitively this is
+because the execution of program code does not have a resulting value. Instead
+it can only modify the state map $V$. The rules for typing program code should
+not be hard to understand. For example, {\sc WhT-Assign} states that for code that
+starts with an assignment the expression in the assignment must be of the same
+type as the variable. {\sc WhT-If} requires that the expression is typeable as
+$\WhBool$ and that both branches should be typeable as $\WhVoid$.
+
+\begin{figure}[]
   \infax[WhT-Empty]
   {\Gamma \vdash \varepsilon : \WhVoid}
 
@@ -362,16 +370,11 @@ undefined for all $x \in \WhVar$.
   \label{fig:while_code_tpe}
 \end{figure}
 
-Typing rules for program code are defined in Figure~\ref{fig:while_code_tpe}.
-Generally While program code can only be typed as $\WhVoid$. Intuitively this is
-because the execution of program code does not have a resulting value. Instead
-it can only modify the state map $V$. The rules for typing program code should
-not be hard to understand. For example, {\sc WhT-Assign} states that for code that
-starts with an assignment the expression in the assignment must be of the same
-type as the variable. {\sc WhT-If} requires that the expression is typeable as
-$\WhBool$ and that both branches should be typeable as $\WhVoid$.
+Finally the rules for typing expressions are found in
+Figure~\ref{fig:while_expr_tpe}. The possible types for an expression are
+$\WhInt$ and $\WhBool$. The rules themselves should be quite self-explanatory.
 
-\begin{figure}[h]
+\begin{figure}[]
   \begin{multicols}{3}
   \infax[WhT-Num]
   {\Gamma \vdash n : \WhInt}
@@ -434,10 +437,6 @@ $\WhBool$ and that both branches should be typeable as $\WhVoid$.
   \caption{While expression typing rules.}
   \label{fig:while_expr_tpe}
 \end{figure}
-
-Finally the rules for typing expressions are found in
-Figure~\ref{fig:while_expr_tpe}. The possible types for an expression are
-$\WhInt$ and $\WhBool$. The rules themselves should be quite self-explanatory.
 
 
 \subsection{Uses \& Extensions}

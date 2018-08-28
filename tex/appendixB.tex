@@ -190,28 +190,37 @@
   \end{equation*}
 \end{lemma}
 
-\begin{proof}
-  %All execution rules are of the form
-  %\begin{equation*}
-  %  H, P_0 \cup_D P_1 \Rrightarrow H', P_0 \cup_D P'_1
-  %\end{equation*}
-  %where $P_1$ and $P'_1$ are sets of 0 or 1 threads. Moreover, by rule
-  %inspection, if $|P_1| = 1$ and $P'_1 = 1$ then
-  %\begin{equation*}
-  %  P_1 =  \left\{ FS|_a^\iota \right\} \andalso P'_1 = \left\{ FS'|_a^\iota
-  %  \right\}.
-  %\end{equation*}
-  %Also there is no rule such that $|P_1| = |P'_1| = 0$.
-  %Therefore since $\iota_1 \neq \iota_2$ and the fact that all threads or
-  %callbacks have unique IDs it is simple to verify that both $\bar{R_1}$ and
-  %$\bar{R_2}$ are applicable to $S$. Since there are a large abundance of cases
-  %this is not done here.
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[circle,fill,minimum size=0.5cm,inner sep=0pt] (S) at (0,0) {};
+    \node[below left=3pt] at (S) {$S$};
+    \node[circle,fill,minimum size=0.5cm,inner sep=0pt] (S1) at (4,0) {};
+    \node[below right=3pt] at (S1) {$S_1$};
+    \node[circle,fill,minimum size=0.5cm,inner sep=0pt] (S2) at (0,4) {};
+    \node[above left=3pt] at (S2) {$S_2$};
+    \node[circle,fill,minimum size=0.5cm,inner sep=0pt] (S12) at (4,4) {};
+    \node[above right=3pt] at (S12) {$S_{12} = S_{21}$};
+    \draw[-{Latex[length=0.5cm]}] (S) -- node[below] {$R_1^{\iota_1, \beta_1}$} (S1);
+    \draw[-{Latex[length=0.5cm]}] (S) -- node[left] {$R_2^{\iota_2, \beta_2}$} (S2);
+    \draw[-{Latex[length=0.5cm]}] (S1) -- node[right] {$R_2^{\iota_2, \beta_2}$}
+    (S12);
+    \draw[-{Latex[length=0.5cm]}] (S2) -- node[above] {$R_1^{\iota_1, \beta_1}$}
+    (S12);
+  \end{tikzpicture}
+  \caption{Both sequences $R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2}$ and
+  $R_2^{\iota_2, \beta_2}, R_1^{\iota_1, \beta_1}$ lead to the same end state.}
+  \label{fig:lemma1_pf}
+\end{figure}
 
+\begin{proof}
   The can be done by cases on $R_1$ and $R_2$. However, there are a big number
   of cases, most of which are easy to verify. Thus we are only going to do a few
   here to convince the reader. The others can be done similarly. One thing to
   note is that the proofs are symmetric in $R_1$ and $R_2$, meaning that if we
   prove case $R_1 = R, R_2 = R'$ we have also proven case $R_1 = R', R_2 = R$.
+  An illustration of what we are prooving can be found in
+  Figure~\ref{fig:lemma1_pf}.
 
   \begin{description}
     \item[Case $R_1 = \EAssign, R_2 = \EAssign$:] We note that this means that
@@ -584,7 +593,8 @@
   By induction on $n$, the length of $\bar{R}$.
   \begin{description}
     \item[Case $n = 1$:] Follows immediately from Lemma~\ref{lem:lemma1}.
-    \item[Case $n = i+1, i \geq 1$:] Let
+    \item[Case $n = i+1, i \geq 1$:] This case is visualized in
+      Figure~\ref{fig:lemma2_pf} Let
       \begin{equation*}
         \bar{R}_{\geq 2} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n}.
       \end{equation*}
@@ -657,8 +667,12 @@
     node[right=50pt]
     {$\bar{R}$} (Tmod);
   \end{tikzpicture}
-  \caption{some caption}
-  \label{fig:thm_qd_pf}
+  \caption{$R^{\iota, \beta}$ is applicable at $S_1$. By induction hypothesis
+  $S_1 \Rrightarrow^{R^{\iota,\beta}} S_{1, R^{\iota, \beta}}
+  \Rrightarrow^{\bar{R}_{\geq 2}} S'$. By Lemma~\ref{lem:lemma1} $S
+  \Rrightarrow^{R^{\iota, \beta}, R_1^{\iota_1, \beta_1}} S_{1, R^{\iota,
+  \beta}}$. Thus $S \Rrightarrow^{R^{\iota,\beta}, \bar{R}} S'$.}
+  \label{fig:lemma2_pf}
 \end{figure}
 
 
@@ -944,7 +958,8 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
         g \andalso h[\beta \mapsto \beta'].
       \end{equation*}
       Thus $T \simeq T'$.
-    \item[Case $1 < n, n' \leq i+1$ and $i \geq 1$:] We let 
+    \item[Case $1 < n, n' \leq i+1$ and $i \geq 1$:] This case is visualized in
+      Figure~\ref{fig:thm_qd_pf}. We let 
       \begin{equation*}
         \begin{gathered}
           \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n} \\
@@ -1062,12 +1077,15 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
     {$\bar{R}$} (T);
     %\draw[-{Latex[length=0.3cm]}] (c1) -- node[above] {$f_1$} (c3);
   \end{tikzpicture}
-  \caption{We transform $\bar{R'}$ by moving $R^{\iota, \beta}$ to the beginning
-  of the sequence. The halting state is the same because of
-  Lemma~\ref{lem:lemma2}. The new sequence $R^{\iota,\beta}, \bar{R'}_{<k},
-  \bar{R'}_{>k}$ begins with the same step as $\bar{R}$. Thus we can examine the
-  two shorter sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and $\bar{R}_{\geq 2}$
-  and conclude that $T \simeq T'$ by the induction hypothesis.}
+  \caption{$R^{\iota, \beta}$ is the first transition identifier of $\bar{R}$.
+  It must also occur somewhere in the transition sequence $\bar{R'}$. We
+  transform $\bar{R'}$ by moving $R^{\iota, \beta}$ to the beginning of the
+  sequence. The halting state is the same because of Lemma~\ref{lem:lemma2}. The
+  new sequence $R^{\iota,\beta}, \bar{R'}_{<k}, \bar{R'}_{>k}$ begins with the
+  same step as $\bar{R}$ and therefore steps to $S_1$ in the first step. Thus we
+  can examine the two shorter sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and
+  $\bar{R}_{\geq 2}$ and conclude that $T \simeq T'$ by the induction
+  hypothesis.}
   \label{fig:thm_qd_pf}
 \end{figure}
 

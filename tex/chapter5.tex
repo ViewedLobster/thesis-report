@@ -275,34 +275,7 @@ dependency set $DEP'$. \EWhen{} mimics the capture semantics of
 spores~\parencite{conf/ecoop/MillerHO14}.  Note that all rules in
 Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
 
-In Figure~\ref{fig:error_red_rules}, rules that lead to $\Error$ are defined. These
-are all what would be called null-pointer exceptions in a language like Java.
-That is, that we try to access an object through the $\NullVal$ identifier.
-Errors are propagated to frame stack and then thread set level using rules
-\EErrorFS{} and \EErrorP{} from figures~\ref{fig:fs_red_rules} and
-\ref{fig:threads_red_rules}.
-
-In Figure~\ref{fig:fs_red_rules}, rules for frame stack reductions are defined.
-Here we find the aforementioned \EFProp{} and \EErrorFS{} together with rules
-for method calls and returns. \ECall{} handles method calls by creating a new
-frame with the corresponding term and local environment. Note that the new local
-environment differs depending on the OCAP status of the working thread. If the
-thread is tagged with $a = \nocap$, the new frame also has access to the global
-environment, while if $a = \ocap$ it will not. Note also that the new frame
-stack is tagged with the variable name $x$, the variable to which the method
-result will be assigned to with rule \ERet{}. \ERet{} corresponds to method
-return and utilizes the aforementioned variable name tag. Note that none of
-these rules changes the thread identifier or OCAP status of a thread.
-
-Finally, in Figure~\ref{fig:threads_red_rules}, the rules for thread set
-reductions are defined. Here we find \EFSProp{} and \EErrorP{} which were
-mentioned above. Furthermore we have rule \ESpawn{}, which spawns a new callback
-thread for the threshold value $l$ in the dependency set of the  cell specified
-by $o$. Note that this uses the thread identifier with which the dependency is
-tagged. \ETerm{} is a rule to remove any thread stack finished with its
-execution.
-
-\begin{figure}[h]
+\begin{figure}[]
   \scax{E-Null}
   {H, \sFrame{L}{\Let{x}{\NullVal}{t}} \; \FRedTo \; H, \sFrame{L[x \mapsto
   \NullVal]}{t}}
@@ -375,6 +348,13 @@ execution.
 \end{figure}
 
 
+In Figure~\ref{fig:error_red_rules}, rules that lead to $\Error$ are defined. These
+are all what would be called null-pointer exceptions in a language like Java.
+That is, that we try to access an object through the $\NullVal$ identifier.
+Errors are propagated to frame stack and then thread set level using rules
+\EErrorFS{} and \EErrorP{} from figures~\ref{fig:fs_red_rules} and
+\ref{fig:threads_red_rules}.
+
 \begin{figure}
   \scrule{E-NullSelect}
   {L(y) = \NullVal}
@@ -407,6 +387,18 @@ execution.
   \caption{\RACL{} error spawning rules.}
   \label{fig:error_red_rules}
 \end{figure}
+
+In Figure~\ref{fig:fs_red_rules}, rules for frame stack reductions are defined.
+Here we find the aforementioned \EFProp{} and \EErrorFS{} together with rules
+for method calls and returns. \ECall{} handles method calls by creating a new
+frame with the corresponding term and local environment. Note that the new local
+environment differs depending on the OCAP status of the working thread. If the
+thread is tagged with $a = \nocap$, the new frame also has access to the global
+environment, while if $a = \ocap$ it will not. Note also that the new frame
+stack is tagged with the variable name $x$, the variable to which the method
+result will be assigned to with rule \ERet{}. \ERet{} corresponds to method
+return and utilizes the aforementioned variable name tag. Note that none of
+these rules changes the thread identifier or OCAP status of a thread.
 
 \begin{figure}
   \scrule{E-Call}
@@ -444,6 +436,14 @@ execution.
   \caption{\RACL{} frame stack reduction rules.}
   \label{fig:fs_red_rules}
 \end{figure}
+
+Finally, in Figure~\ref{fig:threads_red_rules}, the rules for thread set
+reductions are defined. Here we find \EFSProp{} and \EErrorP{} which were
+mentioned above. Furthermore we have rule \ESpawn{}, which spawns a new callback
+thread for the threshold value $l$ in the dependency set of the  cell specified
+by $o$. Note that this uses the thread identifier with which the dependency is
+tagged. \ETerm{} is a rule to remove any thread stack finished with its
+execution.
 
 \begin{figure}
   \scrule{E-Spawn}
@@ -483,6 +483,14 @@ execution.
 
 \section{Type System}
 \label{sec:type_system}
+
+The type system will now be introduced starting with the types themselves.  The
+types and type lattice of RACL is summarized in Figure~\ref{fig:racl_typelat}.
+The lattice structure reflects the subtyping relation defined in
+Figure~\ref{fig:def_stof}.  Except for standard types like the top, bottom, and
+class types, we see that the \CellType{} type is a subtype of \AnyRefType{} like
+the class types. Intuitively this is due to that cell objects are stored
+on the heap. We also have a separate lattice value type \LatType{}. 
 
 \begin{figure}[]
   \centering
@@ -543,15 +551,6 @@ execution.
   \label{fig:def_stof}
 \end{figure}
 
-The type system will now be introduced starting with the types themselves.  The
-types and type lattice of RACL is summarized in Figure~\ref{fig:racl_typelat}.
-The lattice structure reflects the subtyping relation defined in
-Figure~\ref{fig:def_stof}.  Except for standard types like the top, bottom, and
-class types, we see that the \CellType{} type is a subtype of \AnyRefType{} like
-the class types. Intuitively this is due to that cell objects are stored
-on the heap. We also have a separate lattice value type \LatType{}. 
-
-
 \begin{remark}
   Note that the subtyping judgement $\sigma \stof \tau$ is implicitly dependent
   on $p$ due to the inclusion of $p$ in the precondition of rule {\sc ST-C-D}.
@@ -602,7 +601,7 @@ closure $z \Rightarrow t$ must be typeable in an environment containing the
 captured variables and $z: \LatType$.
 
 
-\begin{figure}[h!]
+\begin{figure}[]
   \centering
   %\begin{multicols}{2}
     \scrule{T-Let}
@@ -678,34 +677,8 @@ captured variables and $z: \LatType$.
 Intuitively, a well formed program is a program which obeys our type system. We
 define well-formedness in Figure~\ref{fig:wf_typing}. We also need the
 definition of the global typing environment $\Gamma_0$. 
-\begin{definition}
-  Let the \emph{global typing environment} $\Gamma_0$ be defined as 
-  \begin{equation*}
-    \Gamma_0 = \Global : C_g
-  \end{equation*}
-\end{definition}
-{\sc WF-Prog} says that in order for a program $p =
-\overline{cd}~\overline{vd}~t$ to be well formad, all classes $\overline{cd}$,
-global variables $\overline{vd}$ and the program term $t$ must be well formed.
-Rule {\sc WF-Global} says that in order for a global variable declaration to be
-well formed, the denoted type must either be $\LatType$, $\CellType$ or be of
-class type $C$ where the class definition of $C$ is well formed. In order for a
-class definition of $C$ to be well formed, rule {\sc WF-Class} declares that all
-methods must be well formed under $C$, the extended class $D$ must either be
-$\AnyRefType$ or must also be well formed. Furthermore, all methods must obey the
-rules of overriding and $C$ cannot redeclare any fields that has been declared
-in an extended class $D$. {\sc WF-Override} declares that for a method to be
-correctly overriden it must either not be declared in any extended class or it
-must have the same declared type as in the extended class. Finally {\sc
-WF-Method} states that in order for a method to be well formed, its term must be
-typable as a type $\tau'$ under an environment consisting of the global
-environment, the class itself $\This : C$ and the method parameter $x: \sigma$.
-Futhermore $\tau' \stof \tau$, where $\tau$ is the declared return type of the
-method.
 
-
-
-\begin{figure}[h]
+\begin{figure}[]
   \scrule{WF-Prog}
   {p \vdash \overline{cd} \andalso p \vdash \overline{vd} \andalso
   \TypeRel{\Gamma_0}{\nocap}{t}{\tau}}
@@ -743,6 +716,33 @@ method.
   \caption{\RACL{} rules for well formedness of programs.}
   \label{fig:wf_typing}
 \end{figure}
+
+\begin{definition}
+  Let the \emph{global typing environment} $\Gamma_0$ be defined as 
+  \begin{equation*}
+    \Gamma_0 = \Global : C_g
+  \end{equation*}
+\end{definition}
+
+{\sc WF-Prog} says that in order for a program $p =
+\overline{cd}~\overline{vd}~t$ to be well formed, all classes $\overline{cd}$,
+global variables $\overline{vd}$ and the program term $t$ must be well formed.
+Rule {\sc WF-Global} says that in order for a global variable declaration to be
+well formed, the denoted type must either be $\LatType$, $\CellType$ or be of
+class type $C$ where the class definition of $C$ is well formed. In order for a
+class definition of $C$ to be well formed, rule {\sc WF-Class} declares that all
+methods must be well formed under $C$, the extended class $D$ must either be
+$\AnyRefType$ or must also be well formed. Furthermore, all methods must obey the
+rules of overriding and $C$ cannot redeclare any fields that has been declared
+in an extended class $D$. {\sc WF-Override} declares that for a method to be
+correctly overriden it must either not be declared in any extended class or it
+must have the same declared type as in the extended class. Finally {\sc
+WF-Method} states that in order for a method to be well formed, its term must be
+typable as a type $\tau'$ under an environment consisting of the global
+environment, the class itself $\This : C$ and the method parameter $x: \sigma$.
+Futhermore $\tau' \stof \tau$, where $\tau$ is the declared return type of the
+method.
+
 
 \subsection{OCAP Typing}%
 \label{sub:ocap_typing}
@@ -862,6 +862,65 @@ $P$ to be well typed under heap $H$, all threads need to be well typed under
 $H$ and its OCAP status $a$.  For a thread $GS|_a^\iota$ we write this as $H; a
 \vdash GS$. This relation is defined in Figure~\ref{fig:fs_typing}. 
 
+\begin{figure}
+  \scax{T-Empty}
+  {H \vdash \emptyset}
+
+  \RuleSpace{}
+
+  \scrule{T-Procs}
+  { H; a \vdash FS \andalso H \vdash P }
+  { H \vdash P \cup \left\{FS |_a^\iota \right\} }
+
+  \caption{Rules for typing thread sets under some heap $H$.}
+  \label{fig:ts_typing}
+\end{figure}
+
+\begin{figure}
+  \scax{T-FSEmpty1}
+  {H; a \vdash \varepsilon}
+
+  \RuleSpace{}
+
+  \scax{T-FSEmpty2}
+  {H; a \vdash^{x : \sigma} \varepsilon}
+
+  \RuleSpace{}
+
+  \scrule{T-FS1}
+  { F = \Frame{L}{t}{x} \andalso H \vdash \Gamma; L \\
+  \TypeRel{\Gamma}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma \andalso H; a \vdash^{x: \sigma} FS }
+  { H; a \vdash F \circ FS }
+  
+  \RuleSpace{}
+
+  \scrule{T-FS2}
+  { F = \Frame{L}{t}{y} \andalso H \vdash \Gamma; L \\
+  \TypeRel{\Gamma, x: \tau}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma 
+  \andalso H; a \vdash^{y: \sigma} FS }
+  { H; a \vdash^{x: \tau} F \circ FS }
+
+  \caption{Rules for typing frame stacks under some heap $H$ and effect $a$.}
+  \label{fig:fs_typing}
+\end{figure}
+
+\begin{figure}
+  \scrule{WF-EnvVar}
+  {\typeOf{(L(x), H) \stof \Gamma{(x)}}}
+  { H \vdash \Gamma; L; x }
+
+  \RuleSpace{}
+
+  \scrule{WF-Env}
+  {\dom{(\Gamma)} \subseteq \dom{(L)} \\
+    \forall x \in \dom{(\Gamma)}. \: H \vdash \Gamma; L; x 
+  }
+  { H \vdash \Gamma; L }
+
+  \caption{Rules for classifying local environments $L$ as well typed.}
+  \label{fig:local_typing}
+\end{figure}
+
 For $H; a \vdash GS$ to hold, either $FS = \varepsilon$ as in rule {\sc
 T-FSEmpty1} (this is actually impossible since frame stacks of a state cannot be
 empty, see definition~\ref{def:thread_sets}), or the term $t$ of top frame $F$
@@ -883,6 +942,24 @@ respectively.
 The next two definitions are used when defining isolation of threads in the
 reference graph of the heap. The ruling $\reach(H, o, o')$ is defined in
 Figure~\ref{fig:def_reach}.
+
+\begin{figure}
+  \scrule{Reach1}
+  {o \in \dom{(H)}}
+  {\reach{(H, o, o)}}
+
+  \RuleSpace{}
+
+  \scrule{Reach2}
+  {
+    o \in \dom{(H)} \andalso H(o) = \Obj{C, FM} \\
+    o'' \in \image{(FM)} \andalso \reach{(H, o'', o')}
+  }
+  { \reach{(H, o, o')} }
+  \caption{Definition of heap reachability.}
+  \label{fig:def_reach}
+\end{figure}
+
 \begin{definition}[Class Object Separation]
   For any heap $H$ and heap identifiers $o, o'$ we have class object separation,
   $\csep{(H, o, o')}$ iff
@@ -914,6 +991,30 @@ Rule {\sc ISO-Procs} states that we have isolation for a thread set $P$ under
 heap $H$, if there is isolation between all pairs of threads such that at least
 one is $\ocap$.
 
+\begin{figure}
+  \scrule{ISO-FS}
+  { 
+    \forall o \in \accRoots(FS), o' \in \accRoots(GS) . \: \csep{(H, o, o')}
+  }
+  {
+    \isolated{(H, FS, GS)}
+  }
+  
+  \RuleSpace{}
+
+  \scrule{ISO-Procs}
+  {
+    \forall FS|_a^\iota, GS_b^{\iota'} \in P \text{ where } FS|_a^\iota \neq
+    GS|_b^{\iota'} . \\
+    a = \ocap \: \lor \: b = \ocap \implies \isolated{(H, FS, GS)}
+  }
+  {
+    \isolation{(H, P)}
+  }
+  \caption{Definition of isolation}
+  \label{fig:def_isolation}
+\end{figure}
+
 \subsection{OCAP Reachability}%
 \label{sub:ocap_reachability}
 
@@ -930,6 +1031,21 @@ this property formally.
   \end{align}
 \end{definition}
 
+\begin{figure}
+  \scrule{OCR-FS}
+  { a = \ocap \implies \ocrloc(FS, H) }
+  { H; a \vdash FS \tsep \ocr }
+
+  \RuleSpace{}
+
+  \scrule{OCR-P}
+  {\forall FS|_a^\iota \in P. \: H; a \vdash FS \tsep \ocr}
+  {H \vdash P \tsep \ocr}
+
+  \caption{Definition of OCAP reachability}
+  \label{fig:def_ocapreach}
+\end{figure}
+
 \subsection{Global Object Separation}%
 \label{sub:global_object_separation}
 
@@ -937,6 +1053,15 @@ Another thing needed to prove preservation of isolation is global object
 separation. Simply stated this means that no $\ocap$ thread can reach the global
 object $o_g$ through heap references. This is formally defined in
 Figure~\ref{fig:def_gsep}.
+
+\begin{figure}
+  \scrule{GSep-Threads}
+  {\forall FS|_a^\iota \in P. \: a = \ocap \implies \forall o \in \accRoots{(FS, H)}. \: \csep{(H, o, o_g)} }
+  {H \vdash P \tsep \gsep}
+
+  \caption{Definition of global separation}
+  \label{fig:def_gsep}
+\end{figure}
 
 \subsection{No Thread Spawning}%
 \label{sub:no_thread_spawning}
@@ -1007,106 +1132,6 @@ the properties already defined into one.
   program $p$ will therefore in most cases be implicit.
 \end{remark}
 
-\begin{figure}
-  \scrule{WF-EnvVar}
-  {\typeOf{(L(x), H) \stof \Gamma{(x)}}}
-  { H \vdash \Gamma; L; x }
-
-  \RuleSpace{}
-
-  \scrule{WF-Env}
-  {\dom{(\Gamma)} \subseteq \dom{(L)} \\
-    \forall x \in \dom{(\Gamma)}. \: H \vdash \Gamma; L; x 
-  }
-  { H \vdash \Gamma; L }
-
-  \caption{Rules for classifying local environments $L$ as well typed.}
-  \label{fig:local_typing}
-\end{figure}
-
-\begin{figure}
-  \scax{T-FSEmpty1}
-  {H; a \vdash \varepsilon}
-
-  \RuleSpace{}
-
-  \scax{T-FSEmpty2}
-  {H; a \vdash^{x : \sigma} \varepsilon}
-
-  \RuleSpace{}
-
-  \scrule{T-FS1}
-  { F = \Frame{L}{t}{x} \andalso H \vdash \Gamma; L \\
-  \TypeRel{\Gamma}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma \andalso H; a \vdash^{x: \sigma} FS }
-  { H; a \vdash F \circ FS }
-  
-  \RuleSpace{}
-
-  \scrule{T-FS2}
-  { F = \Frame{L}{t}{y} \andalso H \vdash \Gamma; L \\
-  \TypeRel{\Gamma, x: \tau}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma 
-  \andalso H; a \vdash^{y: \sigma} FS }
-  { H; a \vdash^{x: \tau} F \circ FS }
-
-  \caption{Rules for typing frame stacks under some heap $H$ and effect $a$.}
-  \label{fig:fs_typing}
-\end{figure}
-
-\begin{figure}
-  \scax{T-Empty}
-  {H \vdash \emptyset}
-
-  \RuleSpace{}
-
-  \scrule{T-Procs}
-  { H; a \vdash FS \andalso H \vdash P }
-  { H \vdash P \cup \left\{FS |_a^\iota \right\} }
-
-  \caption{Rules for typing thread sets and the special value \Error{} under some heap $H$.}
-  \label{fig:ts_typing}
-\end{figure}
-
-\begin{figure}
-  \scrule{ISO-FS}
-  { 
-    \forall o \in \accRoots(FS), o' \in \accRoots(GS) . \: \csep{(H, o, o')}
-  }
-  {
-    \isolated{(H, FS, GS)}
-  }
-  
-  \RuleSpace{}
-
-  \scrule{ISO-Procs}
-  {
-    \forall FS|_a^\iota, GS_b^{\iota'} \in P \text{ where } FS|_a^\iota \neq
-    GS|_b^{\iota'} . \\
-    a = \ocap \: \lor \: b = \ocap \implies \isolated{(H, FS, GS)}
-  }
-  {
-    \isolation{(H, P)}
-  }
-  \caption{Definition of isolation}
-  \label{fig:def_isolation}
-\end{figure}
-
-\begin{figure}
-  \scrule{Reach1}
-  {o \in \dom{(H)}}
-  {\reach{(H, o, o)}}
-
-  \RuleSpace{}
-
-  \scrule{Reach2}
-  {
-    o \in \dom{(H)} \andalso H(o) = \Obj{C, FM} \\
-    o'' \in \image{(FM)} \andalso \reach{(H, o'', o')}
-  }
-  { \reach{(H, o, o')} }
-  \caption{Definition of reach}
-  \label{fig:def_reach}
-\end{figure}
-
 %\begin{figure}
 %  \scrule{AR-F}
 %  { (x \mapsto o) \in L }
@@ -1120,30 +1145,6 @@ the properties already defined into one.
 %  \caption{Definition of accRoot}
 %  \label{fig:def_accroot}
 %\end{figure}
-
-\begin{figure}
-  \scrule{OCR-FS}
-  { a = \ocap \implies \ocrloc(FS, H) }
-  { H; a \vdash FS \tsep \ocr }
-
-  \RuleSpace{}
-
-  \scrule{OCR-P}
-  {\forall FS|_a^\iota \in P. \: H; a \vdash FS \tsep \ocr}
-  {H \vdash P \tsep \ocr}
-
-  \caption{Definition of OCAP reachability}
-  \label{fig:def_ocapreach}
-\end{figure}
-
-\begin{figure}
-  \scrule{GSep-Threads}
-  {\forall FS|_a^\iota \in P. \: a = \ocap \implies \forall o \in \accRoots{(FS, H)}. \: \csep{(H, o, o_g)} }
-  {H \vdash P \tsep \gsep}
-
-  \caption{Definition of global separation}
-  \label{fig:def_gsep}
-\end{figure}
 
 % TODO include the \Gamma_{\CellType} definition somewhere
 

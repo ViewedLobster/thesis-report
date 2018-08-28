@@ -102,6 +102,17 @@ programming framework inspired by LVish. It is based around objects called
 value from a lattice, the value is updated through a join operation and you are
 able to create dependencies between them using callbacks.
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[circle,draw] (c1) at (0, 0) {$c_1$};
+    \node[circle,draw] (c2) at (3, 0) {$c_2$};
+    \draw[-{Latex[length=0.3cm]}] (c1)  -- node[above] {$f$}  (c2);
+  \end{tikzpicture} 
+  \caption{Simple Reactive Async dependency graph.}
+  \label{fig:ra_example}
+\end{figure}
+
 Similarly to LVish, the cells are updated through a put operation.  The cells and
 dependencies can be illustrated as a graph.  Figure~\ref{fig:ra_example} is a
 very simple example of a dependency graph.  There are two cells $c_1$ and $c_2$
@@ -121,16 +132,6 @@ in chapter~\ref{cha:challenges}.
 %proven determinism properties which could be used as a basis for future
 %revisions of Reactive Async.
 
-\begin{figure}
-  \centering
-  \begin{tikzpicture}
-    \node[circle,draw] (c1) at (0, 0) {$c_1$};
-    \node[circle,draw] (c2) at (3, 0) {$c_2$};
-    \draw[-{Latex[length=0.3cm]}] (c1)  -- node[above] {$f$}  (c2);
-  \end{tikzpicture} 
-  \caption{Simple Reactive Async dependency graph.}
-  \label{fig:ra_example}
-\end{figure}
 
 \section{LaCasa}\label{sec:lacasa}
 

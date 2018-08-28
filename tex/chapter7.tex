@@ -59,6 +59,13 @@ As mentioned in Section~\ref{sec:lvars}, LVars has an additional \emph{get}
 operation, not modeled in RACL. Adopting the semantics of LVars, it should be
 possible to extend RACL with this operation aswell.
 
+Apart from cell objects, it should also be possible to share immutable data
+between threads. This would require objects being deeply immutable. Apart from
+requiring the references passed to be immutable, an objects can only hold
+immutable references. This property must also be transitive, requiring that all
+references of referenced objects be immutable. A similar way to define
+immutability for Scala was examined by~\textcite{HallerA17}.
+
 \section{Implementation}%
 \label{sec:implementation}
 
