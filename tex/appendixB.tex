@@ -15,9 +15,9 @@
 \begin{definition}
   Let $g, h$ be as in definition \ref{def:pirho}. 
   \begin{equation*}
-    \eta(DEP, g, h) = \left\{ (l, (\delta(L_{\text{env}}, g), z \Rightarrow
+    \eta(\DEP, g, h) = \left\{ (l, (\delta(L_{\text{env}}, g), z \Rightarrow
     t))^{h(\iota)} \mid (l,
-    (L_{\text{env}}, z \Rightarrow t))^\iota \in DEP \right\}
+    (L_{\text{env}}, z \Rightarrow t))^\iota \in \DEP \right\}
   \end{equation*}
   I.e. we replace all object identifiers occuring in callback environments
   according to the replacement map $g$, and change the corresponding thread
@@ -38,16 +38,16 @@
     \begin{gathered}
       H^*(o) =
       \begin{cases}
-        \Obj{C, FM^*}   & \text{ if } H(g^{-1}(o)) = \Obj{C, FM} \\
-        \Cell{DEP^*, l} & \text{ if } H(g^{-1}(o)) = \Cell{DEP, l}
+        \Obj{C, \FM^*}   & \text{ if } H(g^{-1}(o)) = \Obj{C, \FM} \\
+        \Cell{\DEP^*, l} & \text{ if } H(g^{-1}(o)) = \Cell{\DEP, l}
       \end{cases} \\
-      FM^* = \delta(FM, g) \andalso DEP^* = \eta(DEP, g, h).
+      \FM^* = \delta(\FM, g) \andalso \DEP^* = \eta(\DEP, g, h).
     \end{gathered}
   \end{equation}
 
   Furthermore writing
   \begin{equation}
-    P = \left\{ FS_i|_{a_i}^{\iota_i} \right\}_{i = 1}^n
+    P = \left\{ \FS_i|_{a_i}^{\iota_i} \right\}_{i = 1}^n
   \end{equation}
   we let
   \begin{equation*}
@@ -56,11 +56,11 @@
   where
   \begin{equation*}
     \begin{gathered}
-      FS_i = \xframe{L_{m_i}, t_{m_i}}^{s_{m_i}} \circ \dots \circ \xframe{L_1,
+      \FS_i = \xframe{L_{m_i}, t_{m_i}}^{s_{m_i}} \circ \dots \circ \xframe{L_1,
       t_1}^{s_1} \circ \varepsilon \\
-      FS_i^* = \xframe{\delta(L_{m_i}, g), t_{m_i}}^{s_{m_i}} \circ \dots \circ
+      \FS_i^* = \xframe{\delta(L_{m_i}, g), t_{m_i}}^{s_{m_i}} \circ \dots \circ
       \xframe{\delta(L_1,g), t_1}^{s_1} \circ \varepsilon \\
-      P^* = \left\{ FS_i^*|_{a_i}^{h(\iota_i)} \right\}_{i = 1}^n.
+      P^* = \left\{ \FS_i^*|_{a_i}^{h(\iota_i)} \right\}_{i = 1}^n.
     \end{gathered}
   \end{equation*}
 \end{definition}
@@ -228,32 +228,32 @@
       to $S$ we have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
-          FS_2|_{a_2}^{\iota_2} \right\} \\
-          FS_1 = \xframe{L_1, \Let{w_1}{\FAss{x_1}{f_1}{y_1}}{t'_1}}^{s_1} \circ GS_1
+          S = H, P \andalso P = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
+          \FS_2|_{a_2}^{\iota_2} \right\} \\
+          \FS_1 = \xframe{L_1, \Let{w_1}{\FAss{x_1}{f_1}{y_1}}{t'_1}}^{s_1} \circ \GS_1
           \\ 
-          FS_1 = \xframe{L_2, \Let{w_2}{\FAss{x_2}{f_2}{y_2}}{t'_2}}^{s_2}
-          \circ GS_2 \\
+          \FS_1 = \xframe{L_2, \Let{w_2}{\FAss{x_2}{f_2}{y_2}}{t'_2}}^{s_2}
+          \circ \GS_2 \\
           L_1(x_1) = o_1 \andalso L_2(x_2) = o_2 \\
-          H(o_1) = \Obj{C_1, FM_1} \andalso H(o_2) = \Obj{C_2, FM_2} \\
-          f_1 \in \dom(FM_1) \andalso f_2 \in \dom(FM_2) \\
+          H(o_1) = \Obj{C_1, \FM_1} \andalso H(o_2) = \Obj{C_2, \FM_2} \\
+          f_1 \in \dom(\FM_1) \andalso f_2 \in \dom(\FM_2) \\
           S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\iota_1, \smiley}} S_1
           \\
-          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS_2|_{a_2}^{\iota_2} \right\} \\
-          FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[w_1 \mapsto
+          P_1 = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS_2|_{a_2}^{\iota_2} \right\} \\
+          \FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ \GS_1  \andalso L'_1 = L_1[w_1 \mapsto
           L_1(y_1)] \\
-          FM'_1 = FM_1[f_1 \mapsto L_1(y_1)] \andalso H_1 = H[o_1 \mapsto
-          \Obj{C_1, FM'_1}]
+          \FM'_1 = \FM_1[f_1 \mapsto L_1(y_1)] \andalso H_1 = H[o_1 \mapsto
+          \Obj{C_1, \FM'_1}]
           \\
           S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
           \\
-          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ GS_2  \andalso L'_2 = L_2[w_2 \mapsto
+          P_2 = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          \FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ \GS_2  \andalso L'_2 = L_2[w_2 \mapsto
           L_2(y_2)] \\
-          FM'_2 = FM_2[f_2 \mapsto L_2(y_2)] \andalso H_2 = H[o_2 \mapsto
-          \Obj{C_2, FM'_2}]
+          \FM'_2 = \FM_2[f_2 \mapsto L_2(y_2)] \andalso H_2 = H[o_2 \mapsto
+          \Obj{C_2, \FM'_2}]
           \\
         \end{gathered}
       \end{equation}
@@ -272,9 +272,9 @@
           S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\iota_2,
           \smiley}} S_{12}
           \\
-          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          H_{12} = H[o_1 \mapsto \Obj{C_1, FM'_1}, o_2 \mapsto \Obj{C_2, FM'_2}]
+          P_{12} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          H_{12} = H[o_1 \mapsto \Obj{C_1, \FM'_1}, o_2 \mapsto \Obj{C_2, \FM'_2}]
         \end{gathered}
       \end{equation}
       and similarly 
@@ -283,9 +283,9 @@
           S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\iota_1,
           \smiley}} S_{21}
           \\
-          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          H_{21} = H[o_1 \mapsto \Obj{C_1, FM'_1}, o_2 \mapsto \Obj{C_2, FM'_2}]
+          P_{21} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          H_{21} = H[o_1 \mapsto \Obj{C_1, \FM'_1}, o_2 \mapsto \Obj{C_2, \FM'_2}]
         \end{gathered}
       \end{equation}
       Clearly then $S_{12} = S_{21}$ and we are done.
@@ -302,30 +302,30 @@
       Since the transition identifiers are applicable to $S$ we have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
-          FS_2|_{a_2}^{\iota_2} \right\} \\
-          FS_1 = \xframe{L_1, \Let{x_1}{y_1}{t'_1}}^{s_1} \circ GS_1
+          S = H, P \andalso P = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
+          \FS_2|_{a_2}^{\iota_2} \right\} \\
+          \FS_1 = \xframe{L_1, \Let{x_1}{y_1}{t'_1}}^{s_1} \circ \GS_1
           \\ 
-          FS_1 = \xframe{L_2, \Let{x_2}{\FAss{y_2}{f_2}{z_2}}{t'_2}}^{s_2}
-          \circ GS_2 \\
-          L_2(y_2) = o_2 \andalso H(o_2) = \Obj{C_2, FM_2} \\
-          f_2 \in \dom(FM_2) \\
+          \FS_1 = \xframe{L_2, \Let{x_2}{\FAss{y_2}{f_2}{z_2}}{t'_2}}^{s_2}
+          \circ \GS_2 \\
+          L_2(y_2) = o_2 \andalso H(o_2) = \Obj{C_2, \FM_2} \\
+          f_2 \in \dom(\FM_2) \\
           S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\iota_1, \smiley}} S_1
           \\
-          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS_2|_{a_2}^{\iota_2} \right\} \\
-          FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[x_1 \mapsto
+          P_1 = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS_2|_{a_2}^{\iota_2} \right\} \\
+          \FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ \GS_1  \andalso L'_1 = L_1[x_1 \mapsto
           L_1(y_1)] \\
           H_1 = H
           \\
           S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
           \\
-          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ GS_2  \andalso L'_2 = L_2[x_2 \mapsto
+          P_2 = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          \FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ \GS_2  \andalso L'_2 = L_2[x_2 \mapsto
           L_2(y_2)] \\
-          FM'_2 = FM_2[f_2 \mapsto L_2(y_2)] \andalso H_2 = H[o_2 \mapsto
-          \Obj{C_2, FM'_2}]
+          \FM'_2 = \FM_2[f_2 \mapsto L_2(y_2)] \andalso H_2 = H[o_2 \mapsto
+          \Obj{C_2, \FM'_2}]
           \\
         \end{gathered}
       \end{equation}
@@ -335,9 +335,9 @@
           S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\iota_2,
           \smiley}} S_{12}
           \\
-          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          H_{12} = H[o_2 \mapsto \Obj{C_2, FM'_2}]
+          P_{12} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          H_{12} = H[o_2 \mapsto \Obj{C_2, \FM'_2}]
         \end{gathered}
       \end{equation}
       and 
@@ -346,9 +346,9 @@
           S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\iota_1,
           \smiley}} S_{21}
           \\
-          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          H_{21} = H[o_2 \mapsto \Obj{C_2, FM'_2}]
+          P_{21} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          H_{21} = H[o_2 \mapsto \Obj{C_2, \FM'_2}]
         \end{gathered}
       \end{equation}
       Clearly $S_{12} = S_{21}$ and we are done.
@@ -364,12 +364,12 @@
       Similarly to previous cases we have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
-          FS_2|_{a_2}^{\iota_2} \right\} \\
-          FS_1 = \xframe{L_1, \Let{x_1}{\Put{y_1}{z_1}}{t'_1}}^{s_1} \circ GS_1
+          S = H, P \andalso P = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
+          \FS_2|_{a_2}^{\iota_2} \right\} \\
+          \FS_1 = \xframe{L_1, \Let{x_1}{\Put{y_1}{z_1}}{t'_1}}^{s_1} \circ \GS_1
           \\ 
-          FS_1 = \xframe{L_2, \Let{x_2}{\Put{y_2}{z_2}}{t'_2}}^{s_2}
-          \circ GS_2 \\
+          \FS_1 = \xframe{L_2, \Let{x_2}{\Put{y_2}{z_2}}{t'_2}}^{s_2}
+          \circ \GS_2 \\
           L_1(y_1) = o_1 \andalso L_2(y_2) = o_2 \\
           L_1(z_1) = l_1 \andalso L_2(z_2) = l_2
         \end{gathered}
@@ -381,18 +381,18 @@
       
       Firstly
       \begin{equation}
-        H(o) = \Cell{DEP, l}.
+        H(o) = \Cell{\DEP, l}.
       \end{equation}
       Then
       \begin{equation}
         \begin{gathered}
           S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\iota_1, \smiley}} S_1
           \\
-          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS_2|_{a_2}^{\iota_2} \right\} \\
-          FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[x_1 \mapsto
+          P_1 = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS_2|_{a_2}^{\iota_2} \right\} \\
+          \FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ \GS_1  \andalso L'_1 = L_1[x_1 \mapsto
           L_1(y_1)] \\
-          H_1 = H[o \mapsto \Cell{DEP, l \sqcup l_1}]
+          H_1 = H[o \mapsto \Cell{\DEP, l \sqcup l_1}]
         \end{gathered}
       \end{equation}
       and similarly
@@ -400,11 +400,11 @@
         \begin{gathered}
           S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
           \\
-          P_1 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ GS_2  \andalso L'_2 = L_2[x_2 \mapsto
+          P_1 = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          \FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ \GS_2  \andalso L'_2 = L_2[x_2 \mapsto
           L_2(y_2)] \\
-          H_2 = H[o \mapsto \Cell{DEP, l \sqcup l_2}]
+          H_2 = H[o \mapsto \Cell{\DEP, l \sqcup l_2}]
         \end{gathered}
       \end{equation}
       We also have
@@ -413,9 +413,9 @@
           S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\iota_2,
           \smiley}} S_{12}
           \\
-          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          H_{12} = H[o_2 \mapsto \Cell{DEP, (l \sqcup l_1) \sqcup l_2}]
+          P_{12} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          H_{12} = H[o_2 \mapsto \Cell{\DEP, (l \sqcup l_1) \sqcup l_2}]
         \end{gathered}
       \end{equation}
       and
@@ -424,9 +424,9 @@
           S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\iota_1,
           \smiley}} S_{21}
           \\
-          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS'_2|_{a_2}^{\iota_2} \right\} \\
-          H_{21} = H[o_2 \mapsto \Cell{DEP, (l \sqcup l_2) \sqcup l_1}]
+          P_{21} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS'_2|_{a_2}^{\iota_2} \right\} \\
+          H_{21} = H[o_2 \mapsto \Cell{\DEP, (l \sqcup l_2) \sqcup l_1}]
         \end{gathered}
       \end{equation}
       By commutability of the least upper bound operation $\sqcup$ we have
@@ -442,12 +442,12 @@
       Similarly to previous cases we have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
-          FS_2|_{a_2}^{\iota_2} \right\} \\
-          FS_1 = \xframe{L_1, \Let{x_1}{\When{y_1}{z_1}{\dots}}{t'_1}}^{s_1} \circ GS_1
+          S = H, P \andalso P = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
+          \FS_2|_{a_2}^{\iota_2} \right\} \\
+          \FS_1 = \xframe{L_1, \Let{x_1}{\When{y_1}{z_1}{\dots}}{t'_1}}^{s_1} \circ \GS_1
           \\ 
-          FS_1 = \xframe{L_2, \Let{x_2}{\When{y_2}{z_2}{\dots}}{t'_2}}^{s_2}
-          \circ GS_2 \\
+          \FS_1 = \xframe{L_2, \Let{x_2}{\When{y_2}{z_2}{\dots}}{t'_2}}^{s_2}
+          \circ \GS_2 \\
           L_1(y_1) = o_1 \andalso L_2(y_2) = o_2 \\
           L_1(z_1) = l_1 \andalso L_2(z_2) = l_2
         \end{gathered}
@@ -459,13 +459,13 @@
       case we only write out the parts that are significantly different.
       \begin{equation}
         \begin{gathered}
-          H_1 = H[o \mapsto \Cell{DEP_1, l}] \andalso DEP_1 = DEP \cup \{ (l_1,
+          H_1 = H[o \mapsto \Cell{\DEP_1, l}] \andalso \DEP_1 = \DEP \cup \{ (l_1,
           \dots)^{\iota'_1} \} \\
-          H_2 = H[o \mapsto \Cell{DEP_2, l}] \andalso DEP_2 = DEP \cup \{ (l_2,
+          H_2 = H[o \mapsto \Cell{\DEP_2, l}] \andalso \DEP_2 = \DEP \cup \{ (l_2,
           \dots)^{\iota'_2} \} \\
-          H_{12} = H[o \mapsto \Cell{DEP_{12}, l}] \andalso DEP_{12} = DEP \cup \{ (l_1,
+          H_{12} = H[o \mapsto \Cell{\DEP_{12}, l}] \andalso \DEP_{12} = \DEP \cup \{ (l_1,
           \dots)^{\iota'_1}, (l_2, \dots)^{\iota'_2} \} \\
-          H_{21} = H[o \mapsto \Cell{DEP_{21}, l}] \andalso DEP_{21} = DEP \cup \{ (l_1,
+          H_{21} = H[o \mapsto \Cell{\DEP_{21}, l}] \andalso \DEP_{21} = \DEP \cup \{ (l_1,
           \dots)^{\iota'_1}, (l_2, \dots)^{\iota'_2} \} \\
         \end{gathered}
       \end{equation}
@@ -478,13 +478,13 @@
       We have
       \begin{equation}
         \begin{gathered}
-          S = H, P \andalso P = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1}
+          S = H, P \andalso P = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1}
           \right\} \\
-          FS_1 = \xframe{L_1, \Let{x_1}{\When{y_1}{z_1}{\dots}}{t'_1}}^{s_1} \circ GS_1
+          \FS_1 = \xframe{L_1, \Let{x_1}{\When{y_1}{z_1}{\dots}}{t'_1}}^{s_1} \circ \GS_1
           \\ 
           L_1(y_1) = o_1 \andalso L_1(z_1) = l_1 \\
-          o_2 \in \dom(H) \andalso H(o_2) = \Cell{DEP, l} \\
-          (l_2, (L_{\text{env}}, z_2 \Rightarrow t''))^{\iota_2} \in DEP
+          o_2 \in \dom(H) \andalso H(o_2) = \Cell{\DEP, l} \\
+          (l_2, (L_{\text{env}}, z_2 \Rightarrow t''))^{\iota_2} \in \DEP
         \end{gathered}
       \end{equation}
       Similarly to previous cases we have the case where $o_1 \neq o_2$ which
@@ -493,17 +493,17 @@
 
       First we note that
       \begin{equation}
-        H(o) = \Cell{DEP, l}.
+        H(o) = \Cell{\DEP, l}.
       \end{equation}
       We have that 
       \begin{equation} \label{eq:lem1_ewhen_espawn_1}
         \begin{gathered}    
           S_1 = H_1, P_1 \andalso S \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_1
           \\
-          P_1 = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1} \right\} \\
-          FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ GS_1  \andalso L'_1 = L_1[x_1 \mapsto
+          P_1 = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1} \right\} \\
+          \FS'_1 = \xframe{L'_1, t'_1}^{s_1} \circ \GS_1  \andalso L'_1 = L_1[x_1 \mapsto
           L_1(y_1)] \\
-          H_1 = H[o \mapsto \Cell{DEP_1, l}] \andalso DEP_1 = DEP \cup \{ (l_1,
+          H_1 = H[o \mapsto \Cell{\DEP_1, l}] \andalso \DEP_1 = \DEP \cup \{ (l_1,
           \dots)^{\iota'_1} \}
         \end{gathered}
       \end{equation}
@@ -512,11 +512,11 @@
         \begin{gathered}
           S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
           \\
-          P_2 = P_0 \cup_D \left\{ FS_1|_{a_1}^{\iota_1},
-          FS_2|_{\ocap}^{\iota_2} \right\} \\
-          FS_2 = \xframe{L_{\text{env}}[z \mapsto l_2], t''}^{-} \circ
+          P_2 = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
+          \FS_2|_{\ocap}^{\iota_2} \right\} \\
+          \FS_2 = \xframe{L_{\text{env}}[z \mapsto l_2], t''}^{-} \circ
           \varepsilon \\
-          H_2 = \Cell{DEP_2, l} \andalso DEP_2 = DEP \setminus \{ (l_2,
+          H_2 = \Cell{\DEP_2, l} \andalso \DEP_2 = \DEP \setminus \{ (l_2,
           \dots)^{\iota_2} \}
         \end{gathered}
       \end{equation}
@@ -527,10 +527,10 @@
           S_{12} = H_{12}, P_{12} \andalso S_1 \Rrightarrow^{R_2^{\iota_2,
           \smiley}} S_{12}
           \\
-          P_{12} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS_2|_{\ocap}^{\iota_2} \right\} \\
-          H_{12} = H[o \mapsto \Cell{DEP_{12}, l}] \\ 
-          DEP_{12} = DEP \cup \{ (l_1, \dots)^{\iota'_1} \} \setminus \{ (l_2,
+          P_{12} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS_2|_{\ocap}^{\iota_2} \right\} \\
+          H_{12} = H[o \mapsto \Cell{\DEP_{12}, l}] \\ 
+          \DEP_{12} = \DEP \cup \{ (l_1, \dots)^{\iota'_1} \} \setminus \{ (l_2,
           \dots)^{\iota_2} \}
         \end{gathered}
       \end{equation}
@@ -539,18 +539,18 @@
           S_{21} = H_{21}, P_{21} \andalso S_2 \Rrightarrow^{R_1^{\iota_1,
           \iota'_1}} S_{21}
           \\
-          P_{21} = P_0 \cup_D \left\{ FS'_1|_{a_1}^{\iota_1},
-          FS_2|_{\ocap}^{\iota_2} \right\} \\
-          H_{21} = H[o \mapsto \Cell{DEP_{12}, l}] \\ 
-          DEP_{21} = DEP \setminus \{ (l_2, \dots)^{\iota_2} \} \cup \{ (l_1,
+          P_{21} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
+          \FS_2|_{\ocap}^{\iota_2} \right\} \\
+          H_{21} = H[o \mapsto \Cell{\DEP_{12}, l}] \\ 
+          \DEP_{21} = \DEP \setminus \{ (l_2, \dots)^{\iota_2} \} \cup \{ (l_1,
           \dots)^{\iota'_1} \} 
         \end{gathered}
       \end{equation}
-      Since $\iota'_1$ is fresh it is clear that $DEP_{12} = DEP_{21}$ and
+      Since $\iota'_1$ is fresh it is clear that $\DEP_{12} = \DEP_{21}$ and
       therefore we have $S_{12} = S_{21}$.
       \begin{remark}
         The main point here is that $\iota'_1$ being a fresh thread identifier
-        makes the removal and addition to the dependency set $DEP$ commute.
+        makes the removal and addition to the dependency set $\DEP$ commute.
       \end{remark}
   \end{description}
   It should not be hard to verify the other cases in a similar manner.

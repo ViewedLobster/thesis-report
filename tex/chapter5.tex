@@ -119,15 +119,15 @@ describe the execution rules in more detail.
   We let $\Objects$ be the set of all \emph{heap objects}, i.e. objects of the
   form
   \begin{equation*}
-    \Obj{C, FM} \text{ or } \Cell{DEP, l}.
+    \Obj{C, \FM} \text{ or } \Cell{\DEP, l}.
   \end{equation*}
-  $\Obj{C, FM}$ is a \emph{class object} where $C$ is a class name. The \emph{field
-  map} $FM$ is a partial map
+  $\Obj{C, \FM}$ is a \emph{class object} where $C$ is a class name. The \emph{field
+  map} $\FM$ is a partial map
   \begin{equation*}
-    FM \in \FieldNames \rightharpoonup \Values.
+    \FM \in \FieldNames \rightharpoonup \Values.
   \end{equation*}
-  In $\Cell{DEP, l}$ is a \emph{cell object} where $l \in \LatVals$. The
-  \emph{dependency set} $DEP$ is a set of elements of the form
+  In $\Cell{\DEP, l}$ is a \emph{cell object} where $l \in \LatVals$. The
+  \emph{dependency set} $\DEP$ is a set of elements of the form
   \begin{equation*}
     (l' , (L_{\text{env}}, z \Rightarrow t))^\iota
   \end{equation*}
@@ -160,15 +160,15 @@ describe the execution rules in more detail.
   where $L$ is a local environment, $t$ is a term and $s \in \VarNames$ is a
   return tag.
 
-  A \emph{frame stack} $FS$ is a finitely large stack of frames. We can write
-  all of these recursively as either the empty stack $FS = \varepsilon$, or as
-  $FS = F \circ GS$ where $GS$ is also a frame stack.
+  A \emph{frame stack} $\FS$ is a finitely large stack of frames. We can write
+  all of these recursively as either the empty stack $\FS = \varepsilon$, or as
+  $\FS = F \circ \GS$ where $\GS$ is also a frame stack.
 
   A \emph{thread set} $P$ is a finite set 
   \begin{equation*}
-    P = \left\{ FS_i|_{a_i}^{\iota_i} \right\}_{i = 1}^{n}
+    P = \left\{ \FS_i|_{a_i}^{\iota_i} \right\}_{i = 1}^{n}
   \end{equation*}
-  of non-empty frame stacks $FS_i$ tagged with a unique thread id $\iota_i \in \TIDs$ and an
+  of non-empty frame stacks $\FS_i$ tagged with a unique thread id $\iota_i \in \TIDs$ and an
   OCAP status $a_i \in \ocapstats$. Note that $P$ can be the empty set. We call
   a thread tagged with $\ocap$ an \emph{ocap thread}
 \end{definition}
@@ -206,12 +206,12 @@ describe the execution rules in more detail.
   \overline{cd}~\overline{vd}~t$.
   \begin{equation*}
     \begin{gathered}
-      H_0 = [o_g \mapsto \Obj{C_g, FM_g}] \\
-      FM_g = [f \mapsto \default(\sigma) \mid (\VarDecl{f}{\sigma}) \in \overline{vd}]
+      H_0 = [o_g \mapsto \Obj{C_g, \FM_g}] \\
+      \FM_g = [f \mapsto \default(\sigma) \mid (\VarDecl{f}{\sigma}) \in \overline{vd}]
     \end{gathered}
   \end{equation*}
   where $o_g$ is a reserved object identifier for the \emph{global object} $\Obj{C_g,
-  FM_g}$. $C_g$ is the \emph{global class name}.  
+  \FM_g}$. $C_g$ is the \emph{global class name}.  
   \begin{equation*}
     \begin{gathered}
       P_0 = \left\{ \xframe{L_0, t} \circ \varepsilon
@@ -247,7 +247,7 @@ RACL reduction rules are expressed at three different levels:
 Thread set, frame stack and frame level. 
 Therefore we will also see the relations 
 \begin{equation*}
-  H, FS \;\FSRedTo\; H', FS' \quad \text{ and } \quad H, F\; \FRedTo\; H', F'
+  H, \FS \;\FSRedTo\; H', \FS' \quad \text{ and } \quad H, F\; \FRedTo\; H', F'
 \end{equation*}
 This is to allow expression of e.g. single frame execution,
 thread creation and method calls as will be explained below. 
@@ -271,7 +271,7 @@ callback. Looking at this rule more closely we see that it captures the
 variables specified by $\overline{cap}$ and creates a local environment
 $L_{\text{env}}$. This is then stored, together with the closure $w \Rightarrow
 t'$, a threshold value $l'$ and a fresh thread identifier $\iota$, in the new
-dependency set $DEP'$. \EWhen{} mimics the capture semantics of
+dependency set $\DEP'$. \EWhen{} mimics the capture semantics of
 spores~\parencite{conf/ecoop/MillerHO14}.  Note that all rules in
 Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
 
@@ -295,15 +295,15 @@ Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
   \RuleSpace{}
 
   \scrule{E-Select}
-  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)}
+  {L(y) = o \andalso H(o) = \Obj{C, \FM} \andalso f \in \dom(\FM)}
   {H, \sFrame{L}{\Let{x}{ \FSel{y}{f} }{t}} \; \FRedTo  \\ 
-  H, \sFrame{L[x \mapsto FM(f)]}{t}}
+  H, \sFrame{L[x \mapsto \FM(f)]}{t}}
 
   \RuleSpace{}
 
   \scrule{E-Assign}
-  {L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM) \\
-  FM' = FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, FM'}]}
+  {L(y) = o \andalso H(o) = \Obj{C, \FM} \andalso f \in \dom(\FM) \\
+  \FM' = \FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, \FM'}]}
   {H, \sFrame{L}{\Let{x}{\FAss{y}{f}{z}}{t}} \; \FRedTo \\
    H', \sFrame{L[x \mapsto L(z)]}{t}}
 
@@ -311,8 +311,8 @@ Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
 
   \scrule{E-New}
   {o\text{ fresh object identifier } \\
-  FM = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in \fdecls(C)] \\
-  H' = H[o \mapsto \Obj{C, FM}]}
+  \FM = [f \mapsto \default(\sigma): (\VarDecl{f}{\sigma}) \in \fdecls(C)] \\
+  H' = H[o \mapsto \Obj{C, \FM}]}
   {H, \sFrame{L}{ \Let{x}{\New{C}}{t} } \; \FRedTo \\
   H', \sFrame{L[x \mapsto o]}{t}}
   
@@ -327,8 +327,8 @@ Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
   \RuleSpace{}
   
   \scrule{E-Put}
-  {L(y) = o \andalso H(o) = \Cell{DEP, l} \\
-  L(z) = l' \andalso c' = \Cell{DEP, l \sqcup l'} \\
+  {L(y) = o \andalso H(o) = \Cell{\DEP, l} \\
+  L(z) = l' \andalso c' = \Cell{\DEP, l \sqcup l'} \\
   H' = H[o \mapsto c']}
   {H, \sFrame{L}{\Let{x}{\Put{y}{z}}{t}} \; \FRedTo \\
   H', \sFrame{L[x \mapsto L(y)]}{t}}
@@ -336,11 +336,11 @@ Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
   \RuleSpace{}
 
   \scrule{E-When}
-  {L(y) = o \andalso H(o) = \Cell{DEP, l} \andalso L(z) = l' \\
+  {L(y) = o \andalso H(o) = \Cell{\DEP, l} \andalso L(z) = l' \\
   L_{\text{env}} = [u \mapsto L(u') \mid (\Capt{u}{u'}) \in \overline{cap}]
   \andalso cb = (L_{\text{env}}, w \Rightarrow t') \\
-  \iota\text{ fresh thread identifier } \andalso DEP' = DEP \cup (l', cb)^\iota \\
-  H' = H[o \mapsto \Cell{DEP', l}] }
+  \iota\text{ fresh thread identifier } \andalso \DEP' = \DEP \cup (l', cb)^\iota \\
+  H' = H[o \mapsto \Cell{\DEP', l}] }
   { H, \sFrame{L}{ \Let{x}{ \When{y}{z}{ (\overline{cap}, w \Rightarrow t') }}{t} } \\ \FRedTo \;
   H', \sFrame{L[x \mapsto L(y)]}{t} }
   \caption{\RACL{} single frame reduction rules.}
@@ -403,7 +403,7 @@ these rules changes the thread identifier or OCAP status of a thread.
 \begin{figure}
   \scrule{E-Call}
   {
-    L(y) = o \andalso H(o) = \Obj{C, FM} \\
+    L(y) = o \andalso H(o) = \Obj{C, \FM} \\
     \mbody(m, C) = w \to t' \\
     L_{\text{base}} =
     \begin{cases}
@@ -412,26 +412,26 @@ these rules changes the thread identifier or OCAP status of a thread.
     \end{cases} \\
     L' = L_{\text{base}}[\This \mapsto L(y), w \mapsto L(z)] 
   }
-  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ FS |_a^\iota \; \FSRedTo \\
-  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ FS |_a^\iota}
+  {H, \sFrame{L}{ \Let{x}{ \Call{y}{m}{z} }{t} } \circ \FS |_a^\iota \; \FSRedTo \\
+  H, \Frame{L'}{t'}{x} \circ \sFrame{L}{t} \circ \FS |_a^\iota}
 
   \RuleSpace{}
 
   \scax{E-Ret}
-  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ FS |_a^\iota \; \FSRedTo \\
-  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ FS |_a^\iota }
+  {H, \Frame{L'}{x}{y} \circ \sframe{L, t} \circ \FS |_a^\iota \; \FSRedTo \\
+  H, \sFrame{L[y \mapsto L'(x)]}{t} \circ \FS |_a^\iota }
 
   \RuleSpace{}
 
   \scrule{E-FProp}
   {H, F \; \FRedTo \; H', F'}
-  {H, F \circ FS |_a^\iota \; \FSRedTo \; H', F' \circ FS |_a^\iota }
+  {H, F \circ \FS |_a^\iota \; \FSRedTo \; H', F' \circ \FS |_a^\iota }
 
   \RuleSpace{}
   
   \scrule{E-ErrorFS}
   {H, F \; \FRedTo \; \Error }
-  {H, F \circ FS |_a^\iota \; \FSRedTo \; \Error}
+  {H, F \circ \FS |_a^\iota \; \FSRedTo \; \Error}
 
   \caption{\RACL{} frame stack reduction rules.}
   \label{fig:fs_red_rules}
@@ -448,11 +448,11 @@ execution.
 \begin{figure}
   \scrule{E-Spawn}
   {
-    o \in \dom(H) \andalso H(o) = \Cell{DEP, l} \\ 
-    l' \sqsubseteq l \andalso (l', cb)^\iota \in DEP \andalso cb = (L_{\text{env}}, z
+    o \in \dom(H) \andalso H(o) = \Cell{\DEP, l} \\ 
+    l' \sqsubseteq l \andalso (l', cb)^\iota \in \DEP \andalso cb = (L_{\text{env}}, z
     \Rightarrow t) \\
     L = L_{\text{env}}[z \mapsto l'] \\
-    H' = H[o \mapsto \Cell{DEP - (l', cb)^\iota, l}]
+    H' = H[o \mapsto \Cell{\DEP - (l', cb)^\iota, l}]
   }
   {
     H,P \Rrightarrow H', P \cup \left\{ \Frame{L}{t}{-} \circ \varepsilon
@@ -468,14 +468,14 @@ execution.
   \RuleSpace{}
 
   \scrule{E-FSProp}
-  {H, FS \twoheadrightarrow H', FS'}
-  {H, P \cup_D \left\{ FS \right\} \Rrightarrow H', P \cup \left\{ FS' \right\} }
+  {H, \FS \twoheadrightarrow H', \FS'}
+  {H, P \cup_D \left\{ \FS \right\} \Rrightarrow H', P \cup \left\{ \FS' \right\} }
 
   \RuleSpace{}
 
   \scrule{E-ErrorP}
-  {H, FS \twoheadrightarrow \Error}
-  {H, P \cup_D \left\{ FS \right\} \Rrightarrow \Error }
+  {H, \FS \twoheadrightarrow \Error}
+  {H, P \cup_D \left\{ \FS \right\} \Rrightarrow \Error }
   \caption{\RACL{} thread set reduction rules.}
   \label{fig:threads_red_rules}
 \end{figure}
@@ -830,18 +830,18 @@ $z$.
   A heap $H$ is well typed, written $\vdash{H}$, if
   $\forall o \in \dom{(H)}$:
 
-  If $H(o) = \Obj{C, FM}$ then
+  If $H(o) = \Obj{C, \FM}$ then
   \begin{equation} \label{eq:defwth1}
     \begin{aligned}
       \forall f &\in \fields{(C)}. \\ 
-      &f \in \dom{(FM)} \: \land \\ 
-      &\typeOf{(FM(f), H)} \stof \ftype{(f, C)}
+      &f \in \dom{(\FM)} \: \land \\ 
+      &\typeOf{(\FM(f), H)} \stof \ftype{(f, C)}
     \end{aligned}
   \end{equation}
-  and if $H(o) = \Cell{DEP, l}$ then
+  and if $H(o) = \Cell{\DEP, l}$ then
   \begin{equation} \label{eq:defwth2}
     \begin{aligned}
-      \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^\iota \in DEP. \\
+      \forall (l'&, (L_{\text{env}}, z \Rightarrow t))^\iota \in \DEP. \\
       &\forall (x \mapsto k) \in L_{\text{env}}.\: \typeOf{(k, H)} \stof
       \CellType \: \land \\
       &\TypeRel{\Gamma_{\CellType{}}(L_{\text{env}}), z:
@@ -859,8 +859,8 @@ thread set $P$. We do this with the relation $H \vdash P$, saying $P$ is well
 typed under heap $H$. This relation is defined in Figure~\ref{fig:ts_typing}.
 {\sc T-Procs} and {\sc T-Empty} basically says that in order for a thread set
 $P$ to be well typed under heap $H$, all threads need to be well typed under
-$H$ and its OCAP status $a$.  For a thread $GS|_a^\iota$ we write this as $H; a
-\vdash GS$. This relation is defined in Figure~\ref{fig:fs_typing}. 
+$H$ and its OCAP status $a$.  For a thread $\GS|_a^\iota$ we write this as $H; a
+\vdash \GS$. This relation is defined in Figure~\ref{fig:fs_typing}. 
 
 \begin{figure}
   \scax{T-Empty}
@@ -869,8 +869,8 @@ $H$ and its OCAP status $a$.  For a thread $GS|_a^\iota$ we write this as $H; a
   \RuleSpace{}
 
   \scrule{T-Procs}
-  { H; a \vdash FS \andalso H \vdash P }
-  { H \vdash P \cup \left\{FS |_a^\iota \right\} }
+  { H; a \vdash \FS \andalso H \vdash P }
+  { H \vdash P \cup \left\{\FS |_a^\iota \right\} }
 
   \caption{Rules for typing thread sets under some heap $H$.}
   \label{fig:ts_typing}
@@ -889,16 +889,16 @@ $H$ and its OCAP status $a$.  For a thread $GS|_a^\iota$ we write this as $H; a
 
   \scrule{T-FS1}
   { F = \Frame{L}{t}{x} \andalso H \vdash \Gamma; L \\
-  \TypeRel{\Gamma}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma \andalso H; a \vdash^{x: \sigma} FS }
-  { H; a \vdash F \circ FS }
+  \TypeRel{\Gamma}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma \andalso H; a \vdash^{x: \sigma} \FS }
+  { H; a \vdash F \circ \FS }
   
   \RuleSpace{}
 
   \scrule{T-FS2}
   { F = \Frame{L}{t}{y} \andalso H \vdash \Gamma; L \\
   \TypeRel{\Gamma, x: \tau}{a}{t}{\sigma'} \andalso \sigma' \stof \sigma 
-  \andalso H; a \vdash^{y: \sigma} FS }
-  { H; a \vdash^{x: \tau} F \circ FS }
+  \andalso H; a \vdash^{y: \sigma} \FS }
+  { H; a \vdash^{x: \tau} F \circ \FS }
 
   \caption{Rules for typing frame stacks under some heap $H$ and effect $a$.}
   \label{fig:fs_typing}
@@ -921,7 +921,7 @@ $H$ and its OCAP status $a$.  For a thread $GS|_a^\iota$ we write this as $H; a
   \label{fig:local_typing}
 \end{figure}
 
-For $H; a \vdash GS$ to hold, either $FS = \varepsilon$ as in rule {\sc
+For $H; a \vdash \GS$ to hold, either $\FS = \varepsilon$ as in rule {\sc
 T-FSEmpty1} (this is actually impossible since frame stacks of a state cannot be
 empty, see definition~\ref{def:thread_sets}), or the term $t$ of top frame $F$
 is typeable with some environment $\Gamma$ which is conformant with its local
@@ -929,7 +929,7 @@ variable map $L$ and $H$. This conformancy is expressed through the relation $H
 \vdash \Gamma; L$ which is defined in Figure~\ref{fig:local_typing}. Simply
 stated, it says that all types specified in $\Gamma$ aligns with the dynamic
 types of the values in $L$. Furthermore {\sc T-FS1} declares that the rest of the frame
-stack $FS$ must be typable under the judgement $\vdash^{x: \sigma}$. This
+stack $\FS$ must be typable under the judgement $\vdash^{x: \sigma}$. This
 judgement is defined by rules {\sc T-FSEmpty2} and {\sc T-FS2}. The latter
 reflects that the top frame returns some value to its underlying frame stack. It
 is closely connected with the well-formedness of methods and call\slash return
@@ -952,8 +952,8 @@ Figure~\ref{fig:def_reach}.
 
   \scrule{Reach2}
   {
-    o \in \dom{(H)} \andalso H(o) = \Obj{C, FM} \\
-    o'' \in \image{(FM)} \andalso \reach{(H, o'', o')}
+    o \in \dom{(H)} \andalso H(o) = \Obj{C, \FM} \\
+    o'' \in \image{(\FM)} \andalso \reach{(H, o'', o')}
   }
   { \reach{(H, o, o')} }
   \caption{Definition of heap reachability.}
@@ -972,11 +972,11 @@ Figure~\ref{fig:def_reach}.
 \end{definition}
 
 \begin{definition}[Accessible Roots]
-  For a heap $H$ and a frame stack $FS$ we define $\accRoots{(FS, H)}$ as
+  For a heap $H$ and a frame stack $\FS$ we define $\accRoots{(\FS, H)}$ as
   \begin{equation}
-    \accRoots{(FS, H)} = \left\{ o \in \dom{(H)} \:\: \middle| \:\:
+    \accRoots{(\FS, H)} = \left\{ o \in \dom{(H)} \:\: \middle| \:\:
     \begin{aligned}
-      \exists \sframe{L, t} &\in FS, x \in \VarNames  \\
+      \exists \sframe{L, t} &\in \FS, x \in \VarNames  \\
          \text{s.t. } & (x \mapsto o) \in L
     \end{aligned}
     \right\}
@@ -994,19 +994,19 @@ one is $\ocap$.
 \begin{figure}
   \scrule{ISO-FS}
   { 
-    \forall o \in \accRoots(FS), o' \in \accRoots(GS) . \: \csep{(H, o, o')}
+    \forall o \in \accRoots(\FS,H), o' \in \accRoots(\GS,H) . \: \csep{(H, o, o')}
   }
   {
-    \isolated{(H, FS, GS)}
+    \isolated{(H, \FS, \GS)}
   }
   
   \RuleSpace{}
 
   \scrule{ISO-Procs}
   {
-    \forall FS|_a^\iota, GS_b^{\iota'} \in P \text{ where } FS|_a^\iota \neq
-    GS|_b^{\iota'} . \\
-    a = \ocap \: \lor \: b = \ocap \implies \isolated{(H, FS, GS)}
+    \forall \FS|_a^\iota, \GS_b^{\iota'} \in P \text{ where } \FS|_a^\iota \neq
+    \GS|_b^{\iota'} . \\
+    a = \ocap \: \lor \: b = \ocap \implies \isolated{(H, \FS, \GS)}
   }
   {
     \isolation{(H, P)}
@@ -1023,23 +1023,23 @@ objects reachable from an $\ocap$-annotated thread can be typed as an $\ocap$
 type. The next definition together with Figure~\ref{fig:def_ocapreach} defines
 this property formally.
 \begin{definition}[OCAP Reachability]
-  For a heap $H$ and frame stack $FS$ we have $\ocrloc{(FS,H)}$ iff
+  For a heap $H$ and frame stack $\FS$ we have $\ocrloc{(\FS,H)}$ iff
   \begin{align}
     \label{eq:ocr_def}
-    \forall o \in \: &\accRoots(FS,H), o' \in \dom(H). \notag\\
+    \forall o \in \: &\accRoots(\FS,H), o' \in \dom(H). \notag\\
     &\reach{(H, o, o')} \implies \ocap{(\typeOf{(o', H)})}
   \end{align}
 \end{definition}
 
 \begin{figure}
   \scrule{OCR-FS}
-  { a = \ocap \implies \ocrloc(FS, H) }
-  { H; a \vdash FS \tsep \ocr }
+  { a = \ocap \implies \ocrloc(\FS, H) }
+  { H; a \vdash \FS \tsep \ocr }
 
   \RuleSpace{}
 
   \scrule{OCR-P}
-  {\forall FS|_a^\iota \in P. \: H; a \vdash FS \tsep \ocr}
+  {\forall \FS|_a^\iota \in P. \: H; a \vdash \FS \tsep \ocr}
   {H \vdash P \tsep \ocr}
 
   \caption{Definition of OCAP reachability}
@@ -1056,7 +1056,7 @@ Figure~\ref{fig:def_gsep}.
 
 \begin{figure}
   \scrule{GSep-Threads}
-  {\forall FS|_a^\iota \in P. \: a = \ocap \implies \forall o \in \accRoots{(FS, H)}. \: \csep{(H, o, o_g)} }
+  {\forall \FS|_a^\iota \in P. \: a = \ocap \implies \forall o \in \accRoots{(\FS, H)}. \: \csep{(H, o, o_g)} }
   {H \vdash P \tsep \gsep}
 
   \caption{Definition of global separation}
@@ -1074,8 +1074,8 @@ $\noSpawn(H)$ means there are no threads waiting to spawn due to rule
   \begin{equation}
     \begin{aligned}
       \forall o &\in \dom(H). \\
-        & H(o) = \Cell{DEP, l} \implies 
-        \forall (l', cb)^\iota \in DEP. \: \lnot (l' \sqsubseteq l).
+        & H(o) = \Cell{\DEP, l} \implies 
+        \forall (l', cb)^\iota \in \DEP. \: \lnot (l' \sqsubseteq l).
     \end{aligned}
   \end{equation}
 \end{definition}
@@ -1088,7 +1088,7 @@ non-$\ocap$ thread running. Otherwise these could interfere since there are no
 constraints on whether these can share data. Therefore we define the following
 property.
 \begin{definition}[Unique Main Thread]
-  For a thread $FS|_a^\iota$ let
+  For a thread $\FS|_a^\iota$ let
   \begin{equation*}
     \chi_{\nocap}(a) =
     \begin{cases}
@@ -1098,7 +1098,7 @@ property.
   \end{equation*}
   For a thread set $P$ let
   \begin{equation*}
-    \chi(P) = \sum_{FS|_a^\iota \in P} \chi_{\nocap}(a).
+    \chi(P) = \sum_{\FS|_a^\iota \in P} \chi_{\nocap}(a).
   \end{equation*}
   This is the number of non OCAP protected threads in $P$. Finally we define
   \begin{equation*}

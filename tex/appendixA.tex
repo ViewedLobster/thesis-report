@@ -9,7 +9,7 @@
   $(V, E)$ such that $V = \dom{(H)}$ and 
   \begin{equation}
     E = \left\{ (o, o')_f \in \dom{(H)}^2 \times \FieldNames \mid
-      H(o) = \Obj{C, FM} \text{ and } FM(f) = o' \right\}
+      H(o) = \Obj{C, \FM} \text{ and } \FM(f) = o' \right\}
   \end{equation}
 \end{definition}
 
@@ -49,12 +49,12 @@
   \end{description}
 \end{proof}
 
-\begin{proposition} For any heap $H$ and frame stack $FS$ we have
+\begin{proposition} For any heap $H$ and frame stack $\FS$ we have
   \begin{flalign*}
-    &\ocrloc{(FS, H)} &\\
+    &\ocrloc{(\FS, H)} &\\
     &\iff &\\
     &\begin{aligned}
-    \forall q &\in \reachable{{(\accRoots{(FS,H)}, \Graph{(H)})}}. \notag\\
+    \forall q &\in \reachable{{(\accRoots{(\FS,H)}, \Graph{(H)})}}. \notag\\
     & \ocap{(\typeOf{(q, H)})}
     \end{aligned}&
   \end{flalign*}
@@ -92,12 +92,12 @@
 \end{proof}
 
 \begin{proposition} \label{prop:2.6}
-  For any heap $H$ and frame stacks $FS, HS$ we have
+  For any heap $H$ and frame stacks $\FS, \HS$ we have
   \begin{flalign*}
-    &\isolated{(H, FS, HS)}  \iff &\\
+    &\isolated{(H, \FS, \HS)}  \iff &\\
     &\begin{aligned}
-        \forall q \in \:&\reachable{(\accRoots{(FS, H)}, \Graph{(H)})} \cap \\
-        & \reachable{(\accRoots{(HS, H)}, \Graph{(H)})}. \\
+        \forall q \in \:&\reachable{(\accRoots{(\FS, H)}, \Graph{(H)})} \cap \\
+        & \reachable{(\accRoots{(\HS, H)}, \Graph{(H)})}. \\
         & \typeOf{(q, H)} \stof \CellType
     \end{aligned}&
   \end{flalign*}
@@ -107,25 +107,25 @@
   We let 
   \begin{equation*}
     \begin{gathered}
-      R = \reachable(\accRoots(FS, H), \Graph(H))  \\
-      R' = \reachable(\accRoots(HS, H), \Graph(H))  
+      R = \reachable(\accRoots(\FS, H), \Graph(H))  \\
+      R' = \reachable(\accRoots(\HS, H), \Graph(H))  
     \end{gathered}
   \end{equation*}
   We prove each direction of implication separately.
   \begin{description}
     \item[Case $\implies$:] Take $q \in R \cap R'$. Then 
       \begin{equation*}
-        \exists o \in \accRoots(FS, H), o' \in \accRoots(HS, H)
+        \exists o \in \accRoots(\FS, H), o' \in \accRoots(\HS, H)
       \end{equation*}
       such that
       \begin{equation*}
         q \in \reachable(\{o\}, \Graph(H)) \cap \reachable(\{o'\}, \Graph(H)).
       \end{equation*}
-      Thus by $\isolated(H, FS, HS)$ we have $\csep(H, o, o')$. 
+      Thus by $\isolated(H, \FS, \HS)$ we have $\csep(H, o, o')$. 
       Proposition~\ref{prop:csep_eq} yields $\typeOf(q, H) \stof \CellType$.
     \item[Case $\impliedby$:] Take any $o, o'$ such that
       \begin{equation*}
-        o \in \accRoots(FS, H) \andalso o' \in \accRoots(HS, H).
+        o \in \accRoots(\FS, H) \andalso o' \in \accRoots(\HS, H).
       \end{equation*}
       By definition
       \begin{gather*}
@@ -146,14 +146,14 @@
 \begin{proposition} \label{prop:2.11}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
-    \item $P = Q \cup_D \left\{ FS|_a^\iota \right\}$, $\isolation{(H, P)}$, $H
-      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^\iota \right\}$
+    \item $P = Q \cup_D \left\{ \FS|_a^\iota \right\}$, $\isolation{(H, P)}$, $H
+      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ \FS'|_a^\iota \right\}$
     \item $\Graph{(H)} = \Graph{(H')}$
-    \item $\forall HS|_b^{\iota'} \in Q.$ \\ 
-      $\reachable{(\accRoots{(HS, H')}, \Graph{(H')})} \subseteq$ \\
-      $\reachable{(\accRoots{(HS, H)}, \Graph{(H)})}$
-    \item $\reachable{(\accRoots{(FS', H')}, \Graph{(H')})} \subseteq$ \\
-      $\reachable{(\accRoots{(FS, H)}, \Graph{(H)})}$
+    \item $\forall \HS|_b^{\iota'} \in Q.$ \\ 
+      $\reachable{(\accRoots{(\HS, H')}, \Graph{(H')})} \subseteq$ \\
+      $\reachable{(\accRoots{(\HS, H)}, \Graph{(H)})}$
+    \item $\reachable{(\accRoots{(\FS', H')}, \Graph{(H')})} \subseteq$ \\
+      $\reachable{(\accRoots{(\FS, H)}, \Graph{(H)})}$
     \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
   \end{enumerate}
   Then $\isolation{(H', P')}$ and $H' \vdash P' \tsep \ocr$.
@@ -167,34 +167,34 @@
 \begin{proof}
   We prove that 
   \begin{equation*}
-    \forall \text{ distinct } HS|_b^{\iota'}, GS|_c^{\iota''} \in P'.\; b = \ocap \lor c = \ocap \implies
-    \isolated(H', HS, GS).
+    \forall \text{ distinct } \HS|_b^{\iota'}, \GS|_c^{\iota''} \in P'.\; b = \ocap \lor c = \ocap \implies
+    \isolated(H', \HS, \GS).
   \end{equation*}
   This implies $\isolation(H', P')$ by rule {\sc ISO-Procs}.
-  Thus take any distinct $HS|_b^{\iota'}, GS|_c^{\iota''} \in P'$. Then by assumption 3, 4 and basic set
+  Thus take any distinct $\HS|_b^{\iota'}, \GS|_c^{\iota''} \in P'$. Then by assumption 3, 4 and basic set
   properties
   \begin{equation} \label{eq:reachinclusion1}
     \begin{gathered}
-      \reachable(\accRoots(HS, H'), \Graph(H')) \cap \reachable(\accRoots(GS, H'),
+      \reachable(\accRoots(\HS, H'), \Graph(H')) \cap \reachable(\accRoots(\GS, H'),
       \Graph(H')) \\
       \subseteq \\
-      \reachable(\accRoots(HS, H), \Graph(H)) \cap \reachable(\accRoots(GS, H),
+      \reachable(\accRoots(\HS, H), \Graph(H)) \cap \reachable(\accRoots(\GS, H),
       \Graph(H)).
     \end{gathered}
   \end{equation}
-  By this, Proposition~\ref{prop:2.6}, $\isolation(H, HS, GS)$ and assumption 5, we have
-  $\isolation(H', HS, GS)$. By \eqref{eq:reachinclusion1} and assumption 3,4 and 5
+  By this, Proposition~\ref{prop:2.6}, $\isolation(H, \HS, \GS)$ and assumption 5, we have
+  $\isolation(H', \HS, \GS)$. By \eqref{eq:reachinclusion1} and assumption 3,4 and 5
   we have $H' \vdash P' \tsep \ocr$.
 \end{proof}
 
 \begin{corollary} \label{cor:2.11}
   Let $H, H'$ be heaps and $P, P'$ thread sets such that
   \begin{enumerate}
-    \item $P = Q \cup_D \left\{ FS|_a^\iota \right\}$, $\isolation{(H, P)}$, $H
-      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ FS'|_a^\iota \right\}$
+    \item $P = Q \cup_D \left\{ \FS|_a^\iota \right\}$, $\isolation{(H, P)}$, $H
+      \vdash P \tsep \ocr$ and $P' = Q \cup_D \left\{ \FS'|_a^\iota \right\}$
     \item $\Graph{(H)} = \Graph{(H')}$
-    \item $\forall HS|_b^{\iota'} \in Q. \: \accRoots{(HS, H')} \subseteq \accRoots{(HS, H)}$
-    \item $\accRoots{(FS', H')} \subseteq \accRoots{(FS, H)}$
+    \item $\forall \HS|_b^{\iota'} \in Q. \: \accRoots{(\HS, H')} \subseteq \accRoots{(\HS, H)}$
+    \item $\accRoots{(\FS', H')} \subseteq \accRoots{(\FS, H)}$
     \item $\forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}$
   \end{enumerate}
   Then $\isolation{(H', P')}$ and $H' \vdash P' \tsep \ocr$.
@@ -206,16 +206,16 @@
 \end{proof}
 
 \begin{definition} \label{def:ptilde}
-  Let $FS_g$ be any frame stack where 
+  Let $\FS_g$ be any frame stack where 
   \begin{equation*}
-    \accRoots(FS_g, H) = \left\{ o_g \right\}
+    \accRoots(\FS_g, H) = \left\{ o_g \right\}
   \end{equation*}
-  Furthermore let $H; \nocap \vdash FS_g$.
-  $FS_g$ thus is any well typed frame stack that only has the global object as
+  Furthermore let $H; \nocap \vdash \FS_g$.
+  $\FS_g$ thus is any well typed frame stack that only has the global object as
   an accessible root.  Now, for any thread set $P$, let $\tilde{P}$ be the
   thread set
   \begin{equation*}
-    \tilde{P} = P \cup \left\{ FS_g|_{\nocap}^\iota \right\}
+    \tilde{P} = P \cup \left\{ \FS_g|_{\nocap}^\iota \right\}
   \end{equation*}
   for some fresh $\iota$.
 \end{definition}
@@ -245,7 +245,7 @@
 
 \begin{proof}
   This follows almost immediately by the definitions of isolation and global
-  object separation, and the fact that $\accRoots(FS_g) = \left\{
+  object separation, and the fact that $\accRoots(\FS_g) = \left\{
     o_g \right\}$ 
 \end{proof}
 
@@ -343,7 +343,7 @@ We state the following without proof.
 \begin{proposition} \label{prop:2.13}
   For any $H, P$ we have 
   \begin{equation}
-    H \vdash P \iff \forall HS|_b^{\iota'} \in P.\: H;b \vdash HS
+    H \vdash P \iff \forall \HS|_b^{\iota'} \in P.\: H;b \vdash \HS
   \end{equation}
 \end{proposition}
 
@@ -359,52 +359,52 @@ We state the following without proof.
   \begin{equation*}
     \forall o \in \dom{(H)}. \: \typeOf{(o, H)} = \typeOf{(o, H')}.
   \end{equation*}
-  Then for any frame stack $FS$
+  Then for any frame stack $\FS$
   \begin{equation}\label{eq:fs_impl_typing1}
-    H; a \vdash FS \implies H'; a \vdash FS
+    H; a \vdash \FS \implies H'; a \vdash \FS
   \end{equation}
   and
   \begin{equation} \label{eq:fs_impl_typing2}
-    H; a \vdash^{x :\sigma} FS \implies H'; a \vdash^{x: \sigma} FS 
+    H; a \vdash^{x :\sigma} \FS \implies H'; a \vdash^{x: \sigma} \FS 
   \end{equation}
 \end{proposition}
 
 \begin{proof}
   We first prove \eqref{eq:fs_impl_typing2} by induction on the lenght $n$ of
-  $FS$. To prove the implication we assume that $H; a \vdash^{x: \tau} FS$.
+  $\FS$. To prove the implication we assume that $H; a \vdash^{x: \tau} \FS$.
   
-  If $n = 0$ we have $FS = \varepsilon$. By {\sc T-FSEmpty2} we are done.
+  If $n = 0$ we have $\FS = \varepsilon$. By {\sc T-FSEmpty2} we are done.
   
-  If $n = i + 1$ we have $FS = F \circ GS$ where length of $GS$ is $i$. By  
-  $H; a \vdash^{x: \sigma} FS$ and {\sc T-FS2} we have 
+  If $n = i + 1$ we have $\FS = F \circ \GS$ where length of $\GS$ is $i$. By  
+  $H; a \vdash^{x: \sigma} \FS$ and {\sc T-FS2} we have 
   \begin{equation*}
     F = \xframe{L, t}^{y} \andalso H \vdash \Gamma; L \andalso \TypeRel{\Gamma, x:
-    \sigma}{a}{t}{\tau} \andalso H; a \vdash^{y: \tau} GS.
+    \sigma}{a}{t}{\tau} \andalso H; a \vdash^{y: \tau} \GS.
   \end{equation*}
-  By induction hypothesis we then have $H'; a \vdash^{y: \tau} GS$. We get $H'
+  By induction hypothesis we then have $H'; a \vdash^{y: \tau} \GS$. We get $H'
   \vdash \Gamma; L$ from Proposition \ref{prop:2.19}. Applying rule {\sc T-FS2}
-  yields $H'; a \vdash^{x: \sigma} FS$.
+  yields $H'; a \vdash^{x: \sigma} \FS$.
 
-  Now we prove \eqref{eq:fs_impl_typing1}. Similarly assuming $H; a \vdash FS$
-  we have two cases. If $FS = \varepsilon$ we are done by {\sc T-FSEmpty1}. If
-  $FS = F \circ GS$ we by {\sc T-FS1} have
+  Now we prove \eqref{eq:fs_impl_typing1}. Similarly assuming $H; a \vdash \FS$
+  we have two cases. If $\FS = \varepsilon$ we are done by {\sc T-FSEmpty1}. If
+  $\FS = F \circ \GS$ we by {\sc T-FS1} have
   \begin{equation*}
     F = \xframe{L, t}^{x} \andalso H \vdash \Gamma; L \andalso
-    \TypeRel{\Gamma}{a}{t}{\tau} \andalso H; a \vdash^{x: \sigma} GS.
+    \TypeRel{\Gamma}{a}{t}{\tau} \andalso H; a \vdash^{x: \sigma} \GS.
   \end{equation*}
-  By \eqref{eq:fs_impl_typing2}, $H'; a \vdash^{x: \sigma} GS$. 
+  By \eqref{eq:fs_impl_typing2}, $H'; a \vdash^{x: \sigma} \GS$. 
   Proposition~\ref{prop:2.19} then yields $H' \vdash \Gamma; L$. Applying rule {\sc
-  T-FS1} gives us $H'; a \vdash FS$.
+  T-FS1} gives us $H'; a \vdash \FS$.
 \end{proof}
 
 \begin{proposition} \label{prop:ocrloc_eq}
-  For any $H, HS$ we have
+  For any $H, \HS$ we have
   \begin{equation*}
     \begin{gathered}
-      \ocrloc(HS, H) \\
+      \ocrloc(\HS, H) \\
       \iff  \\
       \begin{aligned}
-        \forall q &\in \reachable(\accRoots(HS, H), \Graph(H)). \\
+        \forall q &\in \reachable(\accRoots(\HS, H), \Graph(H)). \\
         & \ocap(\typeOf(q, H))
       \end{aligned}
     \end{gathered}
@@ -449,11 +449,11 @@ We state the following without proof.
   To prove everything else we proceed by cases.
   \begin{description}
     \item[Case {\sc E-FSProp}:] The \EFSProp{} rule definition says $P =
-      Q \cup_D \left\{ FS|_a^\iota \right\}$ and $P' = Q \cup \left\{
-        FS'|_a^\iota \right\}$. We proceed by cases.
+      Q \cup_D \left\{ \FS|_a^\iota \right\}$ and $P' = Q \cup \left\{
+        \FS'|_a^\iota \right\}$. We proceed by cases.
       \begin{description}
-        \item[Case {\sc E-FProp}:] By \EFProp{} rule definition, $FS = F \circ
-          GS$ and $FS' = F' \circ GS$. Furthermore we can assume
+        \item[Case {\sc E-FProp}:] By \EFProp{} rule definition, $\FS = F \circ
+          \GS$ and $\FS' = F' \circ \GS$. Furthermore we can assume
           that $F = \sframe{L, t}$ and $F' = \sframe{L', t'}$.
           We proceed by cases.
           \begin{description}
@@ -463,14 +463,14 @@ We state the following without proof.
 
               By {\sc T-Procs} and Proposition~\ref{prop:2.13} we have 
               \begin{equation} \label{eq:enull1}
-               H \vdash Q  \andalso H; a \vdash FS 
+               H \vdash Q  \andalso H; a \vdash \FS 
               \end{equation}
               Trivially $H' \vdash Q$. 
               By~\eqref{eq:enull1} and rule {\sc T-FS1} we have
               \begin{equation} \label{eq:enull2}
                 \begin{gathered}
                   H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
-                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS.
+                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} \GS.
                 \end{gathered}
               \end{equation}
               Let $\Gamma' = \Gamma, x: \NullType$. By {\sc T-Let}, {\sc
@@ -485,7 +485,7 @@ We state the following without proof.
               \end{equation}
               By {\sc T-FS1}, \eqref{eq:enull2}, \eqref{eq:enull3} and \eqref{eq:enull4}
               \begin{equation}\label{eq:enull5}
-                H';a \vdash FS'
+                H';a \vdash \FS'
               \end{equation}
               By \eqref{eq:enull5}, {\sc T-Procs} and $H = H'$ we get  
               \begin{equation}
@@ -514,7 +514,7 @@ We state the following without proof.
               \begin{equation} \label{eq:evar3}
                 \begin{gathered}
                   H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
-                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS
+                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} \GS
                 \end{gathered}
               \end{equation}
               By {\sc T-Let, T-Var} and $\TypeRel{\Gamma}{a}{t}{\sigma'}$
@@ -548,11 +548,11 @@ We state the following without proof.
               By {\sc T-FS1}, \eqref{eq:evar3}, \eqref{eq:evar5} and
               \eqref{eq:evar6} we have
               \begin{equation} \label{eq:evar7}
-                H'; a \vdash FS'.
+                H'; a \vdash \FS'.
               \end{equation}
               By Proposition \ref{prop:2.13} and $H \vdash P$ we get
               \begin{equation*} 
-                \forall HS|_b^{\iota'} \in Q. \: H; b \vdash HS.
+                \forall \HS|_b^{\iota'} \in Q. \: H; b \vdash \HS.
               \end{equation*}
               By this, \eqref{eq:evar1} and Proposition \ref{prop:2.13}
               \begin{equation*}
@@ -578,26 +578,26 @@ We state the following without proof.
                 \begin{gathered}
                   H = H' \andalso F = \sframe{L, t} \andalso t =
                   \Let{x}{\FSel{y}{f}}{t'} \\
-                  L(y) = o \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)
+                  L(y) = o \andalso H(o) = \Obj{C, \FM} \andalso f \in \dom(\FM)
                   \\
-                  F' = \sframe{L', t'} \andalso L' = L[x \mapsto FM(f)]
+                  F' = \sframe{L', t'} \andalso L' = L[x \mapsto \FM(f)]
                 \end{gathered}
               \end{equation}
               We immediately see $\vdash H'$. By $\vdash H$ we have
               \begin{equation} \label{eq:eselect2}
-                \typeOf(FM(f), H) \stof \ftype(f, C).
+                \typeOf(\FM(f), H) \stof \ftype(f, C).
               \end{equation}
               $H \vdash P$ and propositions \ref{prop:2.13} and \ref{prop:2.14} yields
               $H \vdash Q$ and thus $H' \vdash Q$.
               $H \vdash P$ and Proposition \ref{prop:2.13} gives 
               \begin{equation} \label{eq:eselect3}
-                H; a \vdash FS
+                H; a \vdash \FS
               \end{equation}
               which under inspection of rule {\sc T-FS1} immediately gives
               \begin{equation} \label{eq:eselect4}
                 \begin{gathered}
                   H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
-                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS.
+                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} \GS.
                 \end{gathered}
               \end{equation}
               $\TypeRel{\Gamma}{a}{t}{\sigma'}$ together with rule {\sc T-Let}
@@ -619,7 +619,7 @@ We state the following without proof.
               Furthermore, because of \eqref{eq:eselect2} and $H = H'$
               \begin{equation} \label{eq:eselect8}
                 \begin{aligned}
-                  \typeOf(L'(x), H') &= \typeOf(FM(f), H') \\
+                  \typeOf(L'(x), H') &= \typeOf(\FM(f), H') \\
                                      &\stof \ftype(f, C) \\
                                      &= \Gamma'(x)
                 \end{aligned}
@@ -632,7 +632,7 @@ We state the following without proof.
               Using {\sc T-FS1} with $H = H'$, \eqref{eq:eselect4}, \eqref{eq:eselect5}
               and \eqref{eq:eselect9} we finally get
               \begin{equation}
-                H';a \vdash FS'
+                H';a \vdash \FS'
               \end{equation}
               which with the help of {\sc T-Procs} and $H' \vdash Q$ gives us 
               \begin{equation*}
@@ -656,9 +656,9 @@ We state the following without proof.
                 \begin{gathered}
                   F = \sframe{L, t} \andalso t = \Let{x}{\FAss{y}{f}{z}}{t'} \\
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(z)] \\
-                  L(y) = o_y \andalso H(o) = \Obj{C, FM} \andalso f \in \dom(FM)
+                  L(y) = o_y \andalso H(o) = \Obj{C, \FM} \andalso f \in \dom(\FM)
                   \\
-                  FM' = FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, FM'}]
+                  \FM' = \FM[f \mapsto L(z)] \andalso H' = H[o \mapsto \Obj{C, \FM'}]
                 \end{gathered}
               \end{equation}
               We begin by proving $\vdash H'$. First we note
@@ -687,24 +687,24 @@ We state the following without proof.
               \begin{equation} \label{eq:eassign4}
                 \begin{aligned}
                   \forall f' &\in \fields(C), f' \neq f. \\ 
-                                 &\typeOf(FM'(f'), H') \stof \ftype(f, C)
+                                 &\typeOf(\FM'(f'), H') \stof \ftype(f, C)
                 \end{aligned}
               \end{equation}
               By $H \vdash P$ and Proposition \ref{prop:2.13}
               \begin{equation} \label{eq:eassign5}
-                H;a \vdash FS.
+                H;a \vdash \FS.
               \end{equation}
               This and {\sc T-FS1} yields
               \begin{equation}\label{eq:eassign6}
                 \begin{gathered}
                   H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
-                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS
+                  \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} \GS
                 \end{gathered}
               \end{equation}
-              By $H;a \vdash^{s: \sigma} GS$, \eqref{eq:eassign2} and prop.
+              By $H;a \vdash^{s: \sigma} \GS$, \eqref{eq:eassign2} and prop.
               \ref{prop:2.14} we have 
               \begin{equation} \label{eq:eassign7} 
-                H'; a \vdash^{s: \sigma} GS
+                H'; a \vdash^{s: \sigma} \GS
               \end{equation}
               $\TypeRel{\Gamma}{a}{t}{\sigma'}$ and {\sc T-Let} gives
               \begin{equation} \label{eq:eassign8}
@@ -738,10 +738,10 @@ We state the following without proof.
                 \end{aligned}
               \end{equation}
               where the last equality comes from the fact that the classes are
-              well formed. By \eqref{eq:eassign1} we have $FM'(f) = L(z)$ and
+              well formed. By \eqref{eq:eassign1} we have $\FM'(f) = L(z)$ and
               combining this with \eqref{eq:eassign12} we get
               \begin{equation} \label{eq:eassign13}
-                \typeOf(FM'(f), H) \stof \ftype(f, C).
+                \typeOf(\FM'(f), H) \stof \ftype(f, C).
               \end{equation}
               Combined with \eqref{eq:eassign3}, \eqref{eq:eassign4} and the
               remark above we get
@@ -763,23 +763,23 @@ We state the following without proof.
                 let $L(z) \in \dom(H)$. Then
                 \begin{equation} \label{eq:lem2.15a}
                   \begin{aligned}
-                    &\reachable(\accRoots(FS', H'), \Graph(H')) \subseteq \\
-                    &\reachable(\accRoots(FS, H), \Graph(H))
+                    &\reachable(\accRoots(\FS', H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(\FS, H), \Graph(H))
                   \end{aligned}
                 \end{equation}
-                If $HS|_b^{\iota'} \in Q$
+                If $\HS|_b^{\iota'} \in Q$
                 \begin{equation}\label{eq:lem2.15b}
                   \begin{aligned}
-                    &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
-                    &\reachable(\accRoots(HS, H), \Graph(H)) \cup  \\
-                    &\reachable(\accRoots(FS, H), \Graph(H)).
+                    &\reachable(\accRoots(\HS, H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(\HS, H), \Graph(H)) \cup  \\
+                    &\reachable(\accRoots(\FS, H), \Graph(H)).
                   \end{aligned}
                 \end{equation}
                 Furthermore, if $a = \ocap$ or $b = \ocap$ then
                 \begin{equation}\label{eq:lem2.15c}
                   \begin{aligned}
-                    &\reachable(\accRoots(HS, H'), \Graph(H')) \subseteq \\
-                    &\reachable(\accRoots(HS, H), \Graph(H))
+                    &\reachable(\accRoots(\HS, H'), \Graph(H')) \subseteq \\
+                    &\reachable(\accRoots(\HS, H), \Graph(H))
                   \end{aligned}
                 \end{equation}
               \end{lemma}
@@ -789,17 +789,17 @@ We state the following without proof.
                 \begin{equation}
                   \begin{gathered}
                     \Graph(H') = (V_H, E_{H'}) \\
-                    E_{H'} = (E_H \setminus \{(o_y, FM(f))_f \}) \cup \{(o_y,
+                    E_{H'} = (E_H \setminus \{(o_y, \FM(f))_f \}) \cup \{(o_y,
                     o_z)_f \}
                   \end{gathered}
                 \end{equation}
                 We prove each part separately.  We begin with
                 \eqref{eq:lem2.15a}.  Let
                 \begin{equation*}
-                  q \in \reachable(\accRoots(FS', H'), \Graph(H')).
+                  q \in \reachable(\accRoots(\FS', H'), \Graph(H')).
                 \end{equation*}
                 Because of reachability equivalence (Proposition
-                \ref{prop:reacheq}) this means there is an $o \in \accRoots(FS',
+                \ref{prop:reacheq}) this means there is an $o \in \accRoots(\FS',
                 H')$ such that
                 \begin{equation}
                   \exists \text{ path } o_0, \dots, o_n \in \Graph(H')
@@ -809,9 +809,9 @@ We state the following without proof.
                 formed, i.e. $(o_i, o_{i+1})_{f_i} \in \Graph(H')$.
                 By \eqref{eq:eassign1}
                 \begin{equation}
-                  \accRoots(FS', H') \subseteq \accRoots(FS, H).
+                  \accRoots(\FS', H') \subseteq \accRoots(\FS, H).
                 \end{equation}
-                Clearly $o \in \accRoots(FS, H)$.
+                Clearly $o \in \accRoots(\FS, H)$.
 
                 There are two cases:
                 \begin{enumerate}
@@ -827,22 +827,22 @@ We state the following without proof.
                 \end{equation}
                 Clearly this path is in $\Graph(H)$ since we chose $i$ to be the
                 last index that fulfills case 1.  Since $o_{i+1} = o_z$ and
-                $o_z$ obviously is in $\accRoots(FS, H)$
+                $o_z$ obviously is in $\accRoots(\FS, H)$
                 \begin{equation}
-                  q \in \reachable(\accRoots(FS, H), \Graph(H)).
+                  q \in \reachable(\accRoots(\FS, H), \Graph(H)).
                 \end{equation}
 
                 For case 2 the new edge $(o_y, o_z)_f$ is not part of the path.
                 Thus all edges $(o_i, o_{i+1})_{f_i}$ are in $\Graph(H)$ and and
                 thus the path $o_0, \dots, o_n$ is a path in $\Graph(H)$ aswell.
-                This means $q \in \reachable(\accRoots(FS, H), \Graph(H))$ which
+                This means $q \in \reachable(\accRoots(\FS, H), \Graph(H))$ which
                 concludes the proof of the first part of the lemma.
 
                 To prove \eqref{eq:lem2.15b} take any
                 \begin{equation}
-                  q \in \reachable(\accRoots(HS, H'), \Graph(H')).
+                  q \in \reachable(\accRoots(\HS, H'), \Graph(H')).
                 \end{equation}
-                Similarly to before there is an $o \in \accRoots(HS,H')$ such
+                Similarly to before there is an $o \in \accRoots(\HS,H')$ such
                 that
                 \begin{equation}
                   \exists \text{ path } o_0, \dots, o_n \in \Graph(H')
@@ -851,20 +851,20 @@ We state the following without proof.
                 We let $f_i$ be the corresponding field names as before.
                 We have exactly the same cases. For case 1 we let $i$ be the last
                 such index. Then similarly to before we get that $o_{i+1} \in
-                \accRoots(FS, H)$ and $q \in \reachable(\accRoots(FS, H),
+                \accRoots(\FS, H)$ and $q \in \reachable(\accRoots(\FS, H),
                 \Graph(H))$.
                 
                 Case 2 is analogous and reaches the conclusion that $q \in
-                \reachable(\accRoots(HS, H), \Graph(H))$.
+                \reachable(\accRoots(\HS, H), \Graph(H))$.
 
                 Lastly we prove that if $a = \ocap$ or $b = \ocap$ then
                 \eqref{eq:lem2.15c} holds. To prove this implication we assume
                 that either $a = \ocap$ or $b = \ocap$. As before we take any
                 \begin{equation}
-                  q \in \reachable(\accRoots(HS, H'), \Graph(H')).
+                  q \in \reachable(\accRoots(\HS, H'), \Graph(H')).
                 \end{equation}
                 Similarly we get that there there must be an $o \in
-                \accRoots(HS, H')$ such that
+                \accRoots(\HS, H')$ such that
                 \begin{equation}
                   \exists \text{ path } o_0, \dots, o_n \in \Graph(H') \text{ s.t. } o_0 = o,
                   o_n = q
@@ -874,12 +874,12 @@ We state the following without proof.
                 the properties described. As noted this means we have the edge
                 $(o_y, o_z)_f$ as part of our path. Specifically this means
                 \begin{equation}\label{eq:lemma2.15-p3-1}
-                  o_y \in \reachable(\accRoots(HS, H), \Graph(H))
+                  o_y \in \reachable(\accRoots(\HS, H), \Graph(H))
                 \end{equation}
                 since $o_0, \dots, o_i$ is a path in $\Graph(H)$ from $o$ to
                 $o_y$, due to the way $i$ was chosen.  Moreover
                 \begin{equation}\label{eq:lemma2.15-p3-2}
-                  o_y \in \reachable(\accRoots(FS, H), \Graph(H))
+                  o_y \in \reachable(\accRoots(\FS, H), \Graph(H))
                 \end{equation}
                 since $(y \mapsto o_y) \in L$. From \eqref{eq:eassign1} it is clear that
                 \begin{equation}\label{eq:lemma2.15-p3-3}
@@ -892,21 +892,21 @@ We state the following without proof.
                 For case 2 it is clear that $o_0, \dots, o_n$ is also a
                 path from $o$ to $q$ in $\Graph(H)$ which immediately implies 
                 \begin{equation}
-                  q \in \reachable(\accRoots(HS, H), \Graph(H)).
+                  q \in \reachable(\accRoots(\HS, H), \Graph(H)).
                 \end{equation}
               \end{proof}
 
               Continuing with the proof of case {\sc E-Assign} first off we use
               the lemma to prove OCAP reachability.  We first take any thread
-              $HS|_b^{\iota'} \in Q$. Studying the $\ocr$ rules it is clear that we can
-              prove that $H'; b \vdash HS \tsep \ocr$ holds trivially for any
-              thread $HS|_b^{\iota'}$ for which $b = \nocap$. Therefore we from now on
+              $\HS|_b^{\iota'} \in Q$. Studying the $\ocr$ rules it is clear that we can
+              prove that $H'; b \vdash \HS \tsep \ocr$ holds trivially for any
+              thread $\HS|_b^{\iota'}$ for which $b = \nocap$. Therefore we from now on
               assume that $b = \ocap$.  By $H \vdash P \tsep \ocr$, $H; b \vdash
-              FS \tsep \ocr$. By Proposition~\ref{prop:ocrloc_eq} and $b =
+              \FS \tsep \ocr$. By Proposition~\ref{prop:ocrloc_eq} and $b =
               \ocap$,
               \begin{equation}\label{eq:eassign14}
                 \begin{aligned}
-                  \forall o &\in \reachable(\accRoots(HS, H), H). \\
+                  \forall o &\in \reachable(\accRoots(\HS, H), H). \\
                             &\ocap(\typeOf(o, H)).
                 \end{aligned}
               \end{equation}
@@ -914,16 +914,16 @@ We state the following without proof.
               \eqref{eq:eassign2} and \eqref{eq:eassign14} means 
               \begin{equation}
                 \begin{aligned}
-                  \forall o &\in \reachable(\accRoots(HS, H'), \Graph(H')). \\
+                  \forall o &\in \reachable(\accRoots(\HS, H'), \Graph(H')). \\
                             &\ocap(\typeOf(o, H')).
                 \end{aligned}
               \end{equation}
-              But this is equivalent to $H';b \vdash HS \tsep \ocr$ by
+              But this is equivalent to $H';b \vdash \HS \tsep \ocr$ by
               Proposition~\ref{prop:ocrloc_eq}. 
 
               In order to prove $H' \vdash P' \tsep \ocr$ the only thing that
-              remains is to show $H';a \vdash FS' \tsep \ocr$. This is anologous
-              to the above reasoning about $H';b \vdash HS~\ocr$ using
+              remains is to show $H';a \vdash \FS' \tsep \ocr$. This is anologous
+              to the above reasoning about $H';b \vdash \HS~\ocr$ using
               \eqref{eq:lem2.15a} instead. Thus we have
               \begin{equation*}
                 H' \vdash P' \tsep \ocr.
@@ -943,9 +943,9 @@ We state the following without proof.
                   F = \sframe{L, t} \andalso t = \Let{x}{\New{C}}{t'} \\
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto o_x] \\
                   o_x \text{ fresh object reference } \\
-                  FM = [f \mapsto \default(\sigma) \mid (\VarDecl{f}{\sigma}) \in
+                  \FM = [f \mapsto \default(\sigma) \mid (\VarDecl{f}{\sigma}) \in
                   \fdecls(C)] \\
-                  H' = H[o_x \mapsto \Obj{C, FM}]
+                  H' = H[o_x \mapsto \Obj{C, \FM}]
                 \end{gathered}
               \end{equation}
               If we let $\Graph(H) = (V_H, E_H)$ it is easy to see that
@@ -956,7 +956,7 @@ We state the following without proof.
               \begin{equation} \label{eq:enew-h1}
                 \begin{aligned}
                   \forall f &\in \fields(C).\\
-                  &f \in \dom(FM) \land \typeOf(FM(f), H') \stof \ftype(f, C).
+                  &f \in \dom(\FM) \land \typeOf(\FM(f), H') \stof \ftype(f, C).
                 \end{aligned}
               \end{equation}
               Also
@@ -974,18 +974,18 @@ We state the following without proof.
 
               By Proposition~\ref{prop:2.13}
               \begin{equation} 
-                H \vdash Q \andalso H; a \vdash FS.
+                H \vdash Q \andalso H; a \vdash \FS.
               \end{equation}
               Propositions \ref{prop:2.13} and \ref{prop:2.14} implies
               \begin{equation} \label{eq:enew-typing1}
                 H' \vdash Q.
               \end{equation}
-              $H;a \vdash FS$ and {\sc T-FS1} yields
+              $H;a \vdash \FS$ and {\sc T-FS1} yields
               \begin{equation}
                 \begin{gathered}
                   H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'}
                   \\
-                  \sigma' \stof \sigma \andalso H;a \vdash^{s: \sigma} GS.
+                  \sigma' \stof \sigma \andalso H;a \vdash^{s: \sigma} \GS.
                 \end{gathered} 
               \end{equation}
               Applying {\sc T-Let} and {\sc T-New} we get
@@ -1004,12 +1004,12 @@ We state the following without proof.
               \end{equation}
               By Proposition \ref{prop:2.14}
               \begin{equation} \label{eq:enew-typing4}
-                H';a \vdash^{s: \sigma} GS.
+                H';a \vdash^{s: \sigma} \GS.
               \end{equation}
               Using {\sc T-FS1} together with $\sigma' \stof \sigma$, \eqref{eq:enew-typing2},
               \eqref{eq:enew-typing3} and \eqref{eq:enew-typing4} we get
               \begin{equation}
-                H';a \vdash FS',
+                H';a \vdash \FS',
               \end{equation}
               and combined with \eqref{eq:enew-typing1} and {\sc T-Procs} we finally
               get
@@ -1017,19 +1017,19 @@ We state the following without proof.
                 H' \vdash P'.
               \end{equation}
 
-              Moving on to OCAP reachability. For any $HS|_b^{\iota'} \in Q$,
+              Moving on to OCAP reachability. For any $\HS|_b^{\iota'} \in Q$,
               we see that
               \begin{equation} \label{eq:enew-ocr1}
                 \begin{aligned}
-                  &\reachable(\accRoots(HS, H'), \Graph(H')) = \\
-                  &\reachable(\accRoots(HS, H), \Graph(H)) 
+                  &\reachable(\accRoots(\HS, H'), \Graph(H')) = \\
+                  &\reachable(\accRoots(\HS, H), \Graph(H)) 
                 \end{aligned}
               \end{equation}
               and furthermore that
               \begin{equation} \label{eq:enew-ocr2}
                 \begin{aligned}
-                  &\reachable(\accRoots(FS', H'), \Graph(H')) = \\
-                  &\reachable(\accRoots(FS, H), \Graph(H)) \cup \left\{ o_x
+                  &\reachable(\accRoots(\FS', H'), \Graph(H')) = \\
+                  &\reachable(\accRoots(\FS, H), \Graph(H)) \cup \left\{ o_x
                   \right\}.
                 \end{aligned}
               \end{equation}
@@ -1052,10 +1052,10 @@ We state the following without proof.
 
             \item[Case {\sc E-NewCell}:] We have
               \begin{equation}
-                H' = H[o \mapsto \Cell{DEP, \bot_{\LatVals}}] \andalso DEP = \emptyset
+                H' = H[o \mapsto \Cell{\DEP, \bot_{\LatVals}}] \andalso \DEP = \emptyset
               \end{equation}
               for some fresh object reference $o$. 
-              Since $DEP$ is empty \eqref{eq:defwth2} holds vacuously and since
+              Since $\DEP$ is empty \eqref{eq:defwth2} holds vacuously and since
               all other heap elements are the same as in $H$ we have
               \begin{equation}
                 \vdash H'.
@@ -1067,8 +1067,8 @@ We state the following without proof.
                 \begin{gathered}
                   F = \sframe{L, t} \andalso t = \Let{x}{\Put{y}{z}}{t'} \\
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(y)] \\
-                  L(y) = o_y \andalso H(o_y) = \Cell{DEP, l} \\
-                  L(z) = l' \andalso H' = H[o_y \mapsto \Cell{DEP, l \sqcup
+                  L(y) = o_y \andalso H(o_y) = \Cell{\DEP, l} \\
+                  L(z) = l' \andalso H' = H[o_y \mapsto \Cell{\DEP, l \sqcup
                   l'}].
                 \end{gathered}
               \end{equation}
@@ -1094,14 +1094,14 @@ We state the following without proof.
                   F = \sframe{L, t} \\ 
                   t = \Let{x}{\When{y}{z}{\CB{\overline{cap}}{w}{t''}}}{t'} \\
                   F' = \sframe{L', t'} \andalso L' = L[x \mapsto L(y)] \\
-                  L(y) = o_y \andalso H(o_y) = \Cell{DEP, l} \andalso L(z) = l' \\
+                  L(y) = o_y \andalso H(o_y) = \Cell{\DEP, l} \andalso L(z) = l' \\
                   L_{\text{env}} = [u \mapsto L(u') \mid (\Capt{u}{u'}) \in
                   \overline{cap}] \andalso cb = (L_{\text{env}}, w \Rightarrow
                   t'') \\
-                  \iota \text{ fresh thread id} \andalso DEP' = DEP \cup (l',
+                  \iota \text{ fresh thread id} \andalso \DEP' = \DEP \cup (l',
                   cb)^\iota
                   \\
-                  H' = H[o_y \mapsto \Cell{DEP', l}].
+                  H' = H[o_y \mapsto \Cell{\DEP', l}].
                 \end{gathered}
               \end{equation}
               We note that $\dom(H) = \dom(H')$ and that
@@ -1124,7 +1124,7 @@ We state the following without proof.
                 \begin{aligned}
                   \forall (l^{\text{cb}}&, (L^{\text{cb}}_{\text{env}},
                   z^{\text{cb}} \Rightarrow t^{\text{cb}}))^{\iota^{\text{cb}}} \in
-                  DEP'. \\
+                  \DEP'. \\
                   &\forall (x \mapsto k) \in L^{\text{cb}}_{\text{env}}.\: \typeOf{(k, H')} \stof
                   \CellType \: \land \\
                   &\TypeRel{\Gamma_{\CellType{}}(L^{\text{cb}}_{\text{env}}), z^{\text{cb}}:
@@ -1132,7 +1132,7 @@ We state the following without proof.
                 \end{aligned}
               \end{equation}
               It is simple to see that, because of $\vdash H$ and that the only
-              difference between $DEP$ and $DEP'$ is the addition of $(l',
+              difference between $\DEP$ and $\DEP'$ is the addition of $(l',
               (L_{\text{env}}, w \Rightarrow t''))$, we have proved $\vdash H'$
               if we can prove
               \begin{equation} \label{eq:ewhen-h1}
@@ -1184,9 +1184,9 @@ We state the following without proof.
         \item[Case {\sc E-Call}:] From rule {\sc E-Call}
           \begin{equation} \label{eq:ecall1}
             \begin{gathered}
-              FS = \sframe{L, t} \circ GS \andalso t = \Let{x}{\Call{y}{m}{z}}{t''}\\
-              FS' = \xframe{L', t'}^x \circ \sframe{L, t} \circ GS \\
-              L(y) = o_y \andalso H(o_y) = \Obj{C, FM} \\
+              \FS = \sframe{L, t} \circ \GS \andalso t = \Let{x}{\Call{y}{m}{z}}{t''}\\
+              \FS' = \xframe{L', t'}^x \circ \sframe{L, t} \circ \GS \\
+              L(y) = o_y \andalso H(o_y) = \Obj{C, \FM} \\
               \mbody(m, C) = u \to t' \\
               L_{\text{base}} =
               \begin{cases}
@@ -1205,19 +1205,19 @@ We state the following without proof.
           and \ref{prop:2.14},  we have
           \begin{equation}
             \begin{gathered}
-              H' \vdash Q \andalso H;a \vdash FS.
+              H' \vdash Q \andalso H;a \vdash \FS.
             \end{gathered}
           \end{equation}
           Using the second of these and rule {\sc T-FS1} we have
           \begin{equation} \label{eq:ecall-hp0}
             \begin{gathered}
               H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
-              \sigma' \stof \sigma \andalso H; a \vdash^{s:\sigma} GS.
+              \sigma' \stof \sigma \andalso H; a \vdash^{s:\sigma} \GS.
             \end{gathered}
           \end{equation}
           Since $H = H'$
           \begin{equation} \label{eq:ecall-hp5}
-            H' \vdash \Gamma;L \andalso H'; a \vdash^{s: \sigma} GS.
+            H' \vdash \Gamma;L \andalso H'; a \vdash^{s: \sigma} \GS.
           \end{equation}
           Using $\TypeRel{\Gamma}{a}{t}{\sigma}$ with rules {\sc T-Let, T-Call} and
           {\sc T-Var} we have that
@@ -1232,7 +1232,7 @@ We state the following without proof.
           Using {\sc T-FS2} with \eqref{eq:ecall-hp0}, \eqref{eq:ecall-hp5} and
           \eqref{eq:ecall-hp1} we get 
           \begin{equation} \label{eq:ecall-hp6}
-            H';a \vdash^{x: \tau} FS.
+            H';a \vdash^{x: \tau} \FS.
           \end{equation}
           By $H' \vdash \Gamma;L$ we have
           \begin{equation} \label{eq:ecall-hp2}
@@ -1276,7 +1276,7 @@ We state the following without proof.
           Using  \eqref{eq:ecall-hp6}, \eqref{eq:ecall-hp7},
           \eqref{eq:ecall-hp8} and rule {\sc T-FS1} we have
           \begin{equation}
-            H';a \vdash FS'.
+            H';a \vdash \FS'.
           \end{equation}
           Combining this with $H' \vdash Q$ and {\sc T-Procs} we get
           \begin{equation}
@@ -1285,12 +1285,12 @@ We state the following without proof.
 
           Now assume that $a = \ocap$. By $H \vdash P \tsep \ocr$ we have
           \begin{equation}
-            \ocrloc(FS, H)
+            \ocrloc(\FS, H)
           \end{equation}
           and thus by Proposition~\ref{prop:ocrloc_eq}
           \begin{equation}
             \begin{aligned}
-              \forall q &\in \reachable(\accRoots(FS, H), \Graph(H)) \\
+              \forall q &\in \reachable(\accRoots(\FS, H), \Graph(H)) \\
               & \ocap(\typeOf(q, H)).
             \end{aligned}
           \end{equation}
@@ -1334,19 +1334,19 @@ We state the following without proof.
           \end{equation}
           We also note that 
           \begin{equation}
-            \tilde{P} = \tilde{Q} \cup_D \left\{ FS|_a^\iota \right\} \text{ and }
-            \tilde{P'} = \tilde{Q} \cup_D \left\{ FS'|_a^\iota \right\}.
+            \tilde{P} = \tilde{Q} \cup_D \left\{ \FS|_a^\iota \right\} \text{ and }
+            \tilde{P'} = \tilde{Q} \cup_D \left\{ \FS'|_a^\iota \right\}.
           \end{equation}
 
           We first assume that $a = \ocap$. It is easy to see that
           \begin{equation}
-            \accRoots(FS', H') \subseteq \accRoots(FS, H)
+            \accRoots(\FS', H') \subseteq \accRoots(\FS, H)
           \end{equation}
           and that
           \begin{equation}
             \begin{aligned}
-              \forall HS|_b^{\iota'} &\in \tilde{Q}. \\
-              &\accRoots(HS, H') = \accRoots(HS, H).
+              \forall \HS|_b^{\iota'} &\in \tilde{Q}. \\
+              &\accRoots(\HS, H') = \accRoots(\HS, H).
             \end{aligned}
           \end{equation}
           Clearly then, the preconditions to Corollary~\ref{cor:2.11} holds and
@@ -1354,66 +1354,66 @@ We state the following without proof.
           \ocr$. Thus we are done.
 
           Now instead assume $a = \nocap$. Since $\isolation(H, \tilde{P})$ we have
-          $\isolated(H, HS_1, HS_2)$ for any two distinct $HS_1|_b^{\iota'},
-          HS_2|_c^{\iota''}
+          $\isolated(H, \HS_1, \HS_2)$ for any two distinct $\HS_1|_b^{\iota'},
+          \HS_2|_c^{\iota''}
           \in \tilde{Q}$ such that $b = \ocap$ or $c = \ocap$. Therefore, since $H = H'$
           \begin{equation}
             \begin{aligned}
-              \forall &\text{ distinct } HS_1|_b^{\iota'}, HS_2|_c^{\iota''} \in \tilde{Q}. \\ 
-              & b = \ocap \lor c = \ocap \implies \isolated(H', HS_1, HS_2).
+              \forall &\text{ distinct } \HS_1|_b^{\iota'}, \HS_2|_c^{\iota''} \in \tilde{Q}. \\ 
+              & b = \ocap \lor c = \ocap \implies \isolated(H', \HS_1, \HS_2).
             \end{aligned}
           \end{equation}
           Thus all we need for $\isolation(H', \tilde{P'})$ is to show that
           \begin{equation}
             \begin{aligned}
-              \forall HS|_b^{\iota'} &\in \tilde{Q} . \\
-              &b = \ocap \implies \isolated(H', FS', HS)
+              \forall \HS|_b^{\iota'} &\in \tilde{Q} . \\
+              &b = \ocap \implies \isolated(H', \FS', \HS)
             \end{aligned}
           \end{equation}
           since $a = \nocap$. To prove this implication we take any
-          $HS|_b^{\iota'} \in
-          \tilde{Q}$ such that $b = \ocap$. Note that this implies $HS \neq
-          FS_g$. Because of $a = \nocap$ and the definition of $L'$ in
+          $\HS|_b^{\iota'} \in
+          \tilde{Q}$ such that $b = \ocap$. Note that this implies $\HS \neq
+          \FS_g$. Because of $a = \nocap$ and the definition of $L'$ in
           \eqref{eq:ecall1}
           \begin{equation} \label{eq:ecall-iso1}
-            \accRoots(FS', H') = \accRoots(FS, H) \cup \left\{ o_g \right\}.
+            \accRoots(\FS', H') = \accRoots(\FS, H) \cup \left\{ o_g \right\}.
           \end{equation}
           By $\isolation(H, \tilde{P})$  and $b = \ocap$,
           \begin{equation} \label{eq:ecall-iso2}
-            \isolated(H, HS, FS_g)
+            \isolated(H, \HS, \FS_g)
           \end{equation}
           and
           \begin{equation} \label{eq:ecall-iso4}
-            \isolated(H, FS, HS).
+            \isolated(H, \FS, \HS).
           \end{equation}
           By definition
           \begin{equation} \label{eq:ecall-iso3}
-            \accRoots(FS_g, H) = \left\{o_g \right\}.
+            \accRoots(\FS_g, H) = \left\{o_g \right\}.
           \end{equation}
           By inspecting \eqref{eq:ecall-iso1}, \eqref{eq:ecall-iso2},
           \eqref{eq:ecall-iso3} and \eqref{eq:ecall-iso4} and considering
           Proposition~\ref{prop:2.6} it is fairly easy to show
           \begin{equation}
-            \isolated(H, FS', HS).
+            \isolated(H, \FS', \HS).
           \end{equation}
           Specifically, to show this, assume for a contradiction that we do not
-          have $\isolated(H, FS', HS)$. This would entail that
+          have $\isolated(H, \FS', \HS)$. This would entail that
           \begin{equation}
             \begin{aligned}
-              \exists q &\in \dom(H), o \in \accRoots(HS, H), o' \in
-              \accRoots(FS', H) . \\
+              \exists q &\in \dom(H), o \in \accRoots(\HS, H), o' \in
+              \accRoots(\FS', H) . \\
               &\typeOf(q, H) \not\stof \CellType \land \reach(H, o, q) \land
               \reach(H, o', q).
             \end{aligned}
           \end{equation}
-          If $o' = o_g$ this immediately contradicts $\isolated(H, HS, FS_g)$ by
+          If $o' = o_g$ this immediately contradicts $\isolated(H, \HS, \FS_g)$ by
           Proposition~\ref{prop:2.6}. If we instead have $o' \neq o_g$ then by
           \eqref{eq:ecall-iso1} we must have
           \begin{equation}
-            o' \in \accRoots(FS, H).
+            o' \in \accRoots(\FS, H).
           \end{equation}
           Similarly this would contradict \eqref{eq:ecall-iso4}.  Since
-          $HS|_b^{\iota'}$ was arbitrary and $H = H'$ we have 
+          $\HS|_b^{\iota'}$ was arbitrary and $H = H'$ we have 
           \begin{equation}
             \isolation(H', \tilde{P'}).
           \end{equation}
@@ -1425,7 +1425,7 @@ We state the following without proof.
           \end{equation}
           Since $a = \nocap$ we have that 
           \begin{equation} \label{eq:ecall-ocr2}
-            H'; a \vdash FS' \tsep \ocr 
+            H'; a \vdash \FS' \tsep \ocr 
           \end{equation} 
           follows vacuously. Using rule {\sc OCR-P} together with
           \eqref{eq:ecall-ocr1} and \eqref{eq:ecall-ocr2} we get
@@ -1437,25 +1437,25 @@ We state the following without proof.
         \item[Case {\sc E-Ret}:] Clearly from rule {\sc E-Ret} we have
           \begin{equation}
             \begin{gathered}
-              FS = \xframe{L, z}^x \circ \sframe{L', t'} \circ GS \\
-              FS' = \sframe{L'', t'} \circ GS \\
+              \FS = \xframe{L, z}^x \circ \sframe{L', t'} \circ \GS \\
+              \FS' = \sframe{L'', t'} \circ \GS \\
               L'' = L'[x \mapsto L(z)] \\
               H = H'.
             \end{gathered}
           \end{equation}
           By $H \vdash P$ and Proposition~\ref{prop:2.13} we have
           \begin{equation} \label{eq:eret-hp0}
-            H \vdash Q \andalso H; a \vdash FS.
+            H \vdash Q \andalso H; a \vdash \FS.
           \end{equation}
           $H = H'$ immediately yields
           \begin{equation}
             H' \vdash Q.
           \end{equation}
-          $H; a \vdash FS$ together with rule {\sc T-FS1} gives us that
+          $H; a \vdash \FS$ together with rule {\sc T-FS1} gives us that
           \begin{equation}
             \begin{gathered}
               H \vdash \Gamma; L \andalso \TypeRel{\Gamma}{a}{z}{\tau'} \\
-              \tau' \stof \tau \andalso H; a \vdash^{x: \tau} \sframe{L', t'} \circ GS,
+              \tau' \stof \tau \andalso H; a \vdash^{x: \tau} \sframe{L', t'} \circ \GS,
             \end{gathered}
           \end{equation}
           the last of which together with {\sc T-FS2} gives us
@@ -1463,7 +1463,7 @@ We state the following without proof.
             \begin{gathered}
               H \vdash \Gamma'; L' \andalso \TypeRel{\Gamma', x:
               \tau}{a}{t'}{\sigma'} \\
-              \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} GS
+              \sigma' \stof \sigma \andalso H; a \vdash^{s: \sigma} \GS
             \end{gathered}
           \end{equation}
           We let $\Gamma'' = \Gamma', x : \tau$. By $H = H'$, $H \vdash \Gamma;
@@ -1479,7 +1479,7 @@ We state the following without proof.
           By definition of $\Gamma''$, \eqref{eq:eret-hp1}, \eqref{eq:eret-hp4}
           and rule {\sc T-FS1} we have that
           \begin{equation} \label{eq:eret-hp2}
-            H';a \vdash FS'
+            H';a \vdash \FS'
           \end{equation}
           Applying {\sc T-Procs} together with \eqref{eq:eret-hp0} and
           \eqref{eq:eret-hp2} we finally get
@@ -1499,13 +1499,13 @@ We state the following without proof.
     \item[Case {\sc E-Spawn}:] By rule {\sc E-Spawn} we have
       \begin{equation}
         \begin{gathered} \label{eq:espawn1}
-          o \in \dom(H) \andalso H(o) = \Cell{DEP, l} \\
-          l' \sqsubseteq l \andalso (l', cb)^\iota \in DEP \andalso cb =
+          o \in \dom(H) \andalso H(o) = \Cell{\DEP, l} \\
+          l' \sqsubseteq l \andalso (l', cb)^\iota \in \DEP \andalso cb =
           (L_{\text{env}}, z \Rightarrow t') \\
           L' = L_{\text{env}}[z \mapsto l'] \\
-          H' = H[o \mapsto \Cell{DEP - (l', cb)^\iota, l}] \\
-          P' = P \cup \left\{ FS'|_{\ocap}^\iota \right\} \\
-          FS' = \xframe{L', t'}^- \circ \varepsilon.
+          H' = H[o \mapsto \Cell{\DEP - (l', cb)^\iota, l}] \\
+          P' = P \cup \left\{ \FS'|_{\ocap}^\iota \right\} \\
+          \FS' = \xframe{L', t'}^- \circ \varepsilon.
         \end{gathered}
       \end{equation}
       
@@ -1514,7 +1514,7 @@ We state the following without proof.
       \begin{equation}
         \vdash H'
       \end{equation}
-      since the only heap change is a removal of an element from $DEP$. 
+      since the only heap change is a removal of an element from $\DEP$. 
 
 
       We note that
@@ -1552,7 +1552,7 @@ We state the following without proof.
       By rules {\sc T-FSEmpty2, T-FS1} and \eqref{eq:espawn-hp2},
       \eqref{eq:espawn-hp3} we get
       \begin{equation}
-        H'; \ocap \vdash FS'
+        H'; \ocap \vdash \FS'
       \end{equation}
       which combined with \eqref{eq:espawn-hp4} and {\sc T-Procs} yields
       \begin{equation}
@@ -1570,21 +1570,21 @@ We state the following without proof.
       \end{equation}
       This leaves only to prove
       \begin{equation}
-        H'; \ocap \vdash FS' \tsep \ocr.
+        H'; \ocap \vdash \FS' \tsep \ocr.
       \end{equation}
       in order to get $H' \vdash P' \tsep \ocr$.
       Inspecting {\sc OCR-FS} we note that we are done if we can prove
       \begin{equation} \label{eq:espawn-ocr1}
-        \ocrloc(FS', H').
+        \ocrloc(\FS', H').
       \end{equation}
-      But this is easy. By definition of $FS'$
+      But this is easy. By definition of $\FS'$
       \begin{equation}
-        \forall o \in \accRoots(FS', H'). \: \typeOf(o, H') \stof \CellType
+        \forall o \in \accRoots(\FS', H'). \: \typeOf(o, H') \stof \CellType
       \end{equation}
       which implies
       \begin{equation} \label{eq:espawn-ocr2}
         \begin{aligned}
-          \forall o &\in \reachable(\accRoots(FS', H'), \Graph(H')). \\
+          \forall o &\in \reachable(\accRoots(\FS', H'), \Graph(H')). \\
             &\typeOf(o, H') \stof \CellType
         \end{aligned}
       \end{equation}
@@ -1593,7 +1593,7 @@ We state the following without proof.
       Combined with \eqref{eq:espawn-ocr2} this yields
       \begin{equation}
         \begin{aligned}
-          \forall o &\in \reachable(\accRoots(FS', H'), \Graph(H')). \\
+          \forall o &\in \reachable(\accRoots(\FS', H'), \Graph(H')). \\
             &\ocap(\typeOf(o, H')).
         \end{aligned}
       \end{equation}
@@ -1606,13 +1606,13 @@ We state the following without proof.
       \end{equation}
       Thus by Proposition \ref{prop:2.6} we are done if we can prove 
       \begin{equation}
-        HS|_b^{\iota'} \in P. \: \isolated(H', FS', HS).
+        \HS|_b^{\iota'} \in P. \: \isolated(H', \FS', \HS).
       \end{equation}
       Again using Proposition~\ref{prop:2.6} we are done if we show
       \begin{equation}
         \begin{aligned}
-          \forall q \in \: &\reachable(\accRoots(FS', H'), \Graph(H')) \cap \\
-            &\reachable(\accRoots(HS, H'), \Graph(H')) . \\
+          \forall q \in \: &\reachable(\accRoots(\FS', H'), \Graph(H')) \cap \\
+            &\reachable(\accRoots(\HS, H'), \Graph(H')) . \\
             &\typeOf(q, H') \stof \CellType.
         \end{aligned}
       \end{equation}
@@ -1660,9 +1660,9 @@ We state the following without proof.
 
   We begin with the case where $S = H, \emptyset$ and $\noSpawn(H)$ does not
   hold. Looking at the definition of $\noSpawn$ this means that there is at
-  least one $o \in \dom(H)$ such that $H(o) = \Cell{DEP, l}$ and
+  least one $o \in \dom(H)$ such that $H(o) = \Cell{\DEP, l}$ and
   \begin{equation*}
-    \exists (l', cb)^\iota \in DEP. \: l' \sqsubseteq l.
+    \exists (l', cb)^\iota \in \DEP. \: l' \sqsubseteq l.
   \end{equation*}
   This clearly satisfies the preconditions of execution rule {\sc E-Spawn} and
   thus there is another state $S' = H', P'$ such that $S \Rrightarrow S'$. But
@@ -1671,7 +1671,7 @@ We state the following without proof.
   We proceed with the case where $S = H, P$ and $P \neq \emptyset$. This means
   that
   \begin{equation*}
-    P = Q \cup_D \left\{ FS|_a^\iota \right\} \andalso FS = \sframe{L, t} \circ GS
+    P = Q \cup_D \left\{ \FS|_a^\iota \right\} \andalso \FS = \sframe{L, t} \circ \GS
   \end{equation*}
   By $\vdash S \tsep \stateok$ we must have
   \begin{equation*}
@@ -1679,13 +1679,13 @@ We state the following without proof.
   \end{equation*}
   By Proposition \ref{prop:2.13} this means that 
   \begin{equation*}
-    H;a \vdash FS.
+    H;a \vdash \FS.
   \end{equation*}
   Inspecting rule {\sc T-FS1} we see that
   \begin{equation} \label{eq:prog_tbase}
     \begin{gathered}
       H \vdash \Gamma;L \andalso \TypeRel{\Gamma}{a}{t}{\sigma'} \\
-      \sigma' \stof \sigma \andalso H;a \vdash^{s: \sigma} GS.
+      \sigma' \stof \sigma \andalso H;a \vdash^{s: \sigma} \GS.
     \end{gathered}
   \end{equation}
   We proceed by cases on the form of $t$. 
@@ -1700,15 +1700,15 @@ We state the following without proof.
 
   \begin{description}
     \item[Case $t = x$:] 
-      If $GS = \varepsilon$ then we can make a step to $S' = H, Q$ by applying
+      If $\GS = \varepsilon$ then we can make a step to $S' = H, Q$ by applying
       rule {\sc E-Term}. \contradiction
 
-      Otherwise we have that $GS = \xframe{L', t'}^{s'} \circ HS$. This means we
+      Otherwise we have that $\GS = \xframe{L', t'}^{s'} \circ \HS$. This means we
       can step to $S' = H, P'$ where
       \begin{equation*}
         \begin{gathered}
-          P' = Q \cup_D \left\{ FS'|_a^\iota \right\} \andalso FS' = \xframe{L'',
-          t'}^{s'} \circ HS \\ 
+          P' = Q \cup_D \left\{ \FS'|_a^\iota \right\} \andalso \FS' = \xframe{L'',
+          t'}^{s'} \circ \HS \\ 
           L'' = L'[s \mapsto L(x)],
         \end{gathered} \end{equation*}
       by base rule {\sc E-Ret}. $L(x)$ is defined by $H \vdash \Gamma; L$. \contradiction
@@ -1720,7 +1720,7 @@ We state the following without proof.
           We can step to $S' = H, P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto \NullVal]
             \end{gathered}
@@ -1731,7 +1731,7 @@ We state the following without proof.
           We can step to $S' = H, P'$ where 
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto l]
             \end{gathered}
@@ -1742,7 +1742,7 @@ We state the following without proof.
           We can step to $S' = H, P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto L(y)]
             \end{gathered}
@@ -1770,7 +1770,7 @@ We state the following without proof.
 
           If $\typeOf(L(y), H) = C'$ then
           \begin{equation*}
-            L(y) = o_y \andalso H(o_y) = \Obj{C', FM}
+            L(y) = o_y \andalso H(o_y) = \Obj{C', \FM}
           \end{equation*}
           By $C' \stof C$, $\ftype(f, C) = \tau$ and well-formedness of
           classes,
@@ -1779,14 +1779,14 @@ We state the following without proof.
           \end{equation*}
           Then $\vdash H$ implies
           \begin{equation*}
-            f \in \dom(FM).
+            f \in \dom(\FM).
           \end{equation*}
           But then by rule {\sc E-Select} we can step to $S' = H, P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
-              L' = L[x \mapsto FM(f)].
+              L' = L[x \mapsto \FM(f)].
             \end{gathered}
           \end{equation*}
           \contradiction
@@ -1815,7 +1815,7 @@ We state the following without proof.
 
           If $\typeOf(L(y), H) = C'$ then
           \begin{equation*}
-            L(y) = o_y \andalso H(o_y) = \Obj{C', FM}.
+            L(y) = o_y \andalso H(o_y) = \Obj{C', \FM}.
           \end{equation*}
           By $C' \stof C$, $\ftype(f, C) = \tau$ and well-formedness of classes
           \begin{equation*}
@@ -1823,15 +1823,15 @@ We state the following without proof.
           \end{equation*}
           Then by $\vdash H$ we have 
           \begin{equation*}
-            f \in \dom(FM).
+            f \in \dom(\FM).
           \end{equation*}
           We can then by {\sc E-Assign} step to $S' = H', P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
-              L' = L[x \mapsto L(z)] \andalso FM' = FM[f \mapsto L(z)] \\
-              H' = H[o_y \mapsto \Obj{C', FM'}]
+              L' = L[x \mapsto L(z)] \andalso \FM' = \FM[f \mapsto L(z)] \\
+              H' = H[o_y \mapsto \Obj{C', \FM'}]
             \end{gathered}
           \end{equation*}
           $L(z)$ is defined by $H \vdash \Gamma; L$. \contradiction
@@ -1843,16 +1843,16 @@ We state the following without proof.
           \end{equation*}
           Since the program is well formed the class $C$ exists. 
           \begin{equation*}
-            FM = [f \mapsto \default(\tau): (\VarDecl{f}{\tau}) \in \fdecls(C)]
+            \FM = [f \mapsto \default(\tau): (\VarDecl{f}{\tau}) \in \fdecls(C)]
           \end{equation*}
           is therefore well defined. By {\sc E-New} we can therefore step to $S'
           = H', P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto o] \andalso o \text{ fresh object reference } \\
-              H' = H[o \mapsto \Obj{C, FM}].
+              H' = H[o \mapsto \Obj{C, \FM}].
             \end{gathered}
           \end{equation*}
           \contradiction
@@ -1861,7 +1861,7 @@ We state the following without proof.
           We can immediately step to $S' = H', P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto o] \andalso o \text{ fresh object reference } \\
               H' = H[o \mapsto \Cell{\emptyset, \bot_{\LatVals}}]
@@ -1893,7 +1893,7 @@ We state the following without proof.
 
           If $\typeOf(L(y), H) = C'$
           \begin{equation*}
-            L(y) = o_y \andalso H(o_y) = \Obj{C', FM}.
+            L(y) = o_y \andalso H(o_y) = \Obj{C', \FM}.
           \end{equation*}
           $C' \stof C$ and classes being well typed means that if $\mtype(m, C)$
           is defined then $\mbody(m, C')$ is defined aswell. Thus let
@@ -1903,7 +1903,7 @@ We state the following without proof.
           By rule {\sc E-Call} we can then step to $S' = H, P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \xframe{L'',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \xframe{L'',
               t''}^x \circ \sframe{L, t'} \\
               L_{\text{base}} =
               \begin{cases}
@@ -1941,14 +1941,14 @@ We state the following without proof.
 
           If $\typeOf(L(y), H) = \CellType$ then 
           \begin{equation*}
-            L(y) = o_y \andalso H(o_y) = \Cell{DEP, l}
+            L(y) = o_y \andalso H(o_y) = \Cell{\DEP, l}
           \end{equation*}
           Then we can use rule {\sc E-Put} to step to $S' = H', P'$ where 
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
-              L' = L[x \mapsto L(y)] \andalso c' = \Cell{DEP, l \sqcup l'} \\
+              L' = L[x \mapsto L(y)] \andalso c' = \Cell{\DEP, l \sqcup l'} \\
               H' = H[o_y \mapsto c']
             \end{gathered}
           \end{equation*}
@@ -1991,19 +1991,19 @@ We state the following without proof.
 
           If $\typeOf(L(y), H) = \CellType$
           \begin{equation*}
-            L(y) = o_y  \andalso H(o_y) = \Cell{DEP, l}
+            L(y) = o_y  \andalso H(o_y) = \Cell{\DEP, l}
           \end{equation*}
           By {\sc E-When} we can step to $S' = H', P'$ where
           \begin{equation*}
             \begin{gathered}
-              P' = Q \cup \left\{FS'|_a^\iota \right\} \andalso FS' = \sframe{L',
+              P' = Q \cup \left\{\FS'|_a^\iota \right\} \andalso \FS' = \sframe{L',
               t'} \\
               L' = L[x \mapsto L(y)] \andalso L_{\text{env}} = [u \mapsto L(u')
               \mid
               (\Capt{u}{u'}) \in \overline{cap}] \\
-              cb = ( L_{\text{env}}, w \Rightarrow t'' ) \andalso DEP' = DEP
+              cb = ( L_{\text{env}}, w \Rightarrow t'' ) \andalso \DEP' = \DEP
               \cup (l', cb)^\iota \\
-              \iota \text{ fresh thread id } \andalso H' = H[o_y \mapsto \Cell{DEP',
+              \iota \text{ fresh thread id } \andalso H' = H[o_y \mapsto \Cell{\DEP',
               l}].
             \end{gathered}
           \end{equation*}
