@@ -1,22 +1,6 @@
 \chapter{Challenges of Deterministic Concurrency}
 \label{cha:challenges}
 
-% Describe the problem of arbitrary reading data from an object that is
-% concurrently being changed. Describe the idea of threshold reads and how it
-% can be utilized to get determinism.
-
-% TODO describe problems inherent with concurrent determinism
-% TODO problems inherent in reactive async
-% TODO problem inherent with freeze in LVish
-
-% problems of reactive async includes:
-% access to shared state is permitted within callbacks
-% even then semantics of callback thread spawning is flawed
-
-% Should we do these in the challenges? Prolly yes.
-% TODO explain the problem of callback spawning
-% TODO explain the problem of shared state
-
 As noted in the introduction, achieving a high level of parallelization and
 ensuring determinism is a difficult task. The inherent non-determinism of
 concurrent operations leaves the programmer with the hard task of considering
@@ -26,7 +10,7 @@ Systems like Reactive Async and LVish both have the ambition of moving this
 burden off the programmer and onto the programming model and type system. Both
 however have problems. In this chapter we describe these problems in an informal
 way. As a running example we will use the lattice of integers $(\integers,
-\leq)$ with a bottom value of $-\infty$.
+\leq)$, where $\leq$ is the standard greater-or-equal comparison.
 
 
 \section{Syntax Explanation}%
@@ -36,7 +20,7 @@ In order to construct examples we will use a language akin to Reactive Async and
 Scala. This will have a syntax similar to Scala function
 syntax~\parencite{scalabasics}. In this syntax we write a callback function as in
 Figure~\ref{fig:callback_syntax}. This takes a lattice value \ilc{l} as
-argument. In our example callback code we will use common programming language
+an argument. In our example callback code we will use common programming language
 constructs such as conditionals (\ilc{if}-statements) and field accesses.
 Furthermore we will use the \ilc{put} and \ilc{freeze} operations that will be
 explained below.
@@ -70,18 +54,19 @@ be explained for each example separately.
 
 \subsection{The \ilc{put} and \ilc{freeze} Statements}%
 \label{sub:the_put_statement}
-
-There are two main operations used in our examples below. The freeze
-statement \ilc{frz(...)} takes one argument of cell type and freezes the cell
-specified, i.e., sets its associated freeze bit to true. Furthermore it returns
-the associated cell value. The put statement \ilc{put(...)} takes two arguments,
-one of cell type and one lattice value. This updates the cell value with the
+There
+are two main operations used in our examples below. We can see an example of
+both statements in Figure~\ref{fig:ex_cell_op}. The freeze statement
+\ilc{frz(...)} takes one argument of cell type and freezes the cell specified,
+i.e., sets its associated freeze bit to true. Furthermore it returns the
+associated cell value. The put statement \ilc{put(...)} takes two arguments, one
+of cell type and one lattice value. This updates the cell value with the
 specified one, using the join operation, similar to how an LVar is
 updated~\parencite{kuper2013lvars}. If the freeze bit is true and the join
 result is not the same as the current value, the put operation results in a step
-to $\Error$. The return value of \ilc{put} is the cell reference itself. We can
-see an example of both statements in Figure~\ref{fig:ex_cell_op}. We note that
-the behaviour of both operations mimic their LVish counterpart closely.
+to $\Error$. The return value of \ilc{put} is the cell reference itself.  We
+note that the behaviour of both operations mimic their LVish counterpart
+closely.
 
 
 \begin{figure}
@@ -113,8 +98,8 @@ programming framework structure~\parencite{conf/scala/HallerGES16}. However, in
 order to reduce complexity, all put operations in the examples below will be
 explicit.
 
-Reactive Async has two main problems. To highlight these we use a similar
-dependency graph, similar to the one in Figure~\ref{fig:ra_example}.
+Reactive Async has two main problems. To highlight these we use a 
+dependency graph similar to the one in Figure~\ref{fig:ra_example}.
 Figure~\ref{fig:ra_example2} describes a dependency graph which is a little more
 complex. Here we have three callback functions $f_1, f_2$ and $f_3$ registered
 to cells $c_1, c_2$ and $c_3$ respectively. The arrows annotated with the above
@@ -139,10 +124,10 @@ put operation.
 \subsection{Callback Spawning Semantics}%
 \label{sub:callback_spawning_semantics_ra}
 
-We now informally explain how callbacks are spawned in Reactive Async.  Let a
-callback $f$ be registered to a cell $c$, and say the cell value of $c$ changes
-to $l$. Then a new callback thread running $f(l)$, i.e., function $f$ with
-parameter $l$, will be spawned.
+Callbacks in Reactive Async are spawned as follows:  Let a callback $f$ be
+registered to a cell $c$, and say the cell value of $c$ changes to $l$. Then a
+new callback thread running $f(l)$, i.e., function $f$ with parameter $l$, will
+be spawned.
 
 \subsection{Problematic State Sharing}%
 \label{sub:sharing_state}
@@ -188,7 +173,7 @@ This problem can be remedied using the OCAP model in a similar manner to LaCasa.
 By ensuring that callback threads are unconnected in the reference graph, we ensure
 that they do not share any state. We do this by ensuring that for each pair of
 threads, the intersection of their connected components will only contain cell
-objects. In chapter~\ref{cha:core_language}, the type system is used to enforce
+objects. In Chapter~\ref{cha:core_language}, the type system is used to enforce
 this property.
 
 \subsection{Problematic Callback Spawning Semantics}%
@@ -211,7 +196,6 @@ let both $f_1$ and $f_2$ be scheduled to run.
       \end{lstlisting}
       \caption{Code of $f_1$.}
     \end{subfigure}
-    latex make figure specifier bold
     \begin{subfigure}[b]{\linewidth}
       \begin{lstlisting}
 (l) => put($c_3$,3)
@@ -377,10 +361,10 @@ Furthermore let both $f_1$ and $f_2$ be scheduled (due to some put of integer
 value greater than $0$ to auxilliary cell $c$).
 
 If $f_1$ executes before $f_2$ we end up with an execution as described by
-Table~\ref{stab:f_1exec}. It is clear that we never step to $\Error$.
-If $f_2$ executes before $f_1$ we can describe the execution with
-Table~\ref{stab:f_2exec}. Clearly the results differ and are non-erroneous, a
-non-quasi-deterministic result.
+Table~\ref{stab:f_1exec}. It is clear that we never step to $\Error$ since we
+never make a put to a frozen cell.  If $f_2$ executes before $f_1$ we can
+similarly describe the execution with Table~\ref{stab:f_2exec}. Clearly the
+results differ and are non-erroneous, a non-quasi-deterministic result.
 
 This shows that as soon as we introduce the if-statement, a basic part of any
 programming language, we can easily break quasi-determinism. The problem is inherent
@@ -391,8 +375,8 @@ about whether $c_2$ ($c_1$) has been frozen or not. By conditioning on this
 information, we can skip a put operation that would otherwise lead to an error.
 
 A simple solution to this problem is to simply remove the capability of freezing
-a cell and this is the approach of the system presented in
-chapter~\ref{cha:core_language}. It should however be possible to add other
-forms of freezing. This will be discussed in
-chapter~\ref{cha:discussion_and_conclusion}.
+a cell. This is the approach of the system presented in
+Chapter~\ref{cha:core_language}. It should however be possible to add other
+forms of freezing, which will be discussed in
+Chapter~\ref{cha:discussion_and_conclusion}.
 

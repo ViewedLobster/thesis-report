@@ -4,9 +4,9 @@ In this chapter four important pieces of work are going to be described.
 Section~\ref{sec:lvars} describes the LVars system and LVish, the extension
 of LVars which introduces the concepts of quiescence and freezing. 
 Section~\ref{sec:reactive_async} describes Reactive Async, a programming model
-inspired by the extended LVars system. In section~\ref{sec:lacasa} the LaCasa
+inspired by the extended LVars system. In Section~\ref{sec:lacasa} the LaCasa
 system is introduced, and finally the concept of spores is briefly introduced in
-section~\ref{sec:spores}.
+Section~\ref{sec:spores}.
 
 \section{LVars}\label{sec:lvars}
 
@@ -26,10 +26,10 @@ At the foundation of the LVars system lie lattices. The values resulting from a
 computation are going to be elements from a lattice $\LVarsLat$, specified by the
 programmer. These lattice values are stored in a \emph{store}.  This is a set of
 pairs consisting of a location and a lattice element. For a location there is
-at most one value. Letting $\LVarsLoc$ be the set of locations, a store $S$ can
+at most one value. Letting $\LVarsLoc$ be the set of locations, a store $\Sigma$ can
 be represented using a partial map
 \begin{equation*}
-  S \in \LVarsLoc \rightharpoonup \LVarsLat.
+  \Sigma \in \LVarsLoc \rightharpoonup \LVarsLat.
 \end{equation*}
 
 \subsection{LVars Operations}%
@@ -37,19 +37,24 @@ be represented using a partial map
 
 The LVars model supports three main operations~\parencite{kuper2013lvars}.
 \begin{itemize}
-  \item Extending the store with a new location. This takes a fresh location and
+  \item Extending the store with a new location. This obtains a fresh location
+    and
     sets its value to $\bot_{\LVarsLat}$, the bottom element of $\LVarsLat$.
+    Given a store $\Sigma$ and a fresh location $r$, the resulting store is
+    $\Sigma[r \mapsto \bot_{\LVarsLat}]$.
   \item Updating a store location, also called a \emph{put} operation. This
     operation takes a store location $r$ and a lattice value $l$. Given a store
-    $S$, this is updated to $S[r \mapsto l\sqcup S(r)]$. To ensure determinism in
+    $\Sigma$, this is updated to $\Sigma[r \mapsto l\sqcup S(r)]$. To ensure determinism in
     conjunction with the next operation, any put operation that takes a store
     location to $\top_{\LVarsLat}$ results in an error.
   \item A LVar read operation, also referred to as \emph{get}. This operation is
     specified with a store location and a threshold set, i.e. a set of lattice
     values. The operation blocks until the store location has passed one of the
-    values in the threshold set, upon which it returns that value. In order to
-    ensure determinism, the elements in the threshold set are required to be
-    mutually \emph{incompatible}. Two elements $l_1, l_2$ are incompatible if
+    values in the threshold set, according to the ordering $\sqsubseteq$ of the
+    lattice. Upon passing a threshold, the get operation returns the threshold
+    value. In order to ensure determinism, the elements in the threshold set are
+    required to be mutually \emph{incompatible}. Two elements $l_1, l_2$ are
+    incompatible if
     \begin{equation*}
       l_1 \sqcup l_2 = \top_{\LVarsLat}
     \end{equation*}
@@ -85,7 +90,7 @@ paths, quasi-determinism only requires that results be the same for
 non-erroneous halting states.
 
 Finally the LVish system makes use of a concept called \emph{quiescence}, in
-order to decide when to freeze a location. In short a computation reaches
+order to decide when to freeze a location. In short, a computation reaches
 quiescence when no more changes to the store are expected to take place. For
 example, this could be when there are no more callback threads running.
 
@@ -118,7 +123,7 @@ dependencies can be illustrated as a graph.  Figure~\ref{fig:ra_example} is a
 very simple example of a dependency graph.  There are two cells $c_1$ and $c_2$
 and a dependency callback $f$ between them, which should be interpreted as $c_2$
 being dependent on $c_1$.  $f$ is a function which takes a lattice value and
-returns either nothing or a new lattice value.  As soon as the lattice value of
+returns a new lattice value.  As soon as the lattice value of
 $c_1$ is updated to a new lattice value $l$, the callback $f(l)$ runs. If $f(l)$
 returns a lattice value $l'$, $c_2$ is updated with $l'$ though a put operation.
 The return value of $f(l)$ can also be a special value \ilc{NoOutcome},

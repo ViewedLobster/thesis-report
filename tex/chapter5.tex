@@ -59,12 +59,12 @@ $t$. A class definition $cd$ consists of a name specifier $C$, inheritance
 specifier $D$, field declarations $\overline{fd}$ and method definitions
 $\overline{md}$. Variable and field declarations both have the same form
 consisting of a name specifier $f$ and a type $\tau$. Method definitions are
-also standard, with one thing to note that all methods takes exactly one input.
-More complicated inputs can be constructed using a container class.
+also standard, with one thing to note being that all methods takes exactly one
+input.  More complicated inputs can be constructed using a container class.
 
 The type specifiers $\sigma$ and $\tau$ can take on the values as specified.
 Note that we have the special \CellType{} and \LatType{} types which are meant
-to represent the cells of reactive async and values from the used lattice
+to represent the cells of Reactive Async and values from the used lattice
 respectively. Types will be discussed more in Section~\ref{sec:type_system}.
 
 As in LaCasa, the terms of RACL are written in A-normal form (i.e.\ every
@@ -83,18 +83,20 @@ In this section a small-step operational semantic of \RACL{} will be
 introduced. First a brief overview is made and then a few of the more
 interesting or non-standard execution rules will be explained.
 
-In short, the following definitions says that the state of the execution of a
-\RACL{} program consists of a \emph{heap} and a \emph{thread set}. The heap is
-represented by a partial map from object identifiers $\OIDs$ to objects
-$\Objects$. The thread set is a set of threads, each of which consisting of call
-frame stacks. Each call frame holds a local variable environment and a term to
-be executed. Steps between states can be made accoring to rules on either frame,
-frame stack or thread set level. All steps taken on lower levels are propagated
-to thread set level using auxilliary rules. After the following definitions we
-describe the execution rules in more detail.
+In short, the definitions in this section says that the state of the
+execution of a \RACL{} program consists of a \emph{heap} and a \emph{thread
+set}. The heap is represented by a partial map from object identifiers $\OIDs$
+to objects $\Objects$. The thread set is a set of threads, each of which
+consisting of call frame stacks. Each call frame holds a local variable
+environment and a term to be executed. Steps between states can be made accoring
+to rules on either frame, frame stack or thread set level. All steps taken on
+lower levels are propagated to thread set level using auxilliary rules. 
 
 \subsection{Semantical Definitions}%
 \label{sub:semantical_definitions}
+
+We first make a few definitions, building up to the final definition of a RACL
+state.
 
 \begin{definition}[Sets] We define the following sets.
   \begin{itemize}
@@ -113,6 +115,13 @@ describe the execution rules in more detail.
         \ocapstats = \left\{ \ocap, \nocap \right\}.
       \end{equation*}
   \end{itemize}
+\end{definition}
+
+\begin{definition}
+  A \emph{local environment} $L$ is a partial map
+  \begin{equation*}
+    L \in \VarNames \rightharpoonup \Values.
+  \end{equation*}
 \end{definition}
 
 \begin{definition}[Heap Objects]\label{def:heap_obj}
@@ -145,20 +154,13 @@ describe the execution rules in more detail.
   definition~\ref{def:state_zero}.
 \end{definition}
 
-\begin{definition}
-  A \emph{local environment} $L$ is a partial map
-  \begin{equation*}
-    L \in \VarNames \rightharpoonup \Values.
-  \end{equation*}
-\end{definition}
-
 \begin{definition}\label{def:thread_sets}
   A \emph{frame} $F$ is an object of the form
   \begin{equation*}
     \sframe{L, t}
   \end{equation*}
   where $L$ is a local environment, $t$ is a term and $s \in \VarNames$ is a
-  return tag.
+  \emph{return tag}.
 
   A \emph{frame stack} $\FS$ is a finitely large stack of frames. We can write
   all of these recursively as either the empty stack $\FS = \varepsilon$, or as
@@ -227,7 +229,7 @@ one way to define this.
 \begin{definition}
   For each state $S = H, P$ there are two related sets of currently used object
   identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$.
-  Respectively these contain all object and thread identifiers occuring in $H$
+  Respectively, these contain all object and thread identifiers occuring in $H$
   and $P$. 
   
   We say that an object (thread) identifier $o$ ($d$) is \emph{fresh} at a state $S$ if
@@ -240,14 +242,15 @@ one way to define this.
 \label{sub:reduction_rules}
 
 An execution step from state $S$ to $S'$ in RACL is expressed using the relation
+$\Rrightarrow$, as in
 \begin{equation*}
   S \Rrightarrow S'.
 \end{equation*}
 RACL reduction rules are expressed at three different levels:
 Thread set, frame stack and frame level. 
-Therefore we will also see the relations 
+Therefore we will also see the relations $\FRedTo$ and $\FSRedTo$, e.g.,
 \begin{equation*}
-  H, \FS \;\FSRedTo\; H', \FS' \quad \text{ and } \quad H, F\; \FRedTo\; H', F'
+  H, F\; \FRedTo\; H', F' \quad \text{ and } \quad H, \FS \;\FSRedTo\; H', \FS'.
 \end{equation*}
 This is to allow expression of e.g. single frame execution,
 thread creation and method calls as will be explained below. 
@@ -579,7 +582,7 @@ All typing rules for terms and expressions can be found in
 Figure~\ref{fig:expr_typing}. Most of the type system rules are standard. For
 example, rule {\sc T-Let} types a let-term if the subexpression $e$ is typeable
 as $\tau$ under $\Gamma; a$, and the subterm $t$ is typeable under the extended
-environment $\Gamma, x: \tau$ and $a$. Rule {\sc T-Var} types a variable under
+environment $\Gamma, x: \tau$ and $a$. Rule {\sc T-Var} types a variable $x$ under
 $\Gamma$ provided $x \in \dom(\Gamma)$. {\sc T-New} types $\New{C}$ under effect
 $a = \ocap$ only if the class $C$ is typeable as $\ocap$. The rules for typing a
 class as $\ocap$ is defined in Figure~\ref{fig:ocap_typing}. Typing rule {\sc
@@ -598,7 +601,7 @@ thread isolation in the reference graph later. The restricting of capturable
 types is similar to capturing-constraints in
 spores~\parencite{conf/ecoop/MillerHO14}.  Finally, the term $t$ from callback
 closure $z \Rightarrow t$ must be typeable in an environment containing the
-captured variables and $z: \LatType$.
+captured cells and $z: \LatType$.
 
 
 \begin{figure}[]
@@ -720,8 +723,9 @@ definition of the global typing environment $\Gamma_0$.
 \begin{definition}
   Let the \emph{global typing environment} $\Gamma_0$ be defined as 
   \begin{equation*}
-    \Gamma_0 = \Global : C_g
+    \Gamma_0 = \Global : C_g,
   \end{equation*}
+  where $C_g$ is the global class.
 \end{definition}
 
 {\sc WF-Prog} says that in order for a program $p =
@@ -853,14 +857,15 @@ $z$.
 \subsection{Well Typed Threads}%
 \label{sub:well_typed_threads}
 
-A non erroneous state $S = H, P$ has two parts. In order to define and
-prove preservation properties, we furthermore need to put restrictions on the
-thread set $P$. We do this with the relation $H \vdash P$, saying $P$ is well
-typed under heap $H$. This relation is defined in Figure~\ref{fig:ts_typing}.
-{\sc T-Procs} and {\sc T-Empty} basically says that in order for a thread set
-$P$ to be well typed under heap $H$, all threads need to be well typed under
-$H$ and its OCAP status $a$.  For a thread $\GS|_a^\iota$ we write this as $H; a
-\vdash \GS$. This relation is defined in Figure~\ref{fig:fs_typing}. 
+A non erroneous state $S = H, P$ has two parts, the heap $H$ and thread set $P$.
+In order to define and prove preservation properties, we furthermore need to put
+restrictions on the thread set $P$. We do this with the relation $H \vdash P$,
+saying $P$ is well typed under heap $H$. This relation is defined in
+Figure~\ref{fig:ts_typing}.  {\sc T-Procs} and {\sc T-Empty} basically says that
+in order for a thread set $P$ to be well typed under heap $H$, all threads need
+to be well typed under $H$ and its OCAP status $a$.  For a thread $\GS|_a^\iota$
+we write this as $H; a \vdash \GS$. This relation is defined in
+Figure~\ref{fig:fs_typing}. 
 
 \begin{figure}
   \scax{T-Empty}
@@ -985,7 +990,7 @@ Figure~\ref{fig:def_reach}.
 
 Isolation of threads is defined in Figure~\ref{fig:def_isolation}. Rule {\sc
 ISO-FS} states that for two threads to be isolated with regards to heap $H$, all
-accessible roots of the two threads must have class object separation, i.e. that
+accessible roots of the two threads must have class object separation, i.e., that
 all objects that are reachable from both threads must be of type $\CellType$.
 Rule {\sc ISO-Procs} states that we have isolation for a thread set $P$ under
 heap $H$, if there is isolation between all pairs of threads such that at least
@@ -1088,7 +1093,7 @@ non-$\ocap$ thread running. Otherwise these could interfere since there are no
 constraints on whether these can share data. Therefore we define the following
 property.
 \begin{definition}[Unique Main Thread]
-  For a thread $\FS|_a^\iota$ let
+  For an OCAP status $a$, let
   \begin{equation*}
     \chi_{\nocap}(a) =
     \begin{cases}

@@ -41,7 +41,7 @@ threads will stay isolated.
   \end{enumerate}
 \end{theorem}
 
-The progress theorem proof is by contradiction. The full proof can also be found in
+The proof of progress is by contradiction. The full proof can also be found in
 Appendix~\ref{cha:proof_of_pnp}.
 % Describe:
 % Theorem of determinism
@@ -102,7 +102,7 @@ We can also make the following observation
       because in many cases the step involves more than one rule in its
       derivation tree of a complete state step. However the use of these extra
       rules are implied by which rule is used as the "base" of the tree. For
-      example, using $\ECall$ to step one thread implies use of $\EFSProp$ to
+      example, using $\ECall$ to reduce a thread implies use of $\EFSProp$ to
       advance the state, and using $\ENew$ to advance one thread frame implies
       use of $\EFProp$ and $\EFSProp$ in order to advance the state.
     \item Thread identifier $\iota \in \TIDs$. In the cases where we advance or terminate
@@ -110,7 +110,7 @@ We can also make the following observation
       that thread, as in definition~\ref{def:thread_sets}. In the case where we
       spawn a new thread this is the unique thread identifier as in
       definition~\ref{def:heap_obj}.
-    \item A fresh object or thread identifier $\beta$ which could be of value
+    \item A fresh object or thread identifier $\beta$ which could be of value:
       \begin{itemize}
         \item Object identifier $o' \in \OIDs$ in the cases where the rule
           references a fresh object identifier, i.e. $\ENew$ and $\ENewCell$.

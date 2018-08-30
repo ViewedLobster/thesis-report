@@ -1,9 +1,9 @@
 \chapter{Background \& Preliminaries} \label{cha:background}
 
 This chapter is an introduction to some mathematical concepts aswell as some
-language and type system theory.  In section~\ref{sec:mathematical_definitions}
+language and type system theory.  In Section~\ref{sec:mathematical_definitions}
 we will initially give some mathematical definitions. In
-section~\ref{sec:language_syntax} some basics of language syntax will be
+Section~\ref{sec:language_syntax} some basics of language syntax will be
 explained. Section~\ref{sec:language_semantics} gives a brief introduction to
 programming language semantics. Section~\ref{sec:type_systems} explains
 some basics of programming language type systems. Finally
@@ -60,7 +60,8 @@ From now on we will refer to a join-semilattice simply as a \emph{lattice}.
 A language syntax or grammar is a formal way to describe the syntactical
 structure a programming language. It gives us a basis on which to build the
 language semantics and type systems as will be clear later. This section will
-give a brief introduction to the Backus-Naur-form (BNF).
+give a brief introduction to the Backus-Naur-form (BNF) and exemplify this with
+a simple programming language.
 
 \subsection{The Backus-Naur-form} \label{sub:the_backus_naur_form} 
 
@@ -81,7 +82,7 @@ Terminals are symbols which does not occur on the left side of any rule.
 As an example, the While language can be written in BNF as described
 by \textcite{nielson2007semantics}. For reference we give a similar description
 here, with the addition of a very simple type system which will be explained in
-Section~\ref{sec:type_systems}.The grammar is presented in
+Section~\ref{sec:type_systems}. The grammar is presented in
 Figure~\ref{fig:while_grammar}.
 
 \begin{figure}[]
@@ -89,24 +90,24 @@ Figure~\ref{fig:while_grammar}.
   $\begin{array}{lll@{\hspace{4mm}}l}
     c &::= &  & \mbox{Program code} \\
     &  & \varepsilon & \mbox{Empty code} \\
-    &| & s; c' & \mbox{Statement concatenation} \\
+    &| & s; c & \mbox{Statement concatenation} \\
     s &::= & & \mbox{Program statement} \\
     &  & \WhDecl{x}{\tau} & \mbox{Variable declaration} \\
     &| & \WhAssign{x}{e} & \mbox{Assignment} \\
     &| & \WhSkip & \mbox{Skip} \\
-    &| & \WhIf{e}{c_1}{c_2} & \mbox{If branch} \\
+    &| & \WhIf{e}{c}{c} & \mbox{If branch} \\
     &| & \WhWhile{e}{c} & \mbox{While loop} \\
     &&&\\
     e & ::= & & \mbox{Expressions} \\
     & & x & \mbox{Variable} \\
     &| & v & \mbox{Value literal} \\
-    &| & \WhAdd{e_1}{e_2} & \mbox{Addition} \\
-    &| & \WhTimes{e_1}{e_2} & \mbox{Multiplication} \\
-    &| & \WhMinus{e_1}{e_2} & \mbox{Subtraction} \\
-    &| & \WhEq{e_1}{e_2} & \mbox{Equality comparison} \\
-    &| & \WhLeq{e_1}{e_2} & \mbox{$\leq$ comparison} \\
+    &| & \WhAdd{e}{e} & \mbox{Addition} \\
+    &| & \WhTimes{e}{e} & \mbox{Multiplication} \\
+    &| & \WhMinus{e}{e} & \mbox{Subtraction} \\
+    &| & \WhEq{e}{e} & \mbox{Equality comparison} \\
+    &| & \WhLeq{e}{e} & \mbox{$\leq$ comparison} \\
     &| & \WhLnot{e} & \mbox{Logical not} \\
-    &| & \WhLand{e_1}{e_2} & \mbox{Logical and} \\
+    &| & \WhLand{e}{e} & \mbox{Logical and} \\
     &&&\\
     \tau & ::= & & \mbox{Types} \\
     & & \WhBool & \mbox{Boolean type} \\
@@ -141,10 +142,12 @@ and the boolean values $\WhTrue$ and $\WhFalse$,
 \begin{equation*}
   \WhVal = \integers \cup \left\{ \WhTrue, \WhFalse \right\}.
 \end{equation*}
-Note that in~\parencite{nielson2007semantics} 
-the conversion between the syntactical (numerals\slash boolean literals) and semantic
-(integers\slash boolean values) versions of values are explicit whereas here 
-this conversion is implicit.
+\begin{remark}
+  Note that in~\parencite{nielson2007semantics} the conversion between the
+  syntactical (numerals\slash boolean literals) and semantic (integers\slash
+  boolean values) versions of values are explicit whereas here this conversion
+  is implicit.
+\end{remark}
 
 In order to define rules for state transitions a state must be defined.
 Therefore we make the following definition for the While language.
@@ -163,10 +166,10 @@ Therefore we make the following definition for the While language.
 We can now define rules for state transitions.
 All rules are of the form
 \infrule[Rule name]
-{\text{precondition}}
+{\text{preconditions}}
 {S \rightarrow S'}
-This basically says {\it if precondition holds then we can step from $S$
-to $S'$}. If there are no preconditions we just write
+This basically says {\it if the preconditions holds then we can step from $S$ to
+$S'$}. If there are no preconditions we just write
 \infax[Rule name]
 {S \rightarrow S'}
 
@@ -263,10 +266,11 @@ cannot progress and we get stuck.
 A type system is a mathematical construct that consists of elements called types
 and a set of rules that assign types to parts of a programming language, e.g.,
 statements, variables and expressions. Type systems are most commonly used to
-prevent programming errors such as feeding a data structure to a function for
-which it was not made. This can be enforced both using static checking at
-compile time or dynamic checking at runtime. Type systems are found in many
-modern programming languages such as Java, Scala, Haskell, Python and C++.
+prevent programming errors such as undefined data operations, e.g., feeding a
+data structure to a function for which it was not made. This can be enforced
+both using static checking at compile time or dynamic checking at runtime. Type
+systems are found in many modern programming languages such as Java, Scala,
+Haskell, Python and C++.
 
 The focus here will be on static type systems. We will explain the basics using
 our previous example of the While language. Then some uses and extensions will be
@@ -323,11 +327,12 @@ undefined for all $x \in \WhVar$.
 Typing rules for program code are defined in Figure~\ref{fig:while_code_tpe}.
 Generally While program code can only be typed as $\WhVoid$. Intuitively this is
 because the execution of program code does not have a resulting value. Instead
-it can only modify the state map $V$. The rules for typing program code should
-not be hard to understand. For example, {\sc WhT-Assign} states that for code that
-starts with an assignment the expression in the assignment must be of the same
-type as the variable. {\sc WhT-If} requires that the expression is typeable as
-$\WhBool$ and that both branches should be typeable as $\WhVoid$.
+it can only modify the state map $V$, according to the semantics of the previous
+section. The rules for typing program code should not be hard to understand. For
+example, {\sc WhT-Assign} states that for code that starts with an assignment
+the expression in the assignment must be of the same type as the variable. {\sc
+WhT-If} requires that the expression is typeable as $\WhBool$ and that both
+branches should be typeable as $\WhVoid$.
 
 \begin{figure}[]
   \infax[WhT-Empty]
@@ -443,10 +448,9 @@ $\WhInt$ and $\WhBool$. The rules themselves should be quite self-explanatory.
 \label{sub:uses_and_extensions}
 
 So what are type systems used for? As mentioned earlier, they are commonly put
-in place to prevent errors such as an uncompatible data structure being fed as argument
-to a function which cannot handle such properly. For example, in Java you cannot feed a
-List to a method which is denoted to take an Integer as an argument. This will
-result in a compile time error.
+in place to prevent errors such as undefined data operations. For example, in
+Java you cannot feed a List to a method which is denoted to take an Integer as
+an argument. This will result in a compile time error.
 
 \subsection{Preservation \& Progress}
 \label{sub:preservation_&_progress}
@@ -505,7 +509,7 @@ lattice based on a partial order relation between types called the subtyping
 relation, denoted $\stof$.  It is oftenmost used to say that \emph{if $\sigma \stof
 \tau$ then values of type $\sigma$ can be used in the same way as values of type
 $\tau$}. This is the case for Java where a class $C$ can extend a class $D$.
-This simply stated, means that the fields and methods of $D$ are also availible
+This, simply stated means that the fields and methods of $D$ are also availible
 in $C$. We will see an example of how subtyping can be used in
 chapter~\ref{cha:core_language}. 
 
@@ -540,6 +544,8 @@ to a method call. In essence, we send a command (specify the method), together
 with some information (the method parameters). The method can only be called if
 we have a reference to the corresponding class object beforehand.
 
+We can model references and objects using a directed graph. If object $A$ has
+has a reference to object $B$, then edge $(A, B)$ is part of the graph.
 In the OCAP model, references can only be obtained in four ways:
 \begin{enumerate}
   \item Initial connectivity: The system must have some initial references in
@@ -552,10 +558,8 @@ In the OCAP model, references can only be obtained in four ways:
     instance B, B gets all references A sends in the message (gives as
     parameters).
 \end{enumerate}
-We can model references and objects using a directed graph. If object $A$ has
-has a reference to object $B$, then edge $(A, B)$ is part of the graph. The
-above four rules imply that two disjoint components in a reference graph can
-never become connected~\parencite{Miller06b}.
+ The above four rules imply that two disjoint components in a reference graph
+ can never become connected~\parencite{Miller06b}.
 
 A language implementing the OCAP model is called an OCAP language. Most common
 object oriented languages are not OCAP. This is partly because they allow global

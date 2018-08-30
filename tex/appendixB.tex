@@ -219,7 +219,7 @@
   here to convince the reader. The others can be done similarly. One thing to
   note is that the proofs are symmetric in $R_1$ and $R_2$, meaning that if we
   prove case $R_1 = R, R_2 = R'$ we have also proven case $R_1 = R', R_2 = R$.
-  An illustration of what we are prooving can be found in
+  An illustration of what we are proving for each case can be found in
   Figure~\ref{fig:lemma1_pf}.
 
   \begin{description}
@@ -323,7 +323,7 @@
           P_2 = P_0 \cup_D \left\{ \FS_1|_{a_1}^{\iota_1},
           \FS'_2|_{a_2}^{\iota_2} \right\} \\
           \FS'_2 = \xframe{L'_2, t'_2}^{s_2} \circ \GS_2  \andalso L'_2 = L_2[x_2 \mapsto
-          L_2(y_2)] \\
+          L_2(z_2)] \\
           \FM'_2 = \FM_2[f_2 \mapsto L_2(y_2)] \andalso H_2 = H[o_2 \mapsto
           \Obj{C_2, \FM'_2}]
           \\
@@ -379,7 +379,7 @@
       to case $R_1 = \EAssign, R_2 = \EAssign$. If $o_1 = o_2 = o$ we proceed as
       follows.
       
-      Firstly
+      First of all,
       \begin{equation}
         H(o) = \Cell{\DEP, l}.
       \end{equation}
@@ -415,7 +415,7 @@
           \\
           P_{12} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
           \FS'_2|_{a_2}^{\iota_2} \right\} \\
-          H_{12} = H[o_2 \mapsto \Cell{\DEP, (l \sqcup l_1) \sqcup l_2}]
+          H_{12} = H[o \mapsto \Cell{\DEP, (l \sqcup l_1) \sqcup l_2}]
         \end{gathered}
       \end{equation}
       and
@@ -426,7 +426,7 @@
           \\
           P_{21} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
           \FS'_2|_{a_2}^{\iota_2} \right\} \\
-          H_{21} = H[o_2 \mapsto \Cell{\DEP, (l \sqcup l_2) \sqcup l_1}]
+          H_{21} = H[o \mapsto \Cell{\DEP, (l \sqcup l_2) \sqcup l_1}]
         \end{gathered}
       \end{equation}
       By commutability of the least upper bound operation $\sqcup$ we have
@@ -434,6 +434,7 @@
         (l \sqcup l_1) \sqcup l_2 = (l \sqcup l_2) \sqcup l_1
       \end{equation}
       and thus we have $S_{12} = S_{21}$.
+
     \item[Case $R_1 = \EWhen, R_2 = \EWhen$:] We have that
       \begin{equation}
         \beta_1 = \iota'_1 \andalso \beta_2 = \iota'_2 \andalso \iota'_1 \neq
@@ -455,21 +456,23 @@
       Where we use $\dots$ for things that are not really vital.
 
       If $o_1 \neq o_2$ we are done similar to previous case. If $o_1 = o_2 = o$
-      then we proceed as follows. Since many things are similar to the previous
-      case we only write out the parts that are significantly different.
+      then we proceed as follows. We use the notation of
+      $H_{\text{\#}}, P_{\text{\#}}$ similar to earlier cases. It
+      is simple to see that
       \begin{equation}
         \begin{gathered}
           H_1 = H[o \mapsto \Cell{\DEP_1, l}] \andalso \DEP_1 = \DEP \cup \{ (l_1,
           \dots)^{\iota'_1} \} \\
           H_2 = H[o \mapsto \Cell{\DEP_2, l}] \andalso \DEP_2 = \DEP \cup \{ (l_2,
           \dots)^{\iota'_2} \} \\
-          H_{12} = H[o \mapsto \Cell{\DEP_{12}, l}] \andalso \DEP_{12} = \DEP \cup \{ (l_1,
+          H_{12} = H[o \mapsto \Cell{\DEP_{12}, l}] \\ \DEP_{12} = \DEP \cup \{ (l_1,
           \dots)^{\iota'_1}, (l_2, \dots)^{\iota'_2} \} \\
-          H_{21} = H[o \mapsto \Cell{\DEP_{21}, l}] \andalso \DEP_{21} = \DEP \cup \{ (l_1,
+          H_{21} = H[o \mapsto \Cell{\DEP_{21}, l}] \\ \DEP_{21} = \DEP \cup \{ (l_1,
           \dots)^{\iota'_1}, (l_2, \dots)^{\iota'_2} \} \\
         \end{gathered}
       \end{equation}
-      Thus $S_{12} = S_{21}$.
+      Clearly $\DEP_{12} = \DEP_{21}$, which implies $H_{12} = H_{21}$.
+      Similarly to earlier cases, $P_{12} = P_{21}$ and thus $S_{12} = S_{21}$.
 
     \item[Case $R_1 = \EWhen, R_2 = \ESpawn$:] First 
       \begin{equation}
@@ -541,7 +544,7 @@
           \\
           P_{21} = P_0 \cup_D \left\{ \FS'_1|_{a_1}^{\iota_1},
           \FS_2|_{\ocap}^{\iota_2} \right\} \\
-          H_{21} = H[o \mapsto \Cell{\DEP_{12}, l}] \\ 
+          H_{21} = H[o \mapsto \Cell{\DEP_{21}, l}] \\ 
           \DEP_{21} = \DEP \setminus \{ (l_2, \dots)^{\iota_2} \} \cup \{ (l_1,
           \dots)^{\iota'_1} \} 
         \end{gathered}
@@ -560,23 +563,22 @@
   Let $R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2}$ be two transition
   identifiers. We call $\beta_1$ and $\beta_2$ compatible if
   \begin{equation*}
-    \beta_1 \neq \beta_2 \text{ of } \beta_1 = \beta_2 = \smiley.
+    \beta_1 \neq \beta_2 \text{ or } \beta_1 = \beta_2 = \smiley.
   \end{equation*}
 \end{definition}
 
 \begin{lemma} \label{lem:lemma2}
-  Let $S$ be a state. Let
+  Let $S$ be a well typed state. Let
   \begin{equation*}
     \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n} \andalso
     S \Rrightarrow^{\bar{R}} S_{\bar{R}}
   \end{equation*}
-  Let $R^{\iota, \beta}$ be a transition such that it is applicable at both $S$
-  and $S_{\bar{R}}$, i.e.,
+  Let $R^{\iota, \beta}$ be a transition such that 
   \begin{equation*}
     S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}} \andalso
     S_{\bar{R}} \Rrightarrow^{R^{\iota, \beta}} S',
   \end{equation*}
-  and
+  for some states $S_{R^{\iota, \beta}}$ and $S'$, and
   \begin{equation} \label{eq:lemma2_1}
     \forall i \in \left\{ 1, \dots, n \right\}. \quad \iota \neq \iota_i  .
   \end{equation}
@@ -587,49 +589,6 @@
     S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
   \end{equation*}
 \end{lemma}
-
-% TODO make figure explaining the proof
-\begin{proof}
-  By induction on $n$, the length of $\bar{R}$.
-  \begin{description}
-    \item[Case $n = 1$:] Follows immediately from Lemma~\ref{lem:lemma1}.
-    \item[Case $n = i+1, i \geq 1$:] This case is visualized in
-      Figure~\ref{fig:lemma2_pf} Let
-      \begin{equation*}
-        \bar{R}_{\geq 2} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n}.
-      \end{equation*}
-      Since $\bar{R}$ applicable to $S$ we have 
-      \begin{equation}
-        S \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_1,
-      \end{equation}
-      for some state $S_1$. Clearly
-      \begin{equation}
-        S_1 \Rrightarrow^{\bar{R}_{\geq 2}} S_{\bar{R}}.
-      \end{equation}
-      
-      By \eqref{eq:lemma2_1}, thread $\iota$ never executes in the sequence
-      specified by $\bar{R}$. Combining this with $R^{\iota, \beta}$ being
-      applicable at $S$ and the compatibility of $\beta$, it is not hard to see
-      that $R^{\iota, \beta}$ is applicable at $S_1$, i.e.,
-      \begin{equation}
-        S_1 \Rrightarrow^{R^{\iota, \beta}} S_{1,R^{\iota, \beta}}
-      \end{equation}
-      for some state $S_{1,R^{\iota, \beta}}$. Then, by induction hypothesis
-      \begin{equation} \label{eq:lemma2_2}
-        S_1 \Rrightarrow^{R^{\iota, \beta}} S_{1,R^{\iota, \beta}} \Rrightarrow^{\bar{R}_{\geq 2}} S'.
-      \end{equation}
-      Furthermore, $R_1^{\iota_1, \beta_1}$ and $R^{\iota, \beta}$ fulfills
-      preconditions of Lemma~\ref{lem:lemma1}. Using this lemma we get
-      \begin{equation} \label{eq:lemma2_3}
-        S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}}
-        \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_{1, R^{\iota, \beta}}.
-      \end{equation}
-      But then combining \eqref{eq:lemma2_2} and \eqref{eq:lemma2_3} we have
-      \begin{equation}
-        S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
-      \end{equation}
-  \end{description}
-\end{proof}
 
 \begin{figure}
   \centering
@@ -675,9 +634,53 @@
   \label{fig:lemma2_pf}
 \end{figure}
 
+% TODO make figure explaining the proof
+\begin{proof}
+  By induction on $n$, the length of $\bar{R}$.
+  \begin{description}
+    \item[Case $n = 1$:] Follows immediately from Lemma~\ref{lem:lemma1}.
+    \item[Case $n = i+1, i \geq 1$:] This case can be visualized with 
+      Figure~\ref{fig:lemma2_pf}. Let
+      \begin{equation*}
+        \bar{R}_{\geq 2} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n}.
+      \end{equation*}
+      Since $\bar{R}$ is applicable to $S$ we have 
+      \begin{equation}
+        S \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_1,
+      \end{equation}
+      for some state $S_1$. Clearly
+      \begin{equation}
+        S_1 \Rrightarrow^{\bar{R}_{\geq 2}} S_{\bar{R}}.
+      \end{equation}
+      
+      By \eqref{eq:lemma2_1}, thread $\iota$ never executes in the sequence
+      specified by $\bar{R}$. Combining this with $R^{\iota, \beta}$ being
+      applicable at $S$ and the compatibility of $\beta$, it is not hard to see
+      that $R^{\iota, \beta}$ is applicable at $S_1$, i.e.,
+      \begin{equation}
+        S_1 \Rrightarrow^{R^{\iota, \beta}} S_{1,R^{\iota, \beta}}
+      \end{equation}
+      for some state $S_{1,R^{\iota, \beta}}$. Then, by induction hypothesis
+      \begin{equation} \label{eq:lemma2_2}
+        S_1 \Rrightarrow^{R^{\iota, \beta}} S_{1,R^{\iota, \beta}} \Rrightarrow^{\bar{R}_{\geq 2}} S'.
+      \end{equation}
+      Furthermore, $R_1^{\iota_1, \beta_1}$ and $R^{\iota, \beta}$ fulfills
+      preconditions of Lemma~\ref{lem:lemma1}. Using this lemma we get
+      \begin{equation} \label{eq:lemma2_3}
+        S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}}
+        \Rrightarrow^{R_1^{\iota_1, \beta_1}} S_{1, R^{\iota, \beta}}.
+      \end{equation}
+      But then combining \eqref{eq:lemma2_2} and \eqref{eq:lemma2_3} we have
+      \begin{equation}
+        S \Rrightarrow^{R^{\iota, \beta}} S_{R^{\iota, \beta}} \Rrightarrow^{\bar{R}} S'.
+      \end{equation}
+  \end{description}
+\end{proof}
+
 
 \begin{proposition}
-  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ and let $g, h$ be the bijections such that
+  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ be well typed states and let $g, h$
+  be the bijections such that
   \begin{equation} \label{eq:propnewgh1}
     H_2 = \pi(H_1, g, h) \andalso P_2 = \rho(P_1, g, h).
   \end{equation}
@@ -702,14 +705,16 @@
   $\OIDs(S_1)$ and $\TIDs(S_1)$ to identifiers in $\OIDs(S_2)$ and $\TIDs(S_2)$.
   Thus it should not be hard to see that
   \begin{equation*}
-    \forall o \in \OIDs(S_1). \quad g(o) \in \OIDs(S_2)
+    \begin{gathered}
+      \forall o \in \OIDs(S_1). \quad g(o) \in \OIDs(S_2) \\
+      \forall \iota \in \TIDs(S_1). \quad h(\iota) \in \TIDs(S_2)
+    \end{gathered}
   \end{equation*}
-  and similarly for $\TIDs(S_1)$ and $\TIDs(S_2)$.
   Since $g$ and $h$ are bijections,
   \begin{equation*}
     \begin{gathered}
-      g(o_1) \neq \OIDs(S_2) \andalso h(\iota_1) \neq \TIDs(S_2) \\
-      g^{-1}(o_2) \neq \OIDs(S_1) \andalso h^{-1}(\iota_2) \neq \TIDs(S_1).
+      g(o_1) \not\in \OIDs(S_2) \andalso h(\iota_1) \not\in \TIDs(S_2) \\
+      g^{-1}(o_2) \not\in \OIDs(S_1) \andalso h^{-1}(\iota_2) \not\in \TIDs(S_1).
     \end{gathered}
   \end{equation*}
   Because of the above, it should be clear that the following functions are well
@@ -736,7 +741,8 @@
 Because of this proposition, the following is well defined.
 
 \begin{definition} \label{def:bijectionmod}
-  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ and let $g, h$ be the bijections such that
+  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ be well typed states and let $g, h$
+  be the bijections such that
   \begin{equation} 
     H_2 = \pi(H_1, g, h) \andalso P_2 = \rho(P_1, g, h).
   \end{equation}
@@ -752,7 +758,7 @@ Because of this proposition, the following is well defined.
 \end{definition}
 
 \begin{lemma} \label{lem:lemma3}
-  Let $S, S', T$ be states and $\bar{R}$ a transition sequence such that
+  Let $S, S', T$ be well typed states and $\bar{R}$ a transition sequence such that
   \begin{equation*}
     S \Rrightarrow^{\bar{R}} T \andalso S \simeq S'.
   \end{equation*}
@@ -768,7 +774,7 @@ Because of this proposition, the following is well defined.
   By induction on the length $n$ of $\bar{R}$.
   \begin{description}
     \item[Case $n = 0$:] $\bar{R}$ is the empty sequence and thus $S = T$. Take
-      $T' = S', \bar{R'} = \bar{R}$ and we are done.
+      $T' = S'$ and $\bar{R'} = \bar{R}$ and we are done.
     \item[Case $n = i + 1, i \geq 0$:] Let
       \begin{equation*}
         \begin{gathered}
@@ -864,7 +870,7 @@ Because of this proposition, the following is well defined.
   \begin{equation*}
     \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n}
   \end{equation*}
-  be a transition sequence and $S, T$ be states such that.
+  be a transition sequence and $S, T$ be well typed states such that.
   \begin{equation*}
     S \Rrightarrow^{\bar{R}} T.
   \end{equation*}
@@ -878,7 +884,7 @@ Because of this proposition, the following is well defined.
       \beta'_i \not\in \OIDs(S), \beta'_i \not\in \TIDs(S) \andalso i =
       1, \dots, n, \\
       \bar{R'} = R_1^{\iota_1, \beta'_1}, \dots, R_n^{\iota_1, \beta'_n} \\
-      S \Rrightarrow^{\bar{R'}} T'.
+      S \Rrightarrow^{\bar{R'}} T' \andalso T \simeq T'.
     \end{gathered}
   \end{equation*}
 \end{lemma}
@@ -913,10 +919,10 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
       S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T'.
     \end{gathered}
   \end{equation*}
-  Furthermore we assume that neither $T$ or $T'$ can make a step.
-  Then
+  Let $n$ and $n'$ be the length of $\bar{R}$ and $\bar{R'}$ respectively.
+  Furthermore we assume that neither $T$ or $T'$ can make a step.  Then
   \begin{equation*}
-    T \simeq T'.
+    n = n' \quad \text{and} \quad T \simeq T'.
   \end{equation*}
 \end{theorem*}
 
@@ -929,37 +935,99 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
   Because of this and transistiveness of $\simeq$ WLOG we can assume that $S =
   S'$.
 
-  We proceed by induction on $n$ and $n'$, the lengths of $\bar{R}$ and
-  $\bar{R'}$ respectively.
+  We proceed by induction on $n$ and $n'$.
   \begin{description}
-    \item[Case $n, n' \leq 1$:] Clearly $n = n'$. Otherwise, when considering
-      Lemma~\ref{lem:lemma3} we would have a contradiction with the assumption
-      that neither $T$ or $T'$ can take another step .
-      If $n = n' = 0$ we are done since $T = S \simeq S' = T'$. Thus we assume
-      that $n = n' = 1$. We let
-      \begin{equation*}
-        \bar{R} = R^{\iota, \beta} \andalso \bar{R'} = R'^{\iota', \beta'}.
-      \end{equation*}
-      We must have 
-      \begin{equation} \label{eq:qd_1}
-        R = R' \andalso \iota = \iota'
-      \end{equation} 
-      since otherwise $T$ and $T'$ can take another step.  If $\beta = \beta'$
-      then we are done since this implies $T = T'$.  Otherwise let $g, h$ be the
-      bijections that witnesses the relation $S \simeq S$. Because of
-      \eqref{eq:qd_1} we must have that either $\beta, \beta' \in \OIDs$ or
-      $\beta, \beta' \in \TIDs$. In the first case, the bijections
-      \begin{equation}
-        g[\beta \mapsto \beta'] \andalso h
-      \end{equation}
-      witnesses the relation $T \simeq T'$. In the second case it is witnessed
-      by
-      \begin{equation*}
-        g \andalso h[\beta \mapsto \beta'].
-      \end{equation*}
-      Thus $T \simeq T'$.
-    \item[Case $1 < n, n' \leq i+1$ and $i \geq 1$:] This case is visualized in
+    \item[Case $n \leq 0, n' \leq 0$:] Clearly, $n = n' = 0$ and we are done
+      since $T = S = S' = T'$. 
+      
+     % Clearly $n = n'$. Otherwise, when considering
+     % Lemma~\ref{lem:lemma3} we would have a contradiction with the assumption
+     % that neither $T$ or $T'$ can take another step .
+     % If $n = n' = 0$ we are done since $T = S \simeq S' = T'$. Thus we assume
+     % that $n = n' = 1$. We let
+     % \begin{equation*}
+     %   \bar{R} = R^{\iota, \beta} \andalso \bar{R'} = R'^{\iota', \beta'}.
+     % \end{equation*}
+     % We must have 
+     % \begin{equation*} 
+     %   \iota = \iota'
+     % \end{equation*} 
+     % since otherwise $T$ and $T'$ can take another step. Since $R$, $R'$ is
+     % completely decided by the state $S$ and $\iota, \iota'$ we have
+     % \begin{equation}\label{eq:qd_1}
+     %   R = R'.
+     % \end{equation}
+     % If $\beta = \beta'$ then we are done since this implies $T = T'$.
+     % Otherwise let $g, h$ be the bijections that witnesses the relation $S
+     % \simeq S$. Because of \eqref{eq:qd_1} we must have that either $\beta,
+     % \beta' \in \OIDs$ or $\beta, \beta' \in \TIDs$. In the first case, the
+     % bijections
+     % \begin{equation*}
+     %   g[\beta \mapsto \beta'] \andalso h
+     % \end{equation*}
+     % witnesses the relation $T \simeq T'$. In the second case it is witnessed
+     % by
+     % \begin{equation*}
+     %   g \andalso h[\beta \mapsto \beta'].
+     % \end{equation*}
+     % Thus $T \simeq T'$.
+    \item[Case $n \leq i+1, n' \leq i+1$ and $i \geq 0$:] First of all, the case
+      where $n = 0$ ($n' = 0$) and $n' > 0$ ($n > 0$) is impossible since this
+      immediately contradicts that $T$ ($T'$) cannot take another step. Thus we
+      have that either $n = n' = 0$ (which falls under the case above) or $n
+      \geq 1$ and $n' \geq 1$. Thus we assume the latter. In the
+      continuation, this case can be visualized as in
       Figure~\ref{fig:thm_qd_pf}. We let 
+
+      \begin{figure}
+        \centering
+        \begin{tikzpicture}
+          \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S) at (0,0) {};
+          \node[below left] at (S) {$S$};
+          \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spk1) at (0,3) {};
+          \node[below left] at (Spk1) {$S'_{k-1}$};
+          \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spk2) at (0,4) {};
+          \node[above left, red] at (Spk2) {$S'_{k}$};
+          \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Tp) at (0,7) {};
+          \node[above] at (Tp) {$T'$};
+          \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spmodk) at (1,3) {};
+          \node[right, red] at (Spmodk) {$S'_{k}$};
+          \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Tpmod) at (1,6) {};
+          \node[above] at (Tpmod) {$T'$};
+          \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S1) at (1,0) {};
+          \node[below right] at (S1) {$S_{1}$};
+          \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (T) at (7,0) {};
+          \node[right] at (T) {$T$};
+          \draw[-{Latex[length=0.2cm]}] (S) -- node[left] {$\bar{R'}_{<k}$}
+          (Spk1);
+          \draw[-{Latex[length=0.2cm]},blue] (Spk1) -- node[left] {$R^{\iota, \beta}$}
+          (Spk2);
+          \draw[-{Latex[length=0.2cm]}] (Spk2)-- node[left] {$\bar{R'}_{>k}$} (Tp);
+          \draw[-{Latex[length=0.2cm]},blue] (S)-- node[below,blue] {$R^{\iota, \beta}$}
+          (S1);
+          \draw[-{Latex[length=0.2cm]}] (S1)-- node[below] {$\bar{R}_{\geq 2}$} (T);
+          \draw[-{Latex[length=0.2cm]}] (S1) -- node[right] {$\bar{R'}_{<k}$} (Spmodk);
+          \draw[-{Latex[length=0.2cm]}] (Spmodk)-- node[right] {$\bar{R'}_{>k}$} (Tpmod);
+          \draw[decoration={brace,raise=30pt,amplitude=10pt},decorate,grey] (S) --
+          node[left=40pt]
+          {$\bar{R'}$} (Tp);
+          \draw[decoration={brace,raise=30pt,amplitude=10pt,mirror},decorate,grey] (S) --
+          node[below=40pt]
+          {$\bar{R}$} (T);
+          %\draw[-{Latex[length=0.3cm]}] (c1) -- node[above] {$f_1$} (c3);
+        \end{tikzpicture}
+        \caption{$R^{\iota, \beta}$ is the first transition identifier of $\bar{R}$.
+        It must also occur somewhere in the transition sequence $\bar{R'}$. We
+        transform $\bar{R'}$ by moving $R^{\iota, \beta}$ to the beginning of the
+        sequence. The halting state is the same because of Lemma~\ref{lem:lemma2}. The
+        new sequence $R^{\iota,\beta}, \bar{R'}_{<k}, \bar{R'}_{>k}$ begins with the
+        same step as $\bar{R}$ and therefore steps to $S_1$ in the first step. Thus we
+        can examine the two shorter sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and
+        $\bar{R}_{\geq 2}$ and conclude that $T \simeq T'$ by the induction
+        hypothesis.}
+        \label{fig:thm_qd_pf}
+      \end{figure}
+
       \begin{equation*}
         \begin{gathered}
           \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n} \\
@@ -971,19 +1039,20 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
       \begin{equation*}
         \bar{R}_{\geq 2} = R_2^{\iota_2, \beta_2}, \dots, R_n^{\iota_n, \beta_n} \\
       \end{equation*}
-      Consider the first tranisition identifier of $\bar{R}$. We let
+      Consider the first transition identifier of $\bar{R}$: $R^{\iota, \beta} = R_1^{\iota_1,
+      \beta_1}$. We let
       $k$ be such
       that ${R'_k}^{\iota'_k, \beta'_k}$ is the first transition identifier in
       $\bar{R'}$ for which 
       \begin{equation} \label{eq:qd1}
-        \iota_1 = \iota'_k = \iota.
+        \iota'_k = \iota.
       \end{equation} 
       This $k$ must exist since otherwise $T'$ can take another step. This is
       due to that thread $\iota$ can execute at $S$ and if it never executes
       before $T'$, it will still be able to execute, thus generating another
       step.  By the remark following definition~\ref{def:trans_id} we have 
       \begin{equation} \label{eq:qd2}
-        R_1 = R'_k = R.
+        R'_k = R.
       \end{equation} 
       We let
       \begin{equation*}
@@ -1002,7 +1071,7 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
 
       WLOG we can assume that
       \begin{equation} \label{eq:qd3}
-        \beta_1 = \beta'_k = \beta
+        \beta'_k = \beta
       \end{equation}
       and that $\beta$ is compatible with $\beta'_i$ for all $i = 1, \dots,
       k-1$.  Otherwise we could just reassign $\beta_1, \dots, \beta_n,
@@ -1019,7 +1088,11 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
 %      lemma~\ref{lem:lemma3}. This makes $R^{\iota, \beta'_k}$
 %      applicable at $S$.
 
-      Then by \eqref{eq:qd4}, the choice of $k$ and Lemma~\ref{lem:lemma2} we have
+      By the choice of $k$,
+      \begin{equation*}
+        \forall i \text{ s.t. } 1 \leq i < k. \quad \iota \neq \iota'_i.
+      \end{equation*}
+      Then by \eqref{eq:qd4} and Lemma~\ref{lem:lemma2} we have
       \begin{equation*}
         S \Rrightarrow^{{R}^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R'}_{<k}}
         S'_k,
@@ -1029,65 +1102,20 @@ Finally we restate and prove Theorem~\ref{thm:qd}.
         S \Rrightarrow^{{R}^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R'}_{<k}}
         S'_k \Rrightarrow^{\bar{R'}_{>k}} T'.
       \end{equation*}
-      Furthermore, by $\bar{R}$ being applicable at $S$ and equations
-      \eqref{eq:qd1}, \eqref{eq:qd2}, \eqref{eq:qd3} we have
+      Furthermore, by $\bar{R}$ being applicable at $S$ we have
       \begin{equation*}
         S \Rrightarrow^{R^{\iota, \beta}} S_1 \Rrightarrow^{\bar{R}_{\geq 2}}
         T.
       \end{equation*}
-      Both transition sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and
-      $\bar{R}_{\geq 2}$ are of length less than or equal to $i$.  Thus by the
-      induction hypothesis $T \simeq T'$.
+      The transition sequences $\bar{R}_{\geq 2}$ and $\bar{R'}_{<k},
+      \bar{R'}_{>k}$ are of lengths $n - 1$ and $n' - 1$ respectively, both less
+      than or equal to $i$.  Thus, by the induction hypothesis $T \simeq T'$ and
+      $n - 1 = n' - 1$. Thus,
+      \begin{equation*}
+        n = n' \andalso T \simeq T'.
+      \end{equation*}
   \end{description}
 \end{proof}
-
-\begin{figure}
-  \centering
-  \begin{tikzpicture}
-    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S) at (0,0) {};
-    \node[below left] at (S) {$S$};
-    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spk1) at (0,3) {};
-    \node[below left] at (Spk1) {$S'_{k-1}$};
-    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spk2) at (0,4) {};
-    \node[above left, red] at (Spk2) {$S'_{k}$};
-    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Tp) at (0,7) {};
-    \node[above] at (Tp) {$T'$};
-    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Spmodk) at (1,3) {};
-    \node[right, red] at (Spmodk) {$S'_{k}$};
-    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (Tpmod) at (1,6) {};
-    \node[above] at (Tpmod) {$T'$};
-    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (S1) at (1,0) {};
-    \node[below right] at (S1) {$S_{1}$};
-    \node[circle,fill,minimum size=0.2cm,inner sep=0pt] (T) at (7,0) {};
-    \node[right] at (T) {$T$};
-    \draw[-{Latex[length=0.2cm]}] (S) -- node[left] {$\bar{R'}_{<k}$} (Spk1);
-    \draw[-{Latex[length=0.2cm]},blue] (Spk1) -- node[left] {$R^{\iota, \beta}$}
-    (Spk2);
-    \draw[-{Latex[length=0.2cm]}] (Spk2)-- node[left] {$\bar{R'}_{>k}$} (Tp);
-    \draw[-{Latex[length=0.2cm]},blue] (S)-- node[below,blue] {$R^{\iota, \beta}$}
-    (S1);
-    \draw[-{Latex[length=0.2cm]}] (S1)-- node[below] {$\bar{R}_{\geq 2}$} (T);
-    \draw[-{Latex[length=0.2cm]}] (S1) -- node[right] {$\bar{R'}_{<k}$} (Spmodk);
-    \draw[-{Latex[length=0.2cm]}] (Spmodk)-- node[right] {$\bar{R'}_{>k}$} (Tpmod);
-    \draw[decoration={brace,raise=30pt,amplitude=10pt},decorate,grey] (S) --
-    node[left=40pt]
-    {$\bar{R'}$} (Tp);
-    \draw[decoration={brace,raise=30pt,amplitude=10pt,mirror},decorate,grey] (S) --
-    node[below=40pt]
-    {$\bar{R}$} (T);
-    %\draw[-{Latex[length=0.3cm]}] (c1) -- node[above] {$f_1$} (c3);
-  \end{tikzpicture}
-  \caption{$R^{\iota, \beta}$ is the first transition identifier of $\bar{R}$.
-  It must also occur somewhere in the transition sequence $\bar{R'}$. We
-  transform $\bar{R'}$ by moving $R^{\iota, \beta}$ to the beginning of the
-  sequence. The halting state is the same because of Lemma~\ref{lem:lemma2}. The
-  new sequence $R^{\iota,\beta}, \bar{R'}_{<k}, \bar{R'}_{>k}$ begins with the
-  same step as $\bar{R}$ and therefore steps to $S_1$ in the first step. Thus we
-  can examine the two shorter sequences $\bar{R'}_{<k}, \bar{R'}_{>k}$ and
-  $\bar{R}_{\geq 2}$ and conclude that $T \simeq T'$ by the induction
-  hypothesis.}
-  \label{fig:thm_qd_pf}
-\end{figure}
 
 
 % TODO add figures to the lemmas and theorem proofs
