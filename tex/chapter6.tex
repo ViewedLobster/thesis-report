@@ -180,19 +180,20 @@ We are now ready to state the last main theorem.
       S \Rrightarrow^{\bar{R}} T \andalso S' \Rrightarrow^{\bar{R'}} T',
     \end{gathered}
   \end{equation*}
-  and neither $T$ or $T'$ can make a step.  Then
+  Let $n$ and $n'$ be the lengths of $\bar{R}$ and $\bar{R'}$ respectively.
+  Furthermore we assume that neither $T$ or $T'$ can make a step. Then
   \begin{equation*}
-    T \simeq T'.
+    n = n' \quad \text{and} \quad T \simeq T'.
   \end{equation*}
 \end{theorem}
 
-The proof of theorem~\ref{thm:qd} is based on induction on the length of the two
+The proof of Theorem~\ref{thm:qd} is based on induction on the length of the two
 transition sequences. It can be seen as incrementally transforming $\bar{R'}$ to
 $\bar{R}$ by moving transition identifiers to positions specified by $\bar{R}$.
 Each intermediate sequence is shown to halt in the same state. The full proof
 can be found in Appendix~\ref{cha:proof_of_qd}.
 
-Finally, the next corollary follows from theorem~\ref{thm:qd} and
+Finally, the next corollary follows from Theorem~\ref{thm:qd} and
 proposition~\ref{prop:uniq_trans}:
 \begin{corollary}[Quasi-Determinism]
   Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
