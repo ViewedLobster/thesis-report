@@ -16,20 +16,51 @@ significantly simplifies concurrent programming. This greatly eases effort
 from the programmer. 
 
 A novel deterministic-by-design model call LVish ~\parencite{kuper2013lvars,
-kuper2014freeze} has been brought forward.  It uses data types that fulfill the
-condition of being part of a lattice, or more explicitly having some partial
+kuper2014freeze} has been introduced.  It uses data types that fulfill the
+condition of being part of a lattice, or more explicitly, having some partial
 order defined on its values. By defining a join operation on the values and only
-allowing writes to the data in form of this operation you can achieve concurrent
+allowing writes to the data in form of this operation, you can achieve concurrent
 determinism with very high parallelism using event based computation.  This is
 also the basic approach of the Reactive Async
-project~\parencite{conf/scala/HallerGES16} which has shown potential to speed up
+project~\parencite{conf/scala/HallerGES16}, which has shown potential to speed up
 e.g.\ static analysis of source code. The main problem with Reactive Async as
 of now, is that it does not include any construct to ensure that data races
-between event handlers do not occur. Futhermore there are also more fundamental
-problems with callback spawning which could also lead to non-determinism.
+between event handlers do not occur. Futhermore, there are also more fundamental
+problems with callback spawning, which could also lead to non-determinism.
 
 This thesis aims to construct a formal model which could later be adopted by
 future revisions of Reactive Async. Constructing a model similar to that
-of LVish, using concepts from computer security also
-utilized in previous work by \textcite{conf/oopsla/HallerL16}, the final goal
-will be to prove a form of determinism for the system.
+of LVish but in an object-oriented setting, the final goal
+will be to prove a form of determinism for the system. The work will use
+the object capability model from computer security, also utilized in previous
+work by \textcite{conf/oopsla/HallerL16}.
+
+\section{Contributions}%
+\label{sec:contributions}
+
+With this work, the following technical contributions are made.
+\begin{itemize}
+  \item We explore and, using examples, describe problems with both Reactive
+    Async and LVish.
+  \item We present a core object-oriented language, together with a formalization
+    in the form of small-step operational semantics and a type system. 
+  \item We present a proof of soundness for our semantics and type system.
+  \item We present a proof of quasi-determinism, a form of determinism, for our
+    formalized system.
+\end{itemize}
+
+
+\section{Report Structure}%
+\label{sec:report_structure}
+
+In Chapter~\ref{cha:background} some technical background is described. This
+includes some mathematical definitions, an introduction to programming language
+formalization and an informal description of the object capability
+model. Chapter~\ref{cha:related_work} describes some selected related work, upon
+which our model will build. In Chapter~\ref{cha:challenges} we describe and
+exemplify some problems with existing deterministic-by-design concurrent
+systems. In Chapter~\ref{cha:core_language} we introduce our core language and
+formalization. Chapter~\ref{cha:properties_of_racl} describes the theorems and
+proofs of soundness and quasi-determinism. Finally, in
+Chapter~\ref{cha:discussion_and_conclusion} we discuss extensions and
+implementation of our formal system, as well as conclude the report.

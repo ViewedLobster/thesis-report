@@ -71,8 +71,13 @@
   specified by $g$ and $h$.
 \end{remark}
 
+We now restate and prove propositions~\ref{prop:eqrel} and
+\ref{prop:eqrel_stateok}.
+\begin{proposition*}
+  $\simeq$ is an equivalence relation.
+\end{proposition*}
 
-\begin{proof}{(Proposition~\ref{prop:eqrel}, sketch)} 
+\begin{proof}{(Sketch)} 
   To prove that $\simeq$ is an equivalence relation we need to prove
   reflexivity, symmetry and transitivity.
   \begin{description}
@@ -130,7 +135,14 @@
   \end{description}
 \end{proof}
 
-\begin{proof}{(Proposition~\ref{prop:eqrel_stateok}, sketch)}
+\begin{proposition*}
+  For any two states $S, S'$  such that $S \simeq S'$
+  \begin{equation*}
+    \vdash S \tsep \stateok \iff \vdash S' \tsep \stateok
+  \end{equation*}
+\end{proposition*}
+
+\begin{proof}{(Sketch)}
   Since $\simeq$ is an equivalence relation we only need to prove one direction.
   Thus assume
   \begin{equation}

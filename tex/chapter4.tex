@@ -145,7 +145,7 @@ due to that the callbacks share mutable state through the \ilc{Global} object
 and that put operations updates a cell using the join operation.
 
 \begin{figure}
-  \begin{subfigure}[b]{0.5\textwidth}
+  \begin{subfigure}[b]{0.4\textwidth}
     \begin{lstlisting}
 (l) => {
   Global.someInt = 1
@@ -155,7 +155,7 @@ and that put operations updates a cell using the join operation.
     \caption{Code of $f_1$.}
   \end{subfigure}
   ~
-  \begin{subfigure}[b]{0.5\textwidth}
+  \begin{subfigure}[b]{0.4\textwidth}
     \begin{lstlisting}
 (l) => {
   if (Global.someInt == 1)
@@ -169,12 +169,71 @@ and that put operations updates a cell using the join operation.
   \label{fig:ra_fun_shared_state}
 \end{figure}
 
-This problem can be remedied using the OCAP model in a similar manner to LaCasa.
-By ensuring that callback threads are unconnected in the reference graph, we ensure
-that they do not share any state. We do this by ensuring that for each pair of
-threads, the intersection of their connected components will only contain cell
-objects. In Chapter~\ref{cha:core_language}, the type system is used to enforce
-this property.
+It would seem that restricting direct access to any global object would be
+sufficient to rectify this problem. However, as the example functions of
+Figure~\ref{fig:ra_fun_shared_state_ref} shows, this is not the case. Here we
+instansiate new class objects which in turn have access to a global object. This
+will lead to the same problem, even though we never access the global object
+directly within the callbacks.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.4\textwidth}
+    \begin{lstlisting}
+(l) => {
+  val x = new C
+  x.setGlobal
+  put($c_3$,0)
+}
+    \end{lstlisting}
+    \caption{Code of $f_1$.}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.4\textwidth}
+    \begin{lstlisting}
+(l) => {
+  val x = new C
+  if ( x.isGlobalSet )
+    put($c_3$, 1)
+  else put($c_3$,0)
+}
+    \end{lstlisting}
+    \caption{Code of $f_2$.}
+  \end{subfigure}
+
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{lstlisting}
+class C {
+  $\vdots$
+  setGlobal : Unit = {
+    Global.someInt = 1
+  }
+
+  isGlobalSet : Boolean = {
+    if ( Global.someInt == 1 ) 
+      true
+    else 
+      false
+  }
+  $\vdots$
+}
+    \end{lstlisting}
+    \caption{Code of class \ilc{C}, which is instansiated in the two callbacks.}
+  \end{subfigure}
+  \caption{Two callback functions sharing state through a reference.}
+  \label{fig:ra_fun_shared_state_ref}
+\end{figure}
+
+
+The problem can however be remedied using the OCAP model in a similar manner to
+LaCasa.  By ensuring that callback threads are unconnected in the object
+reference graph, we ensure that they do not share any state. We do this by
+ensuring that for each pair of threads, the intersection of their connected
+components in the reference graph will only contain cell objects. The sharing of
+cells is safe since it should be impossible for any two running callback threads
+to transmit information through a cell object. In
+Chapter~\ref{cha:core_language}, the type system is used to enforce this
+property of isolated threads.
 
 \subsection{Problematic Callback Spawning Semantics}%
 \label{sub:problematic_callback_spawning_semantics}

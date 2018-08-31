@@ -61,10 +61,10 @@ possible to extend RACL with this operation aswell.
 
 Apart from cell objects, it should also be possible to share immutable data
 between threads. This would require objects being deeply immutable. Apart from
-requiring the references passed to be immutable, an objects can only hold
-immutable references. This property must also be transitive, requiring that all
-references of referenced objects be immutable. A similar way to define
-immutability for Scala was examined by~\textcite{HallerA17}.
+requiring the references passed to be immutable, an immutable object should only be able
+to contain immutable references. This property must also be transitive,
+requiring that all references held by referenced objects be immutable. A similar way
+to define immutability for Scala was examined by~\textcite{HallerA17}.
 
 \section{Implementation}%
 \label{sec:implementation}

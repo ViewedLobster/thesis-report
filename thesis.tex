@@ -38,7 +38,7 @@
 \input{thmdecls.tex}
 
 \title{Concurrent Determinism Using Lattices and the Object Capability Model}
-\alttitle{Detta är den svenska översättningen av titeln}
+\alttitle{Parallelliserad determinism med hjälp av gitter och objektsförmågor}
 \author{Ellen Arvidsson}
 \email{magarv@kth.se}
 \supervisor{Philipp Haller}
@@ -56,19 +56,49 @@
 \titlepage
 
 \begin{abstract}
-  English abstract goes here.
-
+  Parallelization is an important part of modern data systems. However, the
+  non-determinism of thread scheduling introduces the difficult problem of
+  considering all different execution orders when constructing an algorithm.
+  Therefore deterministic-by-design concurrent systems are attractive.  A new
+  approach called LVars consists of using data which is part of a lattice, with
+  a predefined join operation. Updates to shared data are carried out using the
+  join operation and thus the updates commute. Together with limiting the reads
+  of shared data, this guarantees a deterministic result. The Reactive Async
+  framework follows a similar approach but has several aspects which can cause a
+  non-deterministic result. The goal with this thesis is to explore how we can
+  ammend Reactive Async in order to guarantee a deterministic result. First an
+  exploration into the subtleties of lattice based data combined with
+  concurrency is made.  Then a formal model based on a simple object-oriented
+  language is constructed.  The constructed small-step operational semantics and
+  type system are shown to guarantee a form of determinism. This shows that
+  LVars-similar system can be implemented in an object-oriented setting.
+  Furthermore the work can act as a basis for future revisions of Reactive Async
+  and similar frameworks.
 \end{abstract}
 
 
 \begin{otherlanguage}{swedish}
   \begin{abstract}
-    Träutensilierna i ett tryckeri äro ingalunda en oviktig faktor,
-    för trevnadens, ordningens och ekonomiens upprätthållande, och
-    dock är det icke sällan som sorgliga erfarenheter göras på grund
-    af det oförstånd med hvilket kaster, formbräden och regaler
-    tillverkas och försäljas Kaster som äro dåligt hopkomna och af
-    otillräckligt.
+    Parallellisering är en viktig del i moderna datasystem. Flertrådade
+    applikationer innebär dock en svårighet i och med att programmerare måste ta
+    alla exekveringsordningar i beaktning. Därför är beräkningsmodeller vars
+    resultat är garanterat deterministiskt en attraktiv utväg. En ny modell,
+    kallad LVars, använder gitterstrukturer tillsammans med en
+    supremum-operation för att garantera att uppdateringar av delad data
+    kommuterar. Detta tillsammans med begränsningar av läsning av datan
+    garanterar ett deterministiskt resultat. Reactive Async är ett
+    programmeringsramverk som följer en liknande strategi. Det finns dock flera
+    delar i dess konstruktion som i en oförsiktig programmerares händer kan
+    orsaka att ett programs resultat blir icke-deterministiskt. Målet med detta
+    examensarbete är att utforska vilka modifikationer som skulle kunna göras av
+    Reactive Async för att garantera determinism. Först görs en undersökning av de mer
+    svårförståeliga delarna i kombinationen av gitterbaserad data med
+    flertrådad exekvering. Sedan kostrueras en formell beräkningsmodell baserad på
+    ett enkelt objekt-orienterat språk. Konstruktionens småstegade operationella
+    semantik tillsammans med dess typsystem visas kunna garantera en form av
+    determinism. Detta visar att ett system liknande LVars kan implementeras i
+    ett objekt-orienterat språk. Därmed skulle detta arbete kunna ligga till
+    grund för framtida versioner av Reactive Async.
   \end{abstract}
 \end{otherlanguage}
 
