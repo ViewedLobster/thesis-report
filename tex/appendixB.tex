@@ -67,7 +67,7 @@
 
 \begin{remark}
   As noted earlier in Chapter~\ref{cha:properties_of_racl}, the $\pi$ and $\rho$
-  functions more or less just replaces object and thread identifiers as
+  functions more or less just replace object and thread identifiers as
   specified by $g$ and $h$.
 \end{remark}
 
@@ -186,13 +186,13 @@ We now restate and prove propositions~\ref{prop:eqrel} and
       \beta_2 = \smiley 
     \end{gathered}
   \end{equation*}
-  are applicable.
+  are applicable and will not lead to \Error{}.
   Let
   \begin{equation*}
     \bar{R}_1  = R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2} \andalso
     \bar{R}_2 = R_2^{\iota_2, \beta_2}, R_1^{\iota_1, \beta_1}
   \end{equation*}
-  Then both $\bar{R}_1, \bar{R}_2$ applicable to $S$ and
+  Then, both $\bar{R}_1, \bar{R}_2$ are applicable to $S$ and
   \begin{equation*}
     \begin{gathered}
       S \Rrightarrow^{\bar{R}_1} S'_1 \andalso S \Rrightarrow^{\bar{R}_2} S'_2
@@ -226,7 +226,7 @@ We now restate and prove propositions~\ref{prop:eqrel} and
 \end{figure}
 
 \begin{proof}
-  The can be done by cases on $R_1$ and $R_2$. However, there are a big number
+  The proof can be done by cases on $R_1$ and $R_2$. However, there are a big number
   of cases, most of which are easy to verify. Thus we are only going to do a few
   here to convince the reader. The others can be done similarly. One thing to
   note is that the proofs are symmetric in $R_1$ and $R_2$, meaning that if we
@@ -273,7 +273,7 @@ We now restate and prove propositions~\ref{prop:eqrel} and
       \begin{equation}
         \uniqMain(P) \andalso \isolation(H, P).
       \end{equation}
-      These two implies that
+      These two imply that
       \begin{equation}
         o_1 \neq o_2.
       \end{equation}
@@ -441,7 +441,8 @@ We now restate and prove propositions~\ref{prop:eqrel} and
           H_{21} = H[o \mapsto \Cell{\DEP, (l \sqcup l_2) \sqcup l_1}]
         \end{gathered}
       \end{equation}
-      By commutability of the least upper bound operation $\sqcup$ we have
+      By commutability and associativity of the least upper bound operation
+      $\sqcup$ we have
       \begin{equation}
         (l \sqcup l_1) \sqcup l_2 = (l \sqcup l_2) \sqcup l_1
       \end{equation}
@@ -522,7 +523,7 @@ We now restate and prove propositions~\ref{prop:eqrel} and
           \dots)^{\iota'_1} \}
         \end{gathered}
       \end{equation}
-      Stepping accoriding to $R_2^{\iota_2, \smiley}$ from $S$ gives
+      Stepping according to $R_2^{\iota_2, \smiley}$ from $S$ gives
       \begin{equation} \label{eq:lem1_ewhen_espawn_2}
         \begin{gathered}
           S_2 = H_2, P_2 \andalso S \Rrightarrow^{R_2^{\iota_2, \smiley}} S_2
@@ -580,7 +581,7 @@ We now restate and prove propositions~\ref{prop:eqrel} and
 \end{definition}
 
 \begin{lemma} \label{lem:lemma2}
-  Let $S$ be a well typed state. Let
+  Let $S$ be a well-typed state. Let
   \begin{equation*}
     \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n} \andalso
     S \Rrightarrow^{\bar{R}} S_{\bar{R}}
@@ -691,7 +692,7 @@ We now restate and prove propositions~\ref{prop:eqrel} and
 
 
 \begin{proposition}
-  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ be well typed states and let $g, h$
+  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ be well-typed states and let $g, h$
   be the bijections such that
   \begin{equation} \label{eq:propnewgh1}
     H_2 = \pi(H_1, g, h) \andalso P_2 = \rho(P_1, g, h).
@@ -753,7 +754,7 @@ We now restate and prove propositions~\ref{prop:eqrel} and
 Because of this proposition, the following is well defined.
 
 \begin{definition} \label{def:bijectionmod}
-  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ be well typed states and let $g, h$
+  Let $S_1 = H_1, P_1 \simeq H_2, P_2 = S_2$ be well-typed states and let $g, h$
   be the bijections such that
   \begin{equation} 
     H_2 = \pi(H_1, g, h) \andalso P_2 = \rho(P_1, g, h).
@@ -770,7 +771,7 @@ Because of this proposition, the following is well defined.
 \end{definition}
 
 \begin{lemma} \label{lem:lemma3}
-  Let $S, S', T$ be well typed states and $\bar{R}$ a transition sequence such that
+  Let $S, S', T$ be well-typed states and $\bar{R}$ a transition sequence such that
   \begin{equation*}
     S \Rrightarrow^{\bar{R}} T \andalso S \simeq S'.
   \end{equation*}
@@ -882,7 +883,7 @@ Because of this proposition, the following is well defined.
   \begin{equation*}
     \bar{R} = R_1^{\iota_1, \beta_1}, \dots, R_n^{\iota_n, \beta_n}
   \end{equation*}
-  be a transition sequence and $S, T$ be well typed states such that.
+  be a transition sequence and $S, T$ be well-typed states such that.
   \begin{equation*}
     S \Rrightarrow^{\bar{R}} T.
   \end{equation*}
@@ -924,7 +925,7 @@ Because of this proposition, the following is well defined.
 
 Finally we restate and prove Theorem~\ref{thm:qd}.
 \begin{theorem*}
-  Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
+  Let $S, S', T, T'$ be well-typed states not equal to $\Error$ such that
   \begin{equation*}
     \begin{gathered}
       S \simeq S' \\

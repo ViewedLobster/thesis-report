@@ -4,15 +4,15 @@
 % Write about the basic ideas behind the proof of preservation and progress
 
 We are now finally ready to state and prove the progress and preservation
-properties of RACL. These will then be used in order to prove
+properties of RACL. These are then used to prove
 quasi-determinism. 
 
 
 \section{Preservation \& Progress}%
 \label{sec:preservation_and_progress}
 
-The preservation theorem states that if we have a well typed state that can
-step to another state, this will also be well typed.
+The preservation theorem states that if we have a well-typed state that can
+step to another state, this will also be well-typed.
 
 \begin{theorem}[Preservation]
   \label{thm:preservation}
@@ -22,15 +22,17 @@ step to another state, this will also be well typed.
 
 The proof of preservation in its full can be found in
 Appendix~\ref{cha:proof_of_pnp}. The part concerning preservation of isolation
-is probably the most interesting, since properties like well typed heap and
-threads are standard. The isolation preservation proof is based on the
+is probably the most interesting since properties like well-typed heap and
+threads are standard. The preservation proof of isolation is based on the
 fact that, by OCAP reachability, all $\ocap$ threads can only reach $\ocap$
-class objects. Combined with global object separation, this means the thread can
-never access the global object or create non-$\ocap$ objects through a
-$\New{...}$-expression. This implies the thread follows the OCAP model as
-described in Section~\ref{sec:the_object_capability_model}. Thus isolated
+class objects. Combined with global object separation, this means that an
+$\ocap$ thread can never access the global object or create non-$\ocap$ objects
+through a $\New{...}$-expression. This implies that the thread follows the OCAP model
+as described in Section~\ref{sec:the_object_capability_model}. Thus isolated
 threads will stay isolated.
 
+Theorem~\ref{thm:progress} states that a well-typed program never gets stuck
+unless we encounter an error or finish execution properly.
 \begin{theorem}[Progress]
   \label{thm:progress}
   Let $S$ be a state such that $\vdash S \tsep \stateok$. Then either 
@@ -50,11 +52,11 @@ Appendix~\ref{cha:proof_of_pnp}.
 \section{Quasi-Determinism}%
 \label{sec:quasi_determinism}
 
-Having proved soundness of the type system, the next thing to proove is
+Having proved soundness of the type system, the next thing to prove is
 quasi-determinism. In order to state this more formally, we need some
 definitions.
 
-We first define a relation on states and show that this is an equivalence
+We first define a relation on states and show that it is an equivalence
 relation.
 \begin{definition} \label{def:eqrel}
   Let $\simeq$ be a binary relation on the set of states $\States$.
@@ -72,7 +74,7 @@ relation.
     H' = \pi(H, g) \andalso P' = \rho(P, g, h)
   \end{equation}
   
-  The functions $\pi$ and $\rho$ replaces all object and thread identifiers
+  The functions $\pi$ and $\rho$ replace all object and thread identifiers
   occuring in $H$ or $P$ according to the bijections $g$ and $h$. They are
   explicitly defined in Definition~\ref{def:pirho},
   Appendix~\ref{cha:proof_of_qd}.
@@ -95,21 +97,21 @@ Similarly we can prove the following.
 A proof sketch can also be found in Appendix~\ref{cha:proof_of_qd}.
 We can also make the following observation
 \begin{claim}
-  A transition between two states can be uniquely identified by
+  A transition between two states can be uniquely identified by:
   \begin{itemize}
-    \item Start state $S$
-    \item Base rule name $R$, e.g., $R = \ENew$ or $R = \ESpawn$. We say base rule
+    \item A start state $S$
+    \item A base rule name $R$, e.g., $R = \ENew$ or $R = \ESpawn$. We say base rule
       because in many cases the step involves more than one rule in its
       derivation tree of a complete state step. However the use of these extra
       rules are implied by which rule is used as the "base" of the tree. For
       example, using $\ECall$ to reduce a thread implies use of $\EFSProp$ to
       advance the state, and using $\ENew$ to advance one thread frame implies
       use of $\EFProp$ and $\EFSProp$ in order to advance the state.
-    \item Thread identifier $\iota \in \TIDs$. In the cases where we advance or terminate
-      one thread, e.g., $\ENull$ or $\ECall$ this is the thread identifier of
-      that thread, as in definition~\ref{def:thread_sets}. In the case where we
-      spawn a new thread this is the unique thread identifier as in
-      definition~\ref{def:heap_obj}.
+    \item A thread identifier $\iota \in \TIDs$. In the cases where we advance or terminate
+      a thread, e.g., $\ENull$ or $\ECall$, this is the thread identifier of
+      that thread, as in Definition~\ref{def:thread_sets}. In the case where we
+      spawn a new thread, this is the unique thread identifier as in
+      Definition~\ref{def:heap_obj}.
     \item A fresh object or thread identifier $\beta$ which could be of value:
       \begin{itemize}
         \item Object identifier $o' \in \OIDs$ in the cases where the rule
@@ -135,14 +137,14 @@ Because of this claim we can make the following definition
 
 \begin{remark}
   The rule name $R$ in the above definition is actually redundant since this is
-  completely decided by the state $S$ and thread identifier $\iota$.
+  completely decided by the state $S$ and the thread identifier $\iota$.
 \end{remark}
 
 To simplify notation we make the following definition.
 
 \begin{definition}
   A \emph{transition sequence} $\bar{R}$ is a finite length sequence of
-  transition identifiers
+  transition identifiers,
   \begin{equation*}
     \bar{R} = R_1^{\iota_1, \beta_1}, R_2^{\iota_2, \beta_2}, \dots,
     R_n^{\iota_n, \beta_n}.
@@ -161,6 +163,7 @@ To simplify notation we make the following definition.
   \begin{equation*}
     S \Rrightarrow^{\bar{R}} S_n.
   \end{equation*}
+  We call $n$ the length of $\bar{R}$.
 \end{definition}
 
 We state the following proposition without proof, just for reference. This
@@ -173,7 +176,7 @@ follows from the observations made in the claim above.
 We are now ready to state the last main theorem.
 
 \begin{theorem} \label{thm:qd}
-  Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
+  Let $S, S', T, T'$ be well-typed states not equal to $\Error$ such that
   \begin{equation*}
     \begin{gathered}
       S \simeq S' \\
@@ -193,10 +196,10 @@ $\bar{R}$ by moving transition identifiers to positions specified by $\bar{R}$.
 Each intermediate sequence is shown to halt in the same state. The full proof
 can be found in Appendix~\ref{cha:proof_of_qd}.
 
-Finally, the next corollary follows from Theorem~\ref{thm:qd} and
+Finally, quasi-determinism follows from Theorem~\ref{thm:qd} and
 proposition~\ref{prop:uniq_trans}:
 \begin{corollary}[Quasi-Determinism]
-  Let $S, S', T, T'$ be well typed states not equal to $\Error$ such that
+  Let $S, S', T, T'$ be well-typed states not equal to $\Error$ such that
   \begin{equation*}
     \begin{gathered}
       S \simeq S' \\
@@ -209,3 +212,10 @@ proposition~\ref{prop:uniq_trans}:
   \end{equation*}
 \end{corollary}
 
+%
+%\begin{remark}
+%  You should be able to prove that our system posesses a property similar to the
+%  confluence property proved by \textcite{confluence}. This should not be hard
+%  using the 
+%\end{remark}
+%

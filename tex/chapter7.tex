@@ -23,26 +23,26 @@ conclusions.
 \section{A Remark About Determinism}%
 \label{sec:a_remark_about_determinism}
 
-In this report, the quasi-determinism of RACL is proved. However, it
-should be possible to prove complete determinism, meaning that you get the same
+In this report, quasi-determinism of RACL is proved. It should, however,
+be possible to prove complete determinism, meaning that you get the same
 halting result (also considering $\Error$ as a result) in all executions which
-start in the same state. This is due to that, from the point of view of a
+start in the same state. This is due to the fact that, from the point of view of a
 thread, all return values from cell operations are agnostic to the actual
-cell value.  This implies that callback threads, with the current semantics are
+cell value.  This implies that callback threads, with the current semantics, are
 in practice completely isolated and cannot share any information. This in turn
 means that the execution of a thread is deterministic. By this, all callback
 threads spawned in one execution will spawn in all possible executions, meaning
 that if there is an error spawning thread in one execution path, there will be
-in all other executions aswell.
+one in all other executions as well.
 
 \section{Possible Extensions}%
 \label{sec:extensions}
 
 Currently, RACL does not have any way to actually use the result of a
-computation. That is, there is no way to access the final cell values. The
+computation: there is no way to access the final cell values. The
 freeze operation of LVish~\parencite{kuper2014freeze} is flawed and allows us to
-write non-deterministic programs, as shown in the end of
-Section~\ref{sec:a_problem_of_lvish}. However, as hinted in the end of the same
+write non-deterministic programs, as shown at the end of
+Section~\ref{sec:a_problem_of_lvish}. However, as hinted at the end of the same
 section, there should be a way to freeze values and access them without breaking
 determinism.  This uses a form of of quiescence, the concept introduced
 by~\textcite{kuper2014freeze}. The difference is that this new form of freezing
@@ -50,17 +50,17 @@ needs to be done globally, and at a time where changes to cell values are no
 longer going to take place. Quiescence allows us to do this. For example, if no
 threads are running or waiting to spawn, we can be sure that the cell values
 will not change. Therefore, with this definition of quiescence, introducing a
-program statement which blocks until quiescence and then freezes all cells,
+program statement that blocks until quiescence and then freezes all cells
 should allow us to access the result without risking non-determinism. In order
 to ensure this does not cause deadlocks, this \emph{on-quiescence-freeze}
 operation should only be allowed in the sole main (non-$\ocap$) thread of RACL.
 
-As mentioned in Section~\ref{sec:lvars}, LVars has an additional \emph{get}
+As mentioned in Section~\ref{sec:lvars}, LVars has an additional get
 operation, not modeled in RACL. Adopting the semantics of LVars, it should be
 possible to extend RACL with this operation aswell.
 
 Apart from cell objects, it should also be possible to share immutable data
-between threads. This would require objects being deeply immutable. Apart from
+between threads. This would require objects being deeply immutable: apart from
 requiring the references passed to be immutable, an immutable object should only be able
 to contain immutable references. This property must also be transitive,
 requiring that all references held by referenced objects be immutable. A similar way
@@ -70,8 +70,8 @@ to define immutability for Scala was examined by~\textcite{HallerA17}.
 \label{sec:implementation}
 
 In order to implement RACL effectively, some changes have to be made in the way
-callbacks are registered and spawned. This is mainly due to that the dependency
-set sematics of our formal system are hard to implement effectively, since it
+callbacks are registered and spawned. This is mainly due to the fact that the dependency
+set semantics of our formal system are hard to implement effectively, since it
 requires scanning all the dependency sets for threshold values that have been
 passed. The time required for this operation is linear in the combined size of
 the dependency sets.  
@@ -87,7 +87,7 @@ example, the lattice of integer sets $(2^{\integers}, \subseteq)$ has the atoms
 Working with atomic lattices allows for expressing an LVar update by a delta
 value, i.e., a difference between the old and new value. Instead of using the
 threshold set semantics, LVish registers callback generators, which for each
-update to an LVar generates callbacks to be run. Levaraging the delta
+update to an LVar generates callbacks to be run. Leveraging the delta
 representation, these generators can be made efficient in many
 cases~\parencite{kuper2014freeze}. In a RACL implementation, these generators
 would of course also have to be isolated similar to regular callbacks, in
@@ -99,11 +99,11 @@ order to guarantee determinism.
 
 With this thesis, the aim was to construct a similar formal system to LVish, but
 with object oriented characteristics, mostly levaraging the work
-of~\textcite{conf/oopsla/HallerL16}. Furthermore the aim was to prove
+of~\textcite{conf/oopsla/HallerL16}. Furthermore, the aim was to prove
 quasi-determinism similar to LVish. This goal has been met.  However, the
 discovery of an error in the proof of~\textcite{kuper2014freezeTR} led to the
 elimination of the freeze operation in its current form. This indicates two
-things: Firstly, when formal systems get larger, proofs get longer and great
+things: firstly, when formal systems get larger, proofs get longer and great
 care has to be taken in order to ensure correctness. Secondly, the goal of
 determinisic-by-design concurrent systems is difficult to understand, and
 seemingly safe operations such as freezing could have unforseen consequences.

@@ -1,18 +1,18 @@
 \chapter{Core Language}%
 \label{cha:core_language}
 
-In this chapter a basic core language is introduced. It will build a lot upon
-the core language of LaCasa and incorporate features of LVish. In the end we will
-have an object oriented language incorporating many of the features of LVish with
-a type system enforcing OCAP properties, much like the system of LaCasa.
+In this chapter, a basic core language is introduced. It will build a lot upon
+the core language of LaCasa and incorporate features of LVish. In the end, we will
+have an object-oriented language with many of the features of LVish, accompanied
+by a type system enforcing OCAP properties, much like the system of LaCasa.
 
 \section{Syntax}
 \label{sec:syntax}
 
-The language which we shall call Reactive Async Core Language (RACL) has a big
-similarity with the core language from LaCasa. Many expressions are the same
-except for a few removals and additions. The language grammar is defined in
-Figure~\ref{fig:racl_grammar}. It is a simple object oriented language which is
+The language which we shall call Reactive Async Core Language (RACL) is very
+similar to the core language from LaCasa. Many expressions are the same, except
+for a few removals and additions. The language grammar in BNF can be found in
+Figure~\ref{fig:racl_grammar}. It is a simple object-oriented language
 parameterized on the lattice $(\LatVals, \sqsubseteq)$.
 
 \begin{figure}
@@ -53,24 +53,25 @@ parameterized on the lattice $(\LatVals, \sqsubseteq)$.
   \label{fig:racl_grammar}
 \end{figure}
 
-We can see that a program $p$ consists of a sequence of class definitions
-$\overline{cd}$, a sequence of variable declarations $\overline{vd}$ and a term
-$t$. A class definition $cd$ consists of a name specifier $C$, inheritance
-specifier $D$, field declarations $\overline{fd}$ and method definitions
-$\overline{md}$. Variable and field declarations both have the same form
-consisting of a name specifier $f$ and a type $\tau$. Method definitions are
-also standard, with one thing to note being that all methods takes exactly one
-input.  More complicated inputs can be constructed using a container class.
+Looking at Figure~\ref{fig:racl_grammar} we can see that a program $p$ consists
+of a sequence of class definitions $\overline{cd}$, a sequence of variable
+declarations $\overline{vd}$ and a term $t$. A class definition $cd$ consists of
+a name specifier $C$, inheritance specifier $D$, field declarations
+$\overline{fd}$ and method definitions $\overline{md}$. Variable and field
+declarations both have the same form: they consist of a name specifier $f$ and a
+type $\tau$. Method definitions are also standard, with one thing to note being
+that all methods takes exactly one input.  More complicated inputs can be
+constructed using a container class.
 
 The type specifiers $\sigma$ and $\tau$ can take on the values as specified.
-Note that we have the special \CellType{} and \LatType{} types which are meant
-to represent the cells of Reactive Async and values from the used lattice
-respectively. Types will be discussed more in Section~\ref{sec:type_system}.
+Note that we have the special \CellType{} and \LatType{} types, which are meant
+to represent the cells of Reactive Async and lattice values respectively. Types
+will be discussed more in Section~\ref{sec:type_system}.
 
 As in LaCasa, the terms of RACL are written in A-normal form (i.e.\ every
 subexpression is named). Most of the expressions should be self-explanatory.
 However, note for example that we have a separate instance creation expression
-for cells, an expression for updating the value of a cell aswell as an
+for cells, an expression for updating the value of a cell, as well as an
 expression for creating dependencies between cells. The dependency creation
 expression is probably the most interesting since it mimics the syntax of
 spores~\parencite{conf/ecoop/MillerHO14}. All captured variables are clearly
@@ -80,25 +81,24 @@ stated in the sequence of captures $\overline{cap}$.
 \label{sec:semantics}
 
 In this section a small-step operational semantic of \RACL{} will be
-introduced. First a brief overview is made and then a few of the more
+introduced. First a brief overview is made, and then a few of the more
 interesting or non-standard execution rules will be explained.
 
 In short, the definitions in this section says that the state of the
 execution of a \RACL{} program consists of a \emph{heap} and a \emph{thread
-set}. The heap is represented by a partial map from object identifiers $\OIDs$
-to objects $\Objects$. The thread set is a set of threads, each of which
+set}. The heap is represented by a partial map from object identifiers 
+to objects. The thread set is a set of threads, each of which
 consisting of call frame stacks. Each call frame holds a local variable
-environment and a term to be executed. Steps between states can be made accoring
+environment and a term to be executed. Steps between states can be made according
 to rules on either frame, frame stack or thread set level. All steps taken on
 lower levels are propagated to thread set level using auxilliary rules. 
 
 \subsection{Semantical Definitions}%
 \label{sub:semantical_definitions}
 
-We first make a few definitions, building up to the final definition of a RACL
-state.
+We first make a few definitions.
 
-\begin{definition}[Sets] We define the following sets.
+\begin{definition}[Basic Definitions] We define the following: 
   \begin{itemize}
     \item We let $\VarNames$ be the set of all allowed variable names.
     \item We let $\FieldNames$ be the set of all allowed field names.
@@ -125,7 +125,7 @@ state.
 \end{definition}
 
 \begin{definition}[Heap Objects]\label{def:heap_obj}
-  We let $\Objects$ be the set of all \emph{heap objects}, i.e. objects of the
+  We let $\Objects$ be the set of all \emph{heap objects}, i.e., objects of the
   form
   \begin{equation*}
     \Obj{C, \FM} \text{ or } \Cell{\DEP, l}.
@@ -150,7 +150,7 @@ state.
   \begin{equation*}
     H \in \OIDs \rightharpoonup \Objects.
   \end{equation*}
-  A heap must always contain the global object as specified in
+  A heap must always contain the global object from
   definition~\ref{def:state_zero}.
 \end{definition}
 
@@ -224,11 +224,28 @@ state.
   where $\iota_{\text{main}}$ is a reserved thread identifier.
 \end{definition}
 
+\begin{definition}
+  For a program $p = \overline{cd}~\overline{vd}~t$, let the partial function
+  $\mbody$ be defined as follows:
+  \begin{equation*}
+    \mbody(m, C) = \begin{cases}
+      x \to t & \text{ if } \: \begin{aligned}[t]
+        &\ClassDef{C}{D}{\overline{fd}}{\overline{md}} \in \overline{cd}~\land \\
+        &\MethodDef{m}{x}{\sigma}{\tau}{t} \in \overline{md}
+      \end{aligned} \\
+      \mbody(m, D) & \text{ if } \: \begin{aligned}[t]
+        &\ClassDef{C}{D}{\overline{fd}}{\overline{md}} \in \overline{cd}~\land \\
+        &\MethodDef{m}{x}{\sigma}{\tau}{t} \not\in \overline{md}
+      \end{aligned} \\
+      \text{undefined} & \text{ o.w.}
+    \end{cases}
+  \end{equation*}
+\end{definition}
 In our reduction rules below, we refer to fresh identifiers. The following is
 one way to define this. 
 \begin{definition}
-  For each state $S = H, P$ there are two related sets of currently used object
-  identifiers $\mathcal{O}(S)$ and thread identifiers $\mathcal{D}(S)$.
+  For each state $S = H, P$, there are two related sets of currently used object
+  identifiers $\mathcal{O}(S)$, and thread identifiers $\mathcal{D}(S)$.
   Respectively, these contain all object and thread identifiers occuring in $H$
   and $P$. 
   
@@ -248,35 +265,15 @@ $\Rrightarrow$, as in
 \end{equation*}
 RACL reduction rules are expressed at three different levels:
 Thread set, frame stack and frame level. 
-Therefore we will also see the relations $\FRedTo$ and $\FSRedTo$, e.g.,
+Therefore, we will also see the relations $\FRedTo$ and $\FSRedTo$, e.g.,
 \begin{equation*}
   H, F\; \FRedTo\; H', F' \quad \text{ and } \quad H, \FS \;\FSRedTo\; H', \FS'.
 \end{equation*}
-This is to allow expression of e.g. single frame execution,
-thread creation and method calls as will be explained below. 
+This is to allow expression of, e.g., single frame execution,
+thread creation and method calls, as will be explained below. 
 A reduction on frame or frame stack level is propagated up to thread set level
 with the rules \EFProp{} and \EFSProp{} which are defined in
 figures~\ref{fig:fs_red_rules} and~\ref{fig:threads_red_rules}.
-
-In Figure~\ref{fig:frame_red_rules}, reduction rules for single frames are
-defined. These are rules that advance the state of a single frame $F$ and
-possibly changes the heap $H$. We have very simple ones like the rule {\sc
-E-LVal}, which assigns the specified lattice value to a local variable, and the
-rule {\sc E-Var} which assigns the value of one local variable to another.
-The rules \ESelect{} and \EAssign{} respectively fetches and sets the value of a
-field $f$ of an object on the heap. Rules \ENew{} and \ENewCell{} creates a new
-object on the heap of either class or cell type and assigns the corresponding
-new object identifier to a local variable. All fields of a new class object are
-initiated with a default value according to the $\default$ function. The rule
-\EPut{} updates the cell value of a cell object on the heap through a join
-operation.  Finally the rule \EWhen{} is responsible for adding a new dependency
-callback. Looking at this rule more closely we see that it captures the
-variables specified by $\overline{cap}$ and creates a local environment
-$L_{\text{env}}$. This is then stored, together with the closure $w \Rightarrow
-t'$, a threshold value $l'$ and a fresh thread identifier $\iota$, in the new
-dependency set $\DEP'$. \EWhen{} mimics the capture semantics of
-spores~\parencite{conf/ecoop/MillerHO14}.  Note that all rules in
-Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
 
 \begin{figure}[]
   \scax{E-Null}
@@ -350,11 +347,31 @@ Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
   \label{fig:frame_red_rules}
 \end{figure}
 
+In Figure~\ref{fig:frame_red_rules}, reduction rules for single frames are
+defined. These are rules that advance the state of a single frame $F$ and
+possibly changes the heap $H$. We have very simple ones like the rule {\sc
+E-LVal}, which assigns the specified lattice value to a local variable, and the
+rule {\sc E-Var}, which assigns the value of one local variable to another.
+The rules \ESelect{} and \EAssign{} respectively fetches and sets the value of a
+field $f$ of an object on the heap. Rules \ENew{} and \ENewCell{} creates a new
+object on the heap, of either class or cell type, and assigns the corresponding
+new object identifier to a local variable. All fields of a new class object are
+initiated with a default value according to the $\default$ function. The rule
+\EPut{} updates the cell value of a cell object on the heap through a join
+operation.  Finally the rule \EWhen{} is responsible for adding a new dependency
+callback. Looking at this rule more closely, we see that it captures the
+variables specified by $\overline{cap}$ and creates a local environment
+$L_{\text{env}}$. This is then stored, together with the closure $w \Rightarrow
+t'$, a threshold value $l'$ and a fresh thread identifier $\iota$, in the new
+dependency set $\DEP'$. \EWhen{} mimics the capture semantics of
+spores~\parencite{conf/ecoop/MillerHO14}.  Note that all rules in
+Figure~\ref{fig:frame_red_rules} assigns something to the variable $x$.
+
 
 In Figure~\ref{fig:error_red_rules}, rules that lead to $\Error$ are defined. These
 are all what would be called null-pointer exceptions in a language like Java.
 That is, that we try to access an object through the $\NullVal$ identifier.
-Errors are propagated to frame stack and then thread set level using rules
+Errors are propagated to frame stack, and then thread set level using rules
 \EErrorFS{} and \EErrorP{} from figures~\ref{fig:fs_red_rules} and
 \ref{fig:threads_red_rules}.
 
@@ -392,14 +409,14 @@ Errors are propagated to frame stack and then thread set level using rules
 \end{figure}
 
 In Figure~\ref{fig:fs_red_rules}, rules for frame stack reductions are defined.
-Here we find the aforementioned \EFProp{} and \EErrorFS{} together with rules
+Here we find the aforementioned \EFProp{} and \EErrorFS{}, together with rules
 for method calls and returns. \ECall{} handles method calls by creating a new
 frame with the corresponding term and local environment. Note that the new local
 environment differs depending on the OCAP status of the working thread. If the
-thread is tagged with $a = \nocap$, the new frame also has access to the global
+thread is tagged with $a = \nocap$, the new frame has access to the global
 environment, while if $a = \ocap$ it will not. Note also that the new frame
 stack is tagged with the variable name $x$, the variable to which the method
-result will be assigned to with rule \ERet{}. \ERet{} corresponds to method
+result will be assigned to upon method return. \ERet{} corresponds to a method
 return and utilizes the aforementioned variable name tag. Note that none of
 these rules changes the thread identifier or OCAP status of a thread.
 
@@ -441,12 +458,14 @@ these rules changes the thread identifier or OCAP status of a thread.
 \end{figure}
 
 Finally, in Figure~\ref{fig:threads_red_rules}, the rules for thread set
-reductions are defined. Here we find \EFSProp{} and \EErrorP{} which were
-mentioned above. Furthermore we have rule \ESpawn{}, which spawns a new callback
-thread for the threshold value $l$ in the dependency set of the  cell specified
-by $o$. Note that this uses the thread identifier with which the dependency is
-tagged. \ETerm{} is a rule to remove any thread stack finished with its
-execution.
+reductions are defined. Here we find \EFSProp{} and \EErrorP{}, which were
+mentioned above. Furthermore, we find rule \ESpawn{}, which spawns a new callback
+thread for the threshold value $l'$ in the dependency set of the  cell specified
+by $o$. Note that in order to use \ESpawn{}, the cell value
+$l$ must have passed the value $l'$ according to the lattice ordering
+$\sqsubseteq$. Furthermore, the spawned thread uses the thread identifier with
+which the dependency was tagged.  \ETerm{} is a rule to remove any thread stack
+finished with its execution.
 
 \begin{figure}
   \scrule{E-Spawn}
@@ -487,13 +506,13 @@ execution.
 \section{Type System}
 \label{sec:type_system}
 
-The type system will now be introduced starting with the types themselves.  The
+The type system will now be introduced, starting with the types themselves.  The
 types and type lattice of RACL is summarized in Figure~\ref{fig:racl_typelat}.
 The lattice structure reflects the subtyping relation defined in
 Figure~\ref{fig:def_stof}.  Except for standard types like the top, bottom, and
-class types, we see that the \CellType{} type is a subtype of \AnyRefType{} like
-the class types. Intuitively this is due to that cell objects are stored
-on the heap. We also have a separate lattice value type \LatType{}. 
+class types, we find the \CellType{} type, which is a subtype of \AnyRefType{}
+This is similar to the class types. Intuitively, this is due to that cell objects are
+stored on the heap. We also have a separate lattice value type \LatType{}. 
 
 \begin{figure}[]
   \centering
@@ -566,24 +585,62 @@ on the heap. We also have a separate lattice value type \LatType{}.
 \subsection{Terms \& Expressions}%
 \label{sub:terms_and_expressions}
 
-The basic building blocks of our type system are the typing of expressions and
+The basic building block of our type system is the typing of expressions and
 terms. Our typing relation is written
 \begin{equation}
   \TypeRel{\Gamma}{a}{t}{\tau} \quad \text{ or } \quad
   \TypeRel{\Gamma}{a}{e}{\tau}. \notag
 \end{equation}
-Apart from the usual components, i.e., typing environment $\Gamma$, term $t$ or
-expression $e$ and type $\tau$, we note that it includes a designator $a$ which
-can take on the values \nocap{} and \ocap{}. The latter indicates that the term
+Apart from the usual components of typing environment $\Gamma$, term $t$ or
+expression $e$, and type $\tau$, we note that it includes a designator $a$, which
+can take the values \nocap{} and \ocap{}. The latter indicates that the term
 or expression is typed under OCAP constraints. This is equivalent to the OCAP
 typing of \LaCasa{}~\parencite{conf/oopsla/HallerL16}. 
+
+In order to define the typing rules, we need two auxilliary shorthands for the
+field and method types of classes:
+\begin{definition}
+  For a program $p = \overline{cd}~\overline{vd}~t$, let the partial function
+  $\ftype$ be defined as follows:
+  \begin{equation*}
+    \ftype(f, C) = \begin{cases}
+      \tau & \text{ if } \: C = C_g \land \VarDecl{f}{\tau} \in \overline{vd} \\
+      \sigma & \text{ if } \: \begin{aligned}[t]
+        &\ClassDef{C}{D}{\overline{fd}}{\overline{md}} \in \overline{cd}~\land \\
+        &\VarDecl{f}{\sigma} \in \overline{fd}
+      \end{aligned} \\
+      \ftype(f, D) & \text{ if } \: \begin{aligned}[t]
+        &\ClassDef{C}{D}{\overline{fd}}{\overline{md}} \in \overline{cd}~\land \\
+        &\VarDecl{f}{\sigma} \not\in \overline{fd}
+      \end{aligned} \\
+      \text{undefined} & \text{ o.w.}
+    \end{cases}
+  \end{equation*}
+\end{definition}
+\begin{definition}
+  For a program $p = \overline{cd}~\overline{vd}~t$, let the partial function
+  $\mtype$ be defined as follows:
+  \begin{equation*}
+    \mtype(m, C) = \begin{cases}
+      \sigma \to \tau & \text{ if } \: \begin{aligned}[t]
+        &\ClassDef{C}{D}{\overline{fd}}{\overline{md}} \in \overline{cd}~\land \\
+        &\MethodDef{m}{x}{\sigma}{\tau}{t} \in \overline{md}
+      \end{aligned} \\
+      \mtype(m, D) & \text{ if } \: \begin{aligned}[t]
+        &\ClassDef{C}{D}{\overline{fd}}{\overline{md}} \in \overline{cd}~\land \\
+        &\MethodDef{m}{x}{\sigma}{\tau}{t} \not\in \overline{md}
+      \end{aligned} \\
+      \text{undefined} & \text{ o.w.}
+    \end{cases}
+  \end{equation*}
+\end{definition}
 
 All typing rules for terms and expressions can be found in
 Figure~\ref{fig:expr_typing}. Most of the type system rules are standard. For
 example, rule {\sc T-Let} types a let-term if the subexpression $e$ is typeable
 as $\tau$ under $\Gamma; a$, and the subterm $t$ is typeable under the extended
 environment $\Gamma, x: \tau$ and $a$. Rule {\sc T-Var} types a variable $x$ under
-$\Gamma$ provided $x \in \dom(\Gamma)$. {\sc T-New} types $\New{C}$ under effect
+$\Gamma$ provided that $x \in \dom(\Gamma)$. {\sc T-New} types $\New{C}$ under effect
 $a = \ocap$ only if the class $C$ is typeable as $\ocap$. The rules for typing a
 class as $\ocap$ is defined in Figure~\ref{fig:ocap_typing}. Typing rule {\sc
 T-Call} states that a method call $\Call{x}{m}{y}$, is only typeable if the type
@@ -594,7 +651,7 @@ type \LatType.
 As a final example, the rule {\sc T-When} describes typing of the dependency
 creation expression. It says that in order to register a callback for lattice
 value $y$ in cell $x$, first $x$ and $y$ must be typeable as $\CellType$ and
-$\LatType$ respectively. Furthermore all captured variables in $\overline{cap}$
+$\LatType$ respectively. Furthermore, all captured variables in $\overline{cap}$
 must be typeable as $\CellType$. This is to ensure that all objects shared
 between threads are of cell type, which is necessary to prove preservation of
 thread isolation in the reference graph later. The restricting of capturable
@@ -674,12 +731,19 @@ captured cells and $z: \LatType$.
   \label{fig:expr_typing}
 \end{figure}
 
-\subsection{Well Formed Programs}%
+\subsection{Well-Formed Programs}%
 \label{sub:well_formed_programs}
 
-Intuitively, a well formed program is a program which obeys our type system. We
+Intuitively, a well-formed program is a program which obeys our type system. We
 define well-formedness in Figure~\ref{fig:wf_typing}. We also need the
-definition of the global typing environment $\Gamma_0$. 
+definition of the global typing environment $\Gamma_0$:
+\begin{definition}
+  Let the \emph{global typing environment} $\Gamma_0$ be defined as 
+  \begin{equation*}
+    \Gamma_0 = \Global : C_g,
+  \end{equation*}
+  where $C_g$ is the global class.
+\end{definition}
 
 \begin{figure}[]
   \scrule{WF-Prog}
@@ -716,53 +780,51 @@ definition of the global typing environment $\Gamma_0$.
   { \TypeRel{\Gamma_0, \This:C, x : \sigma}{\nocap}{t}{\tau'} \\
   \tau' \stof \tau}
   {C \vdash \MethodDef{m}{x}{\sigma}{\tau}{t}}
-  \caption{\RACL{} rules for well formedness of programs.}
+  \caption{\RACL{} rules for well-formedness of programs.}
   \label{fig:wf_typing}
 \end{figure}
 
-\begin{definition}
-  Let the \emph{global typing environment} $\Gamma_0$ be defined as 
-  \begin{equation*}
-    \Gamma_0 = \Global : C_g,
-  \end{equation*}
-  where $C_g$ is the global class.
-\end{definition}
 
-{\sc WF-Prog} says that in order for a program $p =
-\overline{cd}~\overline{vd}~t$ to be well formed, all classes $\overline{cd}$,
-global variables $\overline{vd}$ and the program term $t$ must be well formed.
+Rule {\sc WF-Prog} says that in order for a program $p =
+\overline{cd}~\overline{vd}~t$ to be well-formed, all classes $\overline{cd}$
+and
+global variables $\overline{vd}$ must be well-formed, and the program term $t$
+must be well-typed.
 Rule {\sc WF-Global} says that in order for a global variable declaration to be
-well formed, the denoted type must either be $\LatType$, $\CellType$ or be of
-class type $C$ where the class definition of $C$ is well formed. In order for a
-class definition of $C$ to be well formed, rule {\sc WF-Class} declares that all
-methods must be well formed under $C$, the extended class $D$ must either be
-$\AnyRefType$ or must also be well formed. Furthermore, all methods must obey the
-rules of overriding and $C$ cannot redeclare any fields that has been declared
+well-formed, the denoted type must either be $\LatType$, $\CellType$, or be of
+class type $C$ where the class definition of $C$ is well-formed. In order for a
+class definition of $C$ to be well-formed, rule {\sc WF-Class} declares that all
+methods must be well-formed under $C$, the extended class $D$ must either be
+$\AnyRefType$ or must also be well-formed. Furthermore, all methods must obey the
+rules of overriding, and $C$ cannot redeclare any fields that has been declared
 in an extended class $D$. {\sc WF-Override} declares that for a method to be
-correctly overriden it must either not be declared in any extended class or it
+correctly overriden it must either not be declared in any extended class, or it
 must have the same declared type as in the extended class. Finally {\sc
-WF-Method} states that in order for a method to be well formed, its term must be
+WF-Method} states that in order for a method to be well-formed, its term must be
 typable as a type $\tau'$ under an environment consisting of the global
-environment, the class itself $\This : C$ and the method parameter $x: \sigma$.
-Futhermore $\tau' \stof \tau$, where $\tau$ is the declared return type of the
+environment, the class itself, $\This : C$, and the method parameter, $x: \sigma$.
+Furthermore, $\tau' \stof \tau$, where $\tau$ is the declared return type of the
 method.
 
 
 \subsection{OCAP Typing}%
 \label{sub:ocap_typing}
 
-In Figure~\ref{fig:ocap_typing} we find the rules for classifying a type as $\ocap$.
-Immediately we see that unconditionally, both $\AnyRefType$ and $\CellType$ are
+In Figure~\ref{fig:ocap_typing}, we find the rules for classifying a type as $\ocap$.
+Immediately, we see that unconditionally, both $\AnyRefType$ and $\CellType$ are
 $\ocap$. To type a class $C$ as $\ocap$, {\sc OCAP-Class} says that apart from being
-well formed, the superclass $D$ must be $\ocap$. Furthermore, all methods must
+well-formed, the superclass $D$ must be $\ocap$. Furthermore, all methods must
 be typable under the special judgement $\vdash_{\ocap}$ and all fields must be
 $\ocap$.  For a method to be typed under $\vdash_{\ocap}$, rule {\sc
-OCAP-Method} declares that the method term must be typable under effect $\ocap$
+OCAP-Method} declares that the method term must be typable under effect $\ocap$,
 without access to the global environment $\Gamma_0$. Being typable under effect
 $\ocap$ means that the expression $\New{C}$ is only allowed if $C$ is $\ocap$, as
 stated in rule {\sc T-New}. In short, an ocap term can only instansiate ocap
 classes. This part of the type system is similar to the corresponding part of
-LaCasa~\parencite{conf/oopsla/HallerL16}.
+LaCasa~\parencite{conf/oopsla/HallerL16}. In short, an \ocap{} class can only
+reference other \ocap{} types, and only instansiate other \ocap{} classes within
+its methods. Thus an \ocap{} object can never access another object unless it is
+explicitly passed a reference to it, the global object included.
 
 \begin{figure}
   \scax{OCAP-AnyRef}
@@ -786,7 +848,7 @@ LaCasa~\parencite{conf/oopsla/HallerL16}.
   {\TypeRel{\This : C, x : \sigma}{\ocap}{t}{\tau'} \\
   \tau' \stof \tau}
   {C \vdash_{\ocap} \MethodDef{m}{x}{\sigma}{\tau}{t}}
-  \caption{\RACL{} OCAP rules.}
+  \caption{\RACL{} OCAP typing rules.}
   \label{fig:ocap_typing}
 \end{figure}
 
@@ -796,9 +858,9 @@ LaCasa~\parencite{conf/oopsla/HallerL16}.
 
 In order to state and prove things such as progress and preservation we need a few more
 definitions. Many of them are just auxilliary properties of things like states
-and types and build up to the final definition of a well typed state.
+and types and build up to the final definition of a well-typed state.
 
-\subsection{Well Typed Heap}%
+\subsection{Well-Typed Heap}%
 \label{sub:well_typed_heap}
 
 This first definition is a straightforward partial function defining the dynamic
@@ -815,7 +877,7 @@ type of a value.
     \end{cases}
   \end{equation}
 \end{definition}
-In order to simplify the definition of a well typed heap we define the
+In order to simplify the definition of a well-typed heap, we define the
 following.
 \begin{definition}
   The typing environment $\Gamma_{\CellType}(L)$ is defined as follows:
@@ -823,15 +885,15 @@ following.
     \Gamma_{\CellType}(L) = \left[(x: \CellType) \mid x \in \dom(L)\right]
   \end{equation}
 \end{definition}
-Next comes the definition of a well typed heap. To say that a heap is
-well typed intuitively means that for all class objects, all field values are of
+Next comes the definition of a well-typed heap. To say that a heap is
+well-typed means that for all class objects, all field values are of
 a subtype of the declared type. Furthermore, our definition includes a statement
 about cell objects. We say that for all callbacks stored in dependency sets, all
 captured values must be of cell type and the callback term must be typeable
 under an environment containing the captured variables and closure parameter
 $z$.
-\begin{definition}[Well Typed Heap]
-  A heap $H$ is well typed, written $\vdash{H}$, if
+\begin{definition}[Well-Typed Heap]
+  A heap $H$ is well-typed, written $\vdash{H}$, if
   $\forall o \in \dom{(H)}$:
 
   If $H(o) = \Obj{C, \FM}$ then
@@ -854,16 +916,16 @@ $z$.
   \end{equation}
 \end{definition}
 
-\subsection{Well Typed Threads}%
+\subsection{Well-Typed Threads}%
 \label{sub:well_typed_threads}
 
 A non erroneous state $S = H, P$ has two parts, the heap $H$ and thread set $P$.
 In order to define and prove preservation properties, we furthermore need to put
 restrictions on the thread set $P$. We do this with the relation $H \vdash P$,
-saying $P$ is well typed under heap $H$. This relation is defined in
+meaning $P$ is well-typed under heap $H$. This relation is defined in
 Figure~\ref{fig:ts_typing}.  {\sc T-Procs} and {\sc T-Empty} basically says that
-in order for a thread set $P$ to be well typed under heap $H$, all threads need
-to be well typed under $H$ and its OCAP status $a$.  For a thread $\GS|_a^\iota$
+in order for a thread set $P$ to be well-typed under heap $H$, all threads need
+to be well-typed under $H$ and its OCAP status $a$.  For a thread $\GS|_a^\iota$
 we write this as $H; a \vdash \GS$. This relation is defined in
 Figure~\ref{fig:fs_typing}. 
 
@@ -922,7 +984,7 @@ Figure~\ref{fig:fs_typing}.
   }
   { H \vdash \Gamma; L }
 
-  \caption{Rules for classifying local environments $L$ as well typed.}
+  \caption{Rules for classifying local environments $L$ as well-typed.}
   \label{fig:local_typing}
 \end{figure}
 
@@ -931,22 +993,23 @@ T-FSEmpty1} (this is actually impossible since frame stacks of a state cannot be
 empty, see definition~\ref{def:thread_sets}), or the term $t$ of top frame $F$
 is typeable with some environment $\Gamma$ which is conformant with its local
 variable map $L$ and $H$. This conformancy is expressed through the relation $H
-\vdash \Gamma; L$ which is defined in Figure~\ref{fig:local_typing}. Simply
-stated, it says that all types specified in $\Gamma$ aligns with the dynamic
-types of the values in $L$. Furthermore {\sc T-FS1} declares that the rest of the frame
-stack $\FS$ must be typable under the judgement $\vdash^{x: \sigma}$. This
-judgement is defined by rules {\sc T-FSEmpty2} and {\sc T-FS2}. The latter
-reflects that the top frame returns some value to its underlying frame stack. It
-is closely connected with the well-formedness of methods and call\slash return
-execution semantics, as defined by rules {\sc WF-Method} and \ECall{}\slash\ERet{}
-respectively.
+\vdash \Gamma; L$, which is defined in Figure~\ref{fig:local_typing}. Simply
+stated, $H \vdash \Gamma;L$ says that all types specified in $\Gamma$ align
+with the dynamic types of the values in $L$. Furthermore {\sc T-FS1} declares
+that the rest of the frame stack $\FS$ must be typable under the judgement
+$\vdash^{x: \sigma}$. This judgement is defined by rules {\sc T-FSEmpty2} and
+{\sc T-FS2}. The latter rule reflects that the top frame returns some value to its
+underlying frame stack. It is closely connected with the well-formedness of
+methods and call\slash return execution semantics, as defined by rules {\sc
+WF-Method} and \ECall{}\slash\ERet{} respectively.
 
 \subsection{Isolation}%
 \label{sub:isolation}
 
 The next two definitions are used when defining isolation of threads in the
 reference graph of the heap. The ruling $\reach(H, o, o')$ is defined in
-Figure~\ref{fig:def_reach}.
+Figure~\ref{fig:def_reach}, and this is basically a formal definition of object
+$o'$ being reachable from $o$ in heap $H$ using field accesses.
 
 \begin{figure}
   \scrule{Reach1}
@@ -958,7 +1021,7 @@ Figure~\ref{fig:def_reach}.
   \scrule{Reach2}
   {
     o \in \dom{(H)} \andalso H(o) = \Obj{C, \FM} \\
-    o'' \in \image{(\FM)} \andalso \reach{(H, o'', o')}
+    o'' \in \codom{(\FM)} \andalso \reach{(H, o'', o')}
   }
   { \reach{(H, o, o')} }
   \caption{Definition of heap reachability.}
@@ -978,22 +1041,29 @@ Figure~\ref{fig:def_reach}.
 
 \begin{definition}[Accessible Roots]
   For a heap $H$ and a frame stack $\FS$ we define $\accRoots{(\FS, H)}$ as
-  \begin{equation}
+  \begin{equation*}
     \accRoots{(\FS, H)} = \left\{ o \in \dom{(H)} \:\: \middle| \:\:
     \begin{aligned}
-      \exists \sframe{L, t} &\in \FS, x \in \VarNames  \\
+      \exists \sframe{L, t} &\in \frames(\FS), x \in \VarNames  \\
          \text{s.t. } & (x \mapsto o) \in L
     \end{aligned}
     \right\}
-  \end{equation}
+  \end{equation*}
+  The function $\frames$ above is defined as 
+  \begin{equation*}
+    \begin{aligned}
+      \frames(\varepsilon) &= \emptyset \\
+      \frames(F \circ \GS) &= F \cup \frames(\GS)
+    \end{aligned}
+  \end{equation*}
 \end{definition}
 
 Isolation of threads is defined in Figure~\ref{fig:def_isolation}. Rule {\sc
-ISO-FS} states that for two threads to be isolated with regards to heap $H$, all
-accessible roots of the two threads must have class object separation, i.e., that
+ISO-FS} states that for two threads to be isolated with respect to heap $H$, all
+accessible roots of the two threads must have class object separation, i.e., 
 all objects that are reachable from both threads must be of type $\CellType$.
 Rule {\sc ISO-Procs} states that we have isolation for a thread set $P$ under
-heap $H$, if there is isolation between all pairs of threads such that at least
+heap $H$ if there is isolation between all pairs of threads such that at least
 one is $\ocap$.
 
 \begin{figure}
@@ -1055,16 +1125,16 @@ this property formally.
 \label{sub:global_object_separation}
 
 Another thing needed to prove preservation of isolation is global object
-separation. Simply stated this means that no $\ocap$ thread can reach the global
-object $o_g$ through heap references. This is formally defined in
-Figure~\ref{fig:def_gsep}.
+separation. Simply stated, this means that no $\ocap$ thread can reach the global
+object $o_g$ through the heap object reference graph. Global object separation
+is formally defined in Figure~\ref{fig:def_gsep}.
 
 \begin{figure}
   \scrule{GSep-Threads}
   {\forall \FS|_a^\iota \in P. \: a = \ocap \implies \forall o \in \accRoots{(\FS, H)}. \: \csep{(H, o, o_g)} }
   {H \vdash P \tsep \gsep}
 
-  \caption{Definition of global separation}
+  \caption{Definition of global object separation}
   \label{fig:def_gsep}
 \end{figure}
 
@@ -1072,8 +1142,8 @@ Figure~\ref{fig:def_gsep}.
 \label{sub:no_thread_spawning}
 
 The next definition is needed to state and prove progress. Intuitively
-$\noSpawn(H)$ means there are no threads waiting to spawn due to rule
-\ESpawn{}.
+$\noSpawn(H)$ means there are no threads waiting to spawn (compare with rule
+\ESpawn{}).
 \begin{definition}[No Spawn]
   For any heap $H$ we have $\noSpawn(H)$ if and only if
   \begin{equation}
@@ -1088,9 +1158,9 @@ $\noSpawn(H)$ means there are no threads waiting to spawn due to rule
 \subsection{Unique Main Thread}%
 \label{sub:unique_main_thread}
 
-In order to prove determinism we must be sure that there is at most one
+In order to prove determinism, we must be sure that there is at most one
 non-$\ocap$ thread running. Otherwise these could interfere since there are no
-constraints on whether these can share data. Therefore we define the following
+constraints on whether these can share data. Therefore, we define the following
 property.
 \begin{definition}[Unique Main Thread]
   For an OCAP status $a$, let
@@ -1105,36 +1175,37 @@ property.
   \begin{equation*}
     \chi(P) = \sum_{\FS|_a^\iota \in P} \chi_{\nocap}(a).
   \end{equation*}
-  This is the number of non OCAP protected threads in $P$. Finally we define
+  This is the number of non-OCAP-protected threads in $P$. Finally we define
   \begin{equation*}
     \uniqMain(P) \iff \chi(P) \leq 1
   \end{equation*}
 \end{definition}
 
 
-\subsection{Well Typed States}%
+\subsection{Well-Typed States}%
 \label{sub:well_typed_states}
 
-Finally we can define the notion of a well typed state. This combines many of
-the properties already defined into one.
-\begin{definition}[Well Typed States]
-  For a state $S$ we say that it is \emph{well typed} with regards to a well typed
+Finally we can define the notion of a well-typed state. This combines many of
+the properties already defined above into one.
+\begin{definition}[Well-Typed States]
+  For a state $S$ we say that it is \emph{well-typed} with regards to a well-typed
   program $p$, written
-  \begin{equation}
-    \vdash S \tsep \stateok
-  \end{equation}
-  if $S = \Error$ or $S = H, P$ and
   \begin{equation*}
+    \vdash S \tsep \stateok
+  \end{equation*}
+  if $S = \Error$ or $S = H, P$ and
+  \begin{equation} \label{eq:stateok1}
     \begin{gathered}
       \vdash H \andalso H \vdash P \andalso H \vdash P \tsep \ocr \\
       \isolation{(H, P)} \andalso H \vdash P \tsep \gsep \andalso \uniqMain(P)
     \end{gathered}
-  \end{equation*}
+  \end{equation}
 \end{definition}
 
 \begin{remark}
-  We will henceforth refer to this only as being well typed. The well typed
-  program $p$ will therefore in most cases be implicit.
+  We will henceforth refer to this only as being well-typed. The well-typed
+  program $p$ will therefore in many cases be implicit, as it already is in all
+  judgements of equation~\eqref{eq:stateok1}.
 \end{remark}
 
 %\begin{figure}
@@ -1155,6 +1226,6 @@ the properties already defined into one.
 
 
 % Introduce the core language with syntax, type system and state properties like
-% WT heap, isolation, well typed state
+% WT heap, isolation, well-typed state
 
 

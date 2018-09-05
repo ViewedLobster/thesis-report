@@ -1,31 +1,90 @@
 \chapter{Related Work}\label{cha:related_work}
 
-In this chapter four important pieces of work are going to be described.
-Section~\ref{sec:lvars} describes the LVars system and LVish, the extension
-of LVars which introduces the concepts of quiescence and freezing. 
-Section~\ref{sec:reactive_async} describes Reactive Async, a programming model
-inspired by the extended LVars system. In Section~\ref{sec:lacasa} the LaCasa
-system is introduced, and finally the concept of spores is briefly introduced in
+In this chapter, a few approaches to deterministic concurrency as well as other
+related works will be summarized.  Section~\ref{sec:approaches} quickly
+introduces a few existing models of deterministic concurrency. In the
+rest of the chapter we describe some existing work, upon which the model
+presented in Chapter~\ref{cha:core_language} will build on:
+Section~\ref{sec:lvars} describes the LVars system and its extension LVish.
+Section~\ref{sec:reactive_async} describes Reactive Async, a programming
+framework inspired by LVish. In Section~\ref{sec:lacasa}, the LaCasa system is
+introduced. Finally, the concept of spores is briefly introduced in
 Section~\ref{sec:spores}.
+
+\section{Approaches to Concurrent Determinism}%
+\label{sec:approaches}
+
+One of the first works on concurrent determinism was made by~\textcite{Kah74}.
+They suggest a simple system of computing units connected by channels. A channel
+is a FIFO construct to send data of a specified data type. Each computing unit
+is a sequential program with separate memory, for which data channels are
+registered as either incoming or outgoing. It has access to the incoming and
+outgoing channels through the \ilc{wait} and \ilc{send} operations.  \ilc{wait}
+takes an incoming channel identifier, and pops and returns the first object in
+the channel. If no objects are currently in the channel, \ilc{wait} blocks until
+a data object is sent. \ilc{send}, as the name suggests, sends a data object on
+an outgoing channel. At most one computing unit can use a channel as outgoing
+and incoming channel respectively. A computing unit can be interpreted as a
+tuple of deterministic functions of the incoming channel data sequences,
+generating sequences for outgoing data channels. This in turn makes a system of
+these computing units deterministic~\parencite{Kah74}.
+
+In in an article~\textcite{detbydefault} argues that concurrent and parallel
+programs should be deterministic by default. This is of course in contrast to
+the common approach that concurrency is handled directly with locks and similar
+constructs, which leaves no guarantees of determinism other than vague promises
+from the programmer. The solutions suggested by \textcite{detbydefault} includes
+language-based approaches as well as automatically parallelizing compilers and
+runtime-based approaches. They identify language-based approaches as the most
+promising, and exemplify this with their experimental language Deterministic Parallel
+Java (DPJ)~\parencite{detparjava}. As the name suggests, DPJ extends Java with
+an object-oriented effect system. Using class annotations this divides the heap
+into sets of memory locations called regions, and stipulates that all methods
+must be annotated with what regions are written and read. This allows them to
+check the program at compile time and give guarantees of determinism. DTJ also
+allows use of non-determinism. This, however, needs to be explicitly stated in
+code~\parencite{detparjava, dpjthesis}.
+
+FlowPools~\parencite{flowpools} is a deterministic concurrent programming model
+using the collection abstraction together with the dataflow programming model.
+The result is a collection-like data structure that can handle asynchronous adds
+of data, together with dataflow operations being both executed and registered
+concurrently. The model also guarantees determinism using a sealing operation,
+effectively freezing the collection and allowing no more writes.  This, however,
+still requires the programmer to manually freeze the result, which has to be
+done with care since any subsequent attempt of data modification will result in
+an error. This is a problem since we would like to place as much of the burden
+of concurrency control in the model itself.
+
+Write-once data structures, also called IVars, is also a concept that has been
+explored thoroughly. It was first introduced by~\textcite{nikhil1989structures}.
+An IVar is a data type which allows at most one write through a put operation.
+After the first one, any subsequent put results in an error. There is also a get
+operation, which blocks until a value has been put into the IVar. Some models
+guaranteeing determinism using language constructs, and IVars or similar
+structures are for example the Intel Concurrent Collections for
+Haskell~\parencite{icnch} and the Haskell Par monad~\parencite{hpm}. Both of
+these rely on the strictly functional nature of Haskell together with the semantics of
+IVars to ensure determinism.
 
 \section{LVars}\label{sec:lvars}
 
 LVars~\parencite{kuper2013lvars} is a programming model that was introduced as a
 solution to the problem of guaranteed deterministic concurrent programs. It
-generalizes the concept of write-once data
-structures~\parencite{nikhil1989structures}, also called IVars, with the ability
-to write more than once but limiting update operations to being monotonic.
-In LVars, all variables shared between threads are part of a programmer
-specified lattice and all updates are done through a join operation of the old
-and new values. This ensures that writes commute~\parencite{kuper2013lvars}.
+generalizes the concept of IVars~\parencite{nikhil1989structures}
+with the ability to write more than once but limiting update operations to being
+monotonic.  In LVars, all variables shared between threads are part of a
+programmer specified lattice, and all writes are done through a join operation
+of the old and new values. This ensures that writes are monotonic and thus that
+they commute~\parencite{kuper2013lvars}.
 
 \subsection{Stores \& Lattice}%
 \label{sub:stores_and_lattice}
 
 At the foundation of the LVars system lie lattices. The values resulting from a
-computation are going to be elements from a lattice $\LVarsLat$, specified by the
+computation are elements from a lattice $\LVarsLat$, specified by the
 programmer. These lattice values are stored in a \emph{store}.  This is a set of
-pairs consisting of a location and a lattice element. For a location there is
+pairs, consisting of a location and a lattice element. For one store location, there is
 at most one value. Letting $\LVarsLoc$ be the set of locations, a store $\Sigma$ can
 be represented using a partial map
 \begin{equation*}
@@ -44,10 +103,10 @@ The LVars model supports three main operations~\parencite{kuper2013lvars}.
     $\Sigma[r \mapsto \bot_{\LVarsLat}]$.
   \item Updating a store location, also called a \emph{put} operation. This
     operation takes a store location $r$ and a lattice value $l$. Given a store
-    $\Sigma$, this is updated to $\Sigma[r \mapsto l\sqcup S(r)]$. To ensure determinism in
-    conjunction with the next operation, any put operation that takes a store
-    location to $\top_{\LVarsLat}$ results in an error.
-  \item A LVar read operation, also referred to as \emph{get}. This operation is
+    $\Sigma$, the resulting store is $\Sigma[r \mapsto l\sqcup S(r)]$. To ensure
+    determinism in conjunction with the next operation, any put operation that
+    takes a store location to $\top_{\LVarsLat}$ results in an error.
+  \item An LVar read operation, also referred to as \emph{get}. This operation is
     specified with a store location and a threshold set, i.e. a set of lattice
     values. The operation blocks until the store location has passed one of the
     values in the threshold set, according to the ordering $\sqsubseteq$ of the
@@ -66,30 +125,31 @@ The LVars model supports three main operations~\parencite{kuper2013lvars}.
 
 LVish~\parencite{kuper2014freeze} is an extension of LVars. It introduces a new
 operation called freezing, a system to create dependencies between store
-locations and the concepts of quasi-determinism and quiescence.  In LVish the
+locations, and the concepts of quasi-determinism and quiescence.  In LVish, the
 store is modified such that every location also has an associated \emph{freeze
 bit} with a default value of $\LVarsFalse$. The \emph{freeze} operation
 takes a location and changes its associated bit to $\LVarsTrue$.  Whenever a
-freeze bit is $\LVarsTrue$, it prevents the associated lattice value from being
-changed. If a put operation tries to modify a freezed store location, the
-computation ends up in the error state $\Error$.
+freeze bit is $\LVarsTrue$, it prevents the associated lattice value, i.e.,
+store location, from being changed. If a put operation tries to modify a freezed
+store location, the computation ends up in the error state $\Error$.
 
-As mentioned, LVish also permits the programmer to create dependencies between
-store locations. To do this, the programmer specifies a location together with a
-set of threshold lattice values and a callback function. The callback is
-executed as soon as the given location passes a threshold value. Upon execution
-the callback is given access to the threshold value passed. Unlike the threshold
-sets for the get operation, the elements do not have to be incompatible. 
+LVish also permits the programmer to create dependencies between
+store locations. To do this, the programmer specifies a store location, a
+set of threshold lattice values, and a callback function. The callback is
+scheduled to be executed as soon as the given location passes a threshold value.
+Upon execution, the callback is given access to the threshold value passed.
+Unlike the threshold sets for the get operation, the elements do not have to be
+incompatible. 
 
-With the introduction of freezing, a program could take different execution
-paths where one halts in $\Error$ and the other halts in a non-erroneous state.
+With the introduction of freezing, a program can take different execution
+paths, where one halts in $\Error$ and the other halts in a non-erroneous state.
 It is thus obvious that the LVish system is no longer deterministic. Therefore
 the authors introduce \emph{quasi-determinism}, a weaker form of
 determinism. Instead of requiring the same computation result for all execution
 paths, quasi-determinism only requires that results be the same for
 non-erroneous halting states.
 
-Finally the LVish system makes use of a concept called \emph{quiescence}, in
+Finally, the LVish system makes use of a concept called \emph{quiescence}, in
 order to decide when to freeze a location. In short, a computation reaches
 quiescence when no more changes to the store are expected to take place. For
 example, this could be when there are no more callback threads running.
@@ -103,8 +163,8 @@ chapter~\ref{cha:challenges}.
 
 Reactive Async~\parencite{conf/scala/HallerGES16} is a Scala language
 programming framework inspired by LVish. It is based around objects called
-\emph{cells}.  Cells are similar to the store locations from LVish: They hold a
-value from a lattice, the value is updated through a join operation and you are
+\emph{cells}.  Cells are similar to the store locations from LVish: they hold a
+value from a lattice, the value is updated through a join operation, and you are
 able to create dependencies between them using callbacks.
 
 \begin{figure}
@@ -120,18 +180,19 @@ able to create dependencies between them using callbacks.
 
 Similarly to LVish, the cells are updated through a put operation.  The cells and
 dependencies can be illustrated as a graph.  Figure~\ref{fig:ra_example} is a
-very simple example of a dependency graph.  There are two cells $c_1$ and $c_2$
-and a dependency callback $f$ between them, which should be interpreted as $c_2$
+very simple example of a dependency graph.  There are two cells $c_1$ and $c_2$,
+and a dependency callback $f$ between them. This should be interpreted as $c_2$
 being dependent on $c_1$.  $f$ is a function which takes a lattice value and
 returns a new lattice value.  As soon as the lattice value of
-$c_1$ is updated to a new lattice value $l$, the callback $f(l)$ runs. If $f(l)$
-returns a lattice value $l'$, $c_2$ is updated with $l'$ though a put operation.
+$c_1$ is updated to a new lattice value $l$, the callback $f(l)$ is scheduled. If $f(l)$
+returns a lattice value $l'$, $c_2$ is updated with $l'$ though a put operation,
+equivalent to the put of LVars above.
 The return value of $f(l)$ can also be a special value \ilc{NoOutcome},
 representing no put operation should be done on $c_2$.
 
 If a programmer is not careful, there are several aspects of Reactive Async
-which can make a computation non-deterministic. This will be further discussed
-in chapter~\ref{cha:challenges}. 
+which can make a computation non-deterministic. This will be discussed further 
+in Chapter~\ref{cha:challenges}. 
 
 %This thesis aims to construct a formal model with
 %proven determinism properties which could be used as a basis for future
@@ -143,13 +204,13 @@ in chapter~\ref{cha:challenges}.
 LaCasa~\parencite{conf/oopsla/HallerL16} is a programming model for ensuring
 determinism in an actor model~\parencite{Hewi73a} setting. It draws
 parallels to the OCAP model to ensure deterministic execution of threads. In
-this section we give a brief introduction to the type system of LaCasa and the
+this section we give a brief introduction to the type system of LaCasa, and the
 intuition behind it.
 
 The formalization of LaCasa is based on a simple object oriented language.
 \textcite{conf/oopsla/HallerL16} presents several models, the last of which
-models a concurrent setting with several parallel processes. In order to ensure
-determinism all data interchanged between processes must be encapsulated in
+models concurrency with several parallel processes. In order to ensure
+determinism, all data interchanged between processes must be encapsulated in
 \emph{boxes}. A box is a container for a class reference with some accompanying
 methods to access and perform calculations with the encapsulated object. The
 type system ensures that all calculations made with objects encapsulated in a box
@@ -179,17 +240,17 @@ incorporated in the system presented in this thesis.
 In recent years there has been an increasing demand for distributed and
 concurrent data processing. Highly concurrent or distributed frameworks like
 Akka~\parencite{akka} and Spark~\parencite{spark} have become more and more
-popular. As their popularity grow, concerns have been raised over hazards that
+popular. As their popularity grows, concerns have been raised over hazards that
 relate to closures, one of the basic and most important constructs in modern
 programming languages. A closure is basically the notion of capturing and using
-an external variable in a function definition. In a concurrent or distributed
-setting this could be fatal if, e.g., we capture mutable or non-serializable
+an externally defined variable in a function definition. In a concurrent or distributed
+setting, it could be fatal if we capture, e.g., mutable or non-serializable
 references~\parencite{conf/ecoop/MillerHO14}. 
 
 An experimental solution for Scala is
 \emph{spores}~\parencite{conf/ecoop/MillerHO14}. Basically, a spore allows the
 programmer to clearly declare what external objects are being captured by a
-closure and furthermore limit what types that can be captured. The use of spores
+closure and, furthermore, limit what types that can be captured. The use of spores
 can be forced by annotating code with the spore type instead of the normal
 Scala function type. 
 

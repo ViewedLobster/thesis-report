@@ -41,7 +41,7 @@
 \end{proposition}
 
 \begin{proof}
-  Both directions of implication are simple to prove.
+  Both directions of the implication are simple to prove.
   \begin{description}
     \item[Case $\implies$:] By induction on the shape of derivation tree.
     \item[Case $\impliedby$:] By induction on the path length in graph
@@ -79,7 +79,7 @@
 \begin{proof}
   First of all we let $R = \reachable{(\{o\}, \Graph{(H)})}, R' =
   \reachable{(\{o'\}, \Graph{(H)})}$.
-  We prove each direction of implication separately.
+  We prove each direction of the implication separately.
   \begin{description}
     \item[Case $\implies$:] Take any $q \in  R\cap R'$. By definition of
       $\reachable$, reachability equivalence (prop.~\ref{prop:reacheq}) and 
@@ -111,7 +111,7 @@
       R' = \reachable(\accRoots(\HS, H), \Graph(H))  
     \end{gathered}
   \end{equation*}
-  We prove each direction of implication separately.
+  We prove each direction of the implication separately.
   \begin{description}
     \item[Case $\implies$:] Take $q \in R \cap R'$. Then 
       \begin{equation*}
@@ -139,7 +139,7 @@
         &\typeOf(q, H) \stof \CellType.
       \end{align*}
       Finally by Proposition~\ref{prop:csep_eq}, we have $\csep(H, o, o')$. Since
-      $o, o'$ arbitrary we are done.
+      $o, o'$ were arbitrary, we are done.
   \end{description}
 \end{proof}
 
@@ -211,7 +211,7 @@
     \accRoots(\FS_g, H) = \left\{ o_g \right\}
   \end{equation*}
   Furthermore let $H; \nocap \vdash \FS_g$.
-  $\FS_g$ thus is any well typed frame stack that only has the global object as
+  $\FS_g$ thus is any well-typed frame stack that only has the global object as
   an accessible root.  Now, for any thread set $P$, let $\tilde{P}$ be the
   thread set
   \begin{equation*}
@@ -738,7 +738,7 @@ We state the following without proof.
                 \end{aligned}
               \end{equation}
               where the last equality comes from the fact that the classes are
-              well formed. By \eqref{eq:eassign1} we have $\FM'(f) = L(z)$ and
+              well-formed. By \eqref{eq:eassign1} we have $\FM'(f) = L(z)$ and
               combining this with \eqref{eq:eassign12} we get
               \begin{equation} \label{eq:eassign13}
                 \typeOf(\FM'(f), H) \stof \ftype(f, C).
@@ -967,7 +967,7 @@ We state the following without proof.
                 \forall o \in \dom(H). \: \typeOf(o, H) = \typeOf(o, H').
                 \label{eq:enew-h3}
               \end{equation}
-              Using the definition of a well typed heap together with
+              Using the definition of a well-typed heap together with
               \eqref{eq:enew-h1}, \eqref{eq:enew-h2} and \eqref{eq:enew-h3} we
               can easily show that $\vdash H'$.
 
@@ -1072,7 +1072,7 @@ We state the following without proof.
                 \end{gathered}
               \end{equation}
               Since the only change to the heap is $l$ being updated to $l
-              \sqcup l'$, by inspecting the definition for a well typed heap and
+              \sqcup l'$, by inspecting the definition for a well-typed heap and
               using $\vdash H$ it is easy to conclude that
               \begin{equation}
                 \vdash H'.
@@ -1244,14 +1244,14 @@ We state the following without proof.
 
           Now, $a$ can be either $\nocap$ or $\ocap$. We first assume that $a =
           \nocap$.
-          By our program and thus by extension our classes being well formed, together
+          By our program and thus by extension our classes being well-formed, together
           with $C \stof C'$, we must have a class $C''$ s.t. $C \stof C'' \stof
           C'$ such that the the class definition of $C''$ includes the method
           definition
           \begin{equation*}
             \MethodDef{m}{u}{\gamma}{\tau}{t'}.
           \end{equation*}
-          By $C''$ being well formed
+          By $C''$ being well-formed
           \begin{equation}
             C'' \vdash \MethodDef{m}{u}{\gamma}{\tau}{t'}.
           \end{equation}
@@ -1509,7 +1509,7 @@ We state the following without proof.
       \end{equation}
       
       By definition of $H'$, $\vdash H$ and equation \eqref{eq:defwth2} from the
-      definition of the well typed heap it should be fairly obvious that
+      definition of the well-typed heap it should be fairly obvious that
       \begin{equation}
         \vdash H'
       \end{equation}
@@ -1840,7 +1840,7 @@ We state the following without proof.
           \begin{equation*}
             \TypeRel{\Gamma}{a}{\New{C}}{C}.
           \end{equation*}
-          Since the program is well formed the class $C$ exists. 
+          Since the program is well-formed the class $C$ exists. 
           \begin{equation*}
             \FM = [f \mapsto \default(\tau): (\VarDecl{f}{\tau}) \in \fdecls(C)]
           \end{equation*}
@@ -1894,7 +1894,7 @@ We state the following without proof.
           \begin{equation*}
             L(y) = o_y \andalso H(o_y) = \Obj{C', \FM}.
           \end{equation*}
-          $C' \stof C$ and classes being well typed means that if $\mtype(m, C)$
+          $C' \stof C$ and classes being well-formed means that if $\mtype(m, C)$
           is defined then $\mbody(m, C')$ is defined aswell. Thus let
           \begin{equation*}
             \mbody(m, C) = w \to t''.
@@ -2010,7 +2010,7 @@ We state the following without proof.
       \end{description}
       {\bf This concludes the case $t = \Let{x}{e}{t'}$.}
   \end{description}
-  Clearly all cases for $t$ leads to a contradiction and therefore we are done.
+  Clearly, all cases for $t$ leads to a contradiction and therefore we are done.
 \end{proof}
 
 

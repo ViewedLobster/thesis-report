@@ -1,4 +1,4 @@
-\chapter{Introduction}
+\chapter{Introduction \& Motivation}
 \label{cha:introduction}
 
 The main approach to achieving concurrency in general applications has long been
@@ -28,27 +28,55 @@ of now, is that it does not include any construct to ensure that data races
 between event handlers do not occur. Futhermore, there are also more fundamental
 problems with callback spawning, which could also lead to non-determinism.
 
+\section{Research Question \& Goal}%
+\label{sec:goal}
+
+
 This thesis aims to construct a formal model which could later be adopted by
 future revisions of Reactive Async. Constructing a model similar to that
 of LVish but in an object-oriented setting, the final goal
-will be to prove a form of determinism for the system. The work will use
-the object capability model from computer security, also utilized in previous
-work by \textcite{conf/oopsla/HallerL16}.
+will be to mathematically prove a form of determinism for the system.
+
+Doing this will hopefully give us an answer to the research question:
+
+\begin{quotation}
+  How can we enforce a deterministic concurrent model similar to LVish in an
+  object-oriented setting?
+\end{quotation}
+
+\section{Methodology}%
+\label{sec:methodology}
+
+We use the theory of programming language semantics and type systems to build a
+simple object-oriented language. The type system incorporates theory that
+relates to the object capability model from computer security, also utilized in
+previous work by \textcite{conf/oopsla/HallerL16}.  After defining the property
+of a well-typed program state, we prove that this is preserved during execution.
+Furthermore, we prove that an execution of a well-typed program will not get
+stuck unless there is a null-pointer exception. Finally, we prove a form of
+determinism for the system.
 
 \section{Contributions}%
 \label{sec:contributions}
 
-With this work, the following technical contributions are made.
+With this work, the following technical contributions are made:
 \begin{itemize}
-  \item We explore and, using examples, describe problems with both Reactive
-    Async and LVish.
-  \item We present a core object-oriented language, together with a formalization
-    in the form of small-step operational semantics and a type system. 
-  \item We present a proof of soundness for our semantics and type system.
-  \item We present a proof of quasi-determinism, a form of determinism, for our
+  \item Identification and exemplification of  problems with previous work on
+    deterministic concurrency.
+  \item Formalization of a core object-oriented language for deterministic
+    concurrency.
+  \item Design and formalization of an accompanying type system.
+  \item A proof of soundness for the core language and type system.
+  \item A proof of quasi-determinism, a form of determinism, for our
     formalized system.
 \end{itemize}
 
+\section{Sustainability \& Ethical Aspects}%
+\label{sec:sustainability_&_ethical_aspects}
+
+While this work migh have consequences with regards to sustainability, these are
+hard to overlook due to the theoretical nature of the work. The same applies to
+ethical aspects. Therefore the discussion of these are not really applicable.
 
 \section{Report Structure}%
 \label{sec:report_structure}
@@ -58,9 +86,12 @@ includes some mathematical definitions, an introduction to programming language
 formalization and an informal description of the object capability
 model. Chapter~\ref{cha:related_work} describes some selected related work, upon
 which our model will build. In Chapter~\ref{cha:challenges} we describe and
-exemplify some problems with existing deterministic-by-design concurrent
+exemplify some problems with some existing deterministic-by-design concurrent
 systems. In Chapter~\ref{cha:core_language} we introduce our core language and
 formalization. Chapter~\ref{cha:properties_of_racl} describes the theorems and
 proofs of soundness and quasi-determinism. Finally, in
 Chapter~\ref{cha:discussion_and_conclusion} we discuss extensions and
 implementation of our formal system, as well as conclude the report.
+
+
+
