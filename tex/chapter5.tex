@@ -838,8 +838,12 @@ explicitly passed a reference to it, the global object included.
   \RuleSpace{}
 
   \scrule{OCAP-Class}
-  {\ocap{(D)} \andalso C \vdash_{\ocap} \overline{md} \\
-  \forall (\VarDecl{f}{\sigma}) \in \overline{vd}. \: ocap(\sigma)}
+  { 
+  p = \overline{cd}~\overline{vd}~t \\
+  \ClassDef{C}{D}{\overline{fd}}{\overline{md}} \in \overline{cd} \\
+  \ocap{(D)} \andalso C \vdash_{\ocap} \overline{md} \\
+  \forall (\VarDecl{f}{\sigma}) \in \overline{fd}. \: ocap(\sigma)
+  }
   {\ocap{(C)}}
 
   \RuleSpace{}
