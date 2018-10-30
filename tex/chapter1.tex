@@ -8,12 +8,16 @@ the programmer in order to achieve good parallelization, even of simple tasks.
 Furthermore the likelihood of concurrency related errors such as deadlocks, data
 races and livelocks naturally becomes higher. 
 
+% TODO give some example of a dangerous situation using pseudo code
+
 Concurrent deterministic programs are concurrent programs which always produce
 the same results for the same inputs. This is attractive since it provides
 reproducible computations.  Deterministic-by-design concurrent programming
 models are systems which guarantees this property at compile time and thus
 significantly simplifies concurrent programming. This greatly eases effort
 from the programmer. 
+
+% TODO give an example using some reactive async-like pseudo code
 
 A novel deterministic-by-design model call LVish ~\parencite{kuper2013lvars,
 kuper2014freeze} has been introduced.  It uses data types that fulfill the
@@ -74,6 +78,23 @@ With this work, the following technical contributions are made:
 \section{Sustainability \& Ethical Aspects}%
 \label{sec:sustainability_&_ethical_aspects}
 
+% ethics:
+% hard to overlook
+% can not anticipate all uses of this technology
+
+% sustainability: 
+% similarly somewhat hard to overlook the consequences due to theoretical nature
+% energy use of data processing is a problem
+% technology like deterministic-by-design systems might introduce overhead
+% might also make computations more efficient if we can create incentive to
+% parallelize computations more, might make resource usage more efficient
+% hard to overlook what is more beneficial
+% does the increased efficiency and safety justify the increased overhead? <-- main question
+%
+% should give some ending discussion of this main question in the discussion and
+% conclusions chapter
+The theoretical nature of this work makes the ethical consequences hard to
+overlook since we cannot 
 While this work migh have consequences with regards to sustainability, these are
 hard to overlook due to the theoretical nature of the work. The same applies to
 ethical aspects. Therefore the discussion of these are not really applicable.
