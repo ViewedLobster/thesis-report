@@ -57,7 +57,7 @@ operation should only be allowed in the sole main (non-$\ocap$) thread of RACL.
 
 As mentioned in Section~\ref{sec:lvars}, LVars has an additional get
 operation, not modeled in RACL. Adopting the semantics of LVars, it should be
-possible to extend RACL with this operation aswell.
+possible to extend RACL with this operation as well.
 
 Apart from cell objects, it should also be possible to share immutable data
 between threads. This would require objects being deeply immutable: apart from
@@ -98,7 +98,7 @@ order to guarantee determinism.
 \label{sec:conclusion}
 
 With this thesis, the aim was to construct a similar formal system to LVish, but
-with object oriented characteristics, mostly levaraging the work
+with object oriented characteristics, mostly leveraging the work
 of~\textcite{conf/oopsla/HallerL16}. Furthermore, the aim was to prove
 quasi-determinism similar to LVish. This goal has been met.  However, the
 discovery of an error in the proof of~\textcite{kuper2014freezeTR} led to the
