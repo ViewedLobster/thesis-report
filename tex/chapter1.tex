@@ -6,31 +6,115 @@ to use locks and similar constructs in order to locally synchronize data
 accesses. The major drawback with this is that it demands a lot of effort from
 the programmer in order to achieve good parallelization, even of simple tasks.
 Furthermore the likelihood of concurrency related errors such as deadlocks, data
-races and livelocks naturally becomes higher. 
+races and livelocks naturally becomes higher. A simple example of a data race
+is illustrated in Figure~\ref{fig:datarace} where \ilc{thread1} and
+\ilc{thread2} are two theads with access to a common variable \ilc{x}.
+Depending on the execution order, \ilc{x} will have a different final value.
 
 % TODO give some example of a dangerous situation using pseudo code
+\begin{figure}
+  \centering
+  \begin{subfigure}[t]{0.4\textwidth}
+    \begin{lstlisting}[numbers=none,mathescape=true]
+var x: Int = 0
+
+thread1 = () => {
+  /* doing cool stuff */
+  ...
+
+  x = 1
+  
+  /* doing more cool stuff */
+  ...
+}
+
+thread2 = () => {
+  /* doing wicked stuff */
+  ...
+
+  x = 2
+  
+  /* doing more wicked stuff */
+  ...
+}
+    \end{lstlisting}
+    \caption{Example of a data race.}
+    \label{fig:datarace}
+  \end{subfigure}
+  \quad\quad\quad\quad
+  \begin{subfigure}[t]{0.4\textwidth}
+    \begin{lstlisting}[numbers=none,mathescape=true]
+var x: Int = 0
+
+thread1 = () => {
+  /* doing cool stuff */
+  ...
+
+  maxWrite(x,1)
+  
+  /* doing more cool stuff */
+  ...
+}
+
+thread2 = () => {
+  /* doing wicked stuff */
+  ...
+
+  maxWrite(x,2)
+  
+  /* doing more wicked stuff */
+  ...
+}
+    \end{lstlisting}
+    \caption{The deterministic program.}
+    \label{fig:maxwrite}
+  \end{subfigure}
+  \caption{Program examples.}
+\end{figure}
+
 
 Concurrent deterministic programs are concurrent programs which always produce
 the same results for the same inputs. This is attractive since it provides
 reproducible computations.  Deterministic-by-design concurrent programming
 models are systems which guarantees this property at compile time and thus
 significantly simplifies concurrent programming. This greatly eases effort
-from the programmer. 
+from the programmer. As an example, if in a similar setting to the program in
+Figure~\ref{fig:datarace}, say you where only interested in the maximum value of
+\ilc{x}. You could make the program deterministic by introducing a special
+\ilc{maxWrite(x,v)} operation. \ilc{maxWrite} takes a variable \ilc{x} and a
+value \ilc{v} and sets the new value of \ilc{x} to the maximum of its current
+value and \ilc{v}. The modified program can be seen in
+Figure~\ref{fig:maxwrite}. It is not hard to see that this is deterministic.
+Now, by somehow statically enforcing that all writes to shared variables should be
+through this special write operation, we could at compile time guaranee that a
+program has deterministic results.
 
+\begin{figure}
+  \centering
+\end{figure}
 % TODO give an example using some reactive async-like pseudo code
 
-A novel deterministic-by-design model call LVish ~\parencite{kuper2013lvars,
-kuper2014freeze} has been introduced.  It uses data types that fulfill the
-condition of being part of a lattice, or more explicitly, having some partial
-order defined on its values. By defining a join operation on the values and only
-allowing writes to the data in form of this operation, you can achieve concurrent
-determinism with very high parallelism using event based computation.  This is
-also the basic approach of the Reactive Async
-project~\parencite{conf/scala/HallerGES16}, which has shown potential to speed up
-e.g.\ static analysis of source code. The main problem with Reactive Async as
-of now, is that it does not include any construct to ensure that data races
-between event handlers do not occur. Futhermore, there are also more fundamental
-problems with callback spawning, which could also lead to non-determinism.
+A novel deterministic-by-design model call LVish~\parencite{kuper2013lvars,
+kuper2014freeze} has been introduced. This generalizes the \ilc{maxWrite} from
+above. It uses data types that fulfill the condition of being part of a lattice,
+More explicitly this means the shared data has some partial order defined on its
+values, and a so called join operation (a generalized maximum operation) defined
+for all value pairs. By only allowing writes to the data in form of this join
+operation, you can achieve concurrent determinism with very high parallelism
+using event based computation. This is also the approach of the Reactive Async
+project~\parencite{conf/scala/HallerGES16}, a Scala based framework inspired by
+LVish. Both LVish and Reactive Async has shown potential to speed up
+computations for algorithms concerning graphs and static code
+analysis~\parencite{kuper2014freeze,conf/scala/HallerGES16}.
+
+The main problem with Reactive Async as of now, is that it does not include any
+construct to ensure that data races between event handlers do not occur.
+There are also more fundamental problems with callback spawning,
+which could also lead to non-determinism. Furthermore, there are problems with
+LVish and its proof of determinism. Therefore, the main concern of this thesis
+is to analyze and find a solution to these problems.
+
+% TODO expand upon the applications of lvars and reactive async
 
 \section{Research Question \& Goal}%
 \label{sec:goal}
@@ -75,30 +159,6 @@ With this work, the following technical contributions are made:
     formalized system.
 \end{itemize}
 
-\section{Sustainability \& Ethical Aspects}%
-\label{sec:sustainability_&_ethical_aspects}
-
-% ethics:
-% hard to overlook
-% can not anticipate all uses of this technology
-
-% sustainability: 
-% similarly somewhat hard to overlook the consequences due to theoretical nature
-% energy use of data processing is a problem
-% technology like deterministic-by-design systems might introduce overhead
-% might also make computations more efficient if we can create incentive to
-% parallelize computations more, might make resource usage more efficient
-% hard to overlook what is more beneficial
-% does the increased efficiency and safety justify the increased overhead? <-- main question
-%
-% should give some ending discussion of this main question in the discussion and
-% conclusions chapter
-The theoretical nature of this work makes the ethical consequences hard to
-overlook since we cannot 
-While this work migh have consequences with regards to sustainability, these are
-hard to overlook due to the theoretical nature of the work. The same applies to
-ethical aspects. Therefore the discussion of these are not really applicable.
-
 \section{Report Structure}%
 \label{sec:report_structure}
 
@@ -112,7 +172,8 @@ systems. In Chapter~\ref{cha:core_language} we introduce our core language and
 formalization. Chapter~\ref{cha:properties_of_racl} describes the theorems and
 proofs of soundness and quasi-determinism. Finally, in
 Chapter~\ref{cha:discussion_and_conclusion} we discuss extensions and
-implementation of our formal system, as well as conclude the report.
+implementation of our formal system as well as ethical aspects and
+sustainability. We finally include a small conclusion.
 
 
 

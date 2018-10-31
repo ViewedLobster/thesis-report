@@ -93,6 +93,48 @@ cases~\parencite{kuper2014freeze}. In a RACL implementation, these generators
 would of course also have to be isolated similar to regular callbacks, in
 order to guarantee determinism.
 
+\section{Sustainability \& Ethical Aspects}%
+\label{sec:sustainability_&_ethical_aspects}
+
+Because of the theoretical nature of the work that follows, ethical
+complications are hard to anticipate. The theory concerning deterministic\hyp
+by-design concurrent systems is explored to help developers reason about and
+construct parallelizable applications. What these applications then do is out of
+our control.
+% ethics:
+% hard to overlook
+% can not anticipate all uses of this technology
+
+With regards to sustainability there are a few aspects that should be
+considered. The question of developer effort is one. Creating tools for
+developers to quicken development of software that more efficiently utilizes
+modern hardware is reasonable to strive for.  Furthermore, a tool that ensures
+determinism in a concurrent setting makes reasoning about computation a lot
+easier since we can be sure that wrong results do not depend on the execution
+order, something very much hidden from the programmers view. Simplifying
+reasoning in turn simplifies understanding. Thus bugs can be found easier, an
+important gain in a time when software safety and security are large concerns.
+
+Another aspect of sustainability is energy usage. A deterministic-by-design
+system might have computational overheads, reducing efficiency in operation.
+However, in the work on LVish and Reactive Async there have been results
+indicating more efficient use of hardware, reducing time for
+computation~\parencite{kuper2014freeze,conf/scala/HallerGES16}. This shows that
+on the contrary, use of such systems can increase efficiency and thus reduce
+energy usage. Examining similar properties for RACL was outside the
+scope of this thesis, since we at the moment do not have a working
+implementation of our formalized model. 
+% sustainability: 
+% similarly somewhat hard to overlook the consequences due to theoretical nature
+% energy use of data processing is a problem
+% technology like deterministic-by-design systems might introduce overhead
+% might also make computations more efficient if we can create incentive to
+% parallelize computations more, might make resource usage more efficient
+% hard to overlook what is more beneficial
+% does the increased efficiency and safety justify the increased overhead? <-- main question
+%
+% should give some ending discussion of this main question in the discussion and
+% conclusions chapter
 
 \section{Conclusion}%
 \label{sec:conclusion}

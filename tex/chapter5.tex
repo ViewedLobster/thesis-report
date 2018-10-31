@@ -826,6 +826,21 @@ reference other \ocap{} types, and only instansiate other \ocap{} classes within
 its methods. Thus an \ocap{} object can never access another object unless it is
 explicitly passed a reference to it, the global object included.
 
+\begin{definition}
+  For a program $p = \overline{cd}~\overline{vd}~t$, let the partial function
+  $\classdef$ be defined as follows:
+  \begin{equation*}
+    \classdef(C) = \begin{cases}
+      cd & 
+      \begin{aligned}[t]
+        \text{ if } &cd \in \overline{cd} \\
+        &cd = \ClassDef{C}{D}{\overline{fd}}{\overline{md}}
+      \end{aligned} \\
+      \text{undefined} & \text{ o.w.}
+    \end{cases}
+  \end{equation*}
+\end{definition}
+
 \begin{figure}
   \scax{OCAP-AnyRef}
   {\ocap{(\AnyRefType{})}}
@@ -839,8 +854,7 @@ explicitly passed a reference to it, the global object included.
 
   \scrule{OCAP-Class}
   { 
-  p = \overline{cd}~\overline{vd}~t \\
-  \ClassDef{C}{D}{\overline{fd}}{\overline{md}} \in \overline{cd} \\
+  \classdef(C) = \ClassDef{C}{D}{\overline{fd}}{\overline{md}} \\
   \ocap{(D)} \andalso C \vdash_{\ocap} \overline{md} \\
   \forall (\VarDecl{f}{\sigma}) \in \overline{fd}. \: ocap(\sigma)
   }
