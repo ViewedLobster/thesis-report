@@ -212,6 +212,19 @@ proposition~\ref{prop:uniq_trans}:
   \end{equation*}
 \end{corollary}
 
+\section{Summary}%
+\label{sec:summary}
+
+We have proved soundness for the formal model RACL. This means that, given that
+a program is well typed under our type system, it will never reach an
+error state unless it encounters a null-pointer exception. Furthermore, the
+program will never halt unless it has reached an error state, or no threads are
+running and no threads are waiting to spawn.
+
+Furthermore we have proved that RACL posesses the property of quasi-determinism.
+This means that all non-erroneous halting states of a well-typed program are
+equivalent.
+
 %
 %\begin{remark}
 %  You should be able to prove that our system posesses a property similar to the
