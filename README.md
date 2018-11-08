@@ -1,4 +1,14 @@
-# kththesis
+# Master Thesis 
+
+This is my master thesis on Concurrent Determinism in Scala-like languages using lattices and the Object Capability Model
+
+To compile, install TeX Live and use the command
+
+```bash
+latexmk -pdf thesis.tex
+```
+
+## kththesis
 This is the LaTeX class for Bachelor and MSc theses at KTH. The guidelines are defined here:
 https://intra.kth.se/en/administration/kommunikation/mallar/avhandlingarochexamensarbeten
 
